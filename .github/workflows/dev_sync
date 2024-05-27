@@ -1,0 +1,42 @@
+name: Keep Branches on sync with dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  update_branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Merge changes to front-end branch
+        run: |
+          git fetch origin dev
+          git checkout front-end
+          git merge origin/dev
+          git push origin front-end
+
+      - name: Merge changes to data-management branch
+        run: |
+          git fetch origin dev
+          git checkout data-management
+          git merge origin/dev
+          git push origin data-management
+
+      - name: Merge changes to server-deployment branch
+        run: |
+          git fetch origin dev
+          git checkout server-deployment
+          git merge origin/dev
+          git push origin server-deployment
+
+      - name: Merge changes to back-end branch
+        run: |
+          git fetch origin dev
+          git checkout back-end
+          git merge origin/dev
+          git push origin back-end
