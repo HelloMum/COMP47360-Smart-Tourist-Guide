@@ -1,3 +1,4 @@
+
 FROM node:14 AS builder
 
 WORKDIR /app/react
@@ -12,6 +13,7 @@ COPY . .
 RUN npm run build
 
 FROM nginx:alpine
+
 
 COPY --from=builder /app/react/build /usr/share/nginx/html
 
