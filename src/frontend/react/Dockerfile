@@ -1,17 +1,20 @@
-# This file is to start the project as a docker
 FROM node:14 AS builder
-WORKDIR /app
 
-COPY src/frontend/react/package*.json ./
+WORKDIR /app/react
+
+COPY package*.json ./
 
 RUN npm install
 
-COPY src/frontend/react .
+COPY . .
+
 
 RUN npm run build
 
 FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html
+
+COPY --from=builder /app/react/build /usr/share/nginx/html
+
 
 EXPOSE 80
 
