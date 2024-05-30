@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Gender;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 import org.springframework.web.bind.annotation.CrossOrigin;
