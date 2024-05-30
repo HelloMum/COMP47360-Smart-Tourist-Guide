@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.Gender;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/students")
+@CrossOrigin(origins = "http://localhost:3000")  // Allow requests from the frontend
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
