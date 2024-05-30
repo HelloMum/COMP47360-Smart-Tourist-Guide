@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "start": "react-scripts start --proxy-setup ./src/setupProxy.js",
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
     "@testing-library/jest-dom": "^5.17.0",
@@ -37,5 +38,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+
+  },
+  "devDependencies": {
+    "http-proxy-middleware": "^3.0.0"
   }
 }
