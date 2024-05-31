@@ -18,6 +18,6 @@ FROM nginx:alpine
 COPY --from=builder /app/react/build /usr/share/nginx/html
 
 
-EXPOSE 80
+EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]
