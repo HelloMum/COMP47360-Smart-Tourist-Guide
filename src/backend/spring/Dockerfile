@@ -1,13 +1,14 @@
-
-FROM gradle:8.7.0-jdk21 AS builder
+FROM gradle:8.7.0-jdk11 AS builder
 
 WORKDIR /app
 
-COPY . .
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
 
-RUN gradle build --no-daemon
+RUN gradle build
 
-FROM openjdk:21-jdk-slim
+FROM adoptopenjdk/openjdk11:alpine-slim
 
 WORKDIR /app
 
