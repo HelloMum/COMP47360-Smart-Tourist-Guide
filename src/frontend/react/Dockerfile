@@ -1,23 +1,27 @@
+# Stage 1: Build the application
+FROM node:21 as build
 
-FROM node:14 AS builder
+WORKDIR /app
 
-WORKDIR /app/react
-
+# Copy package.json and package-lock.json if present
 COPY package*.json ./
 
 RUN npm install
 
 COPY . .
 
-
 RUN npm run build
 
-FROM nginx:alpine
+# Stage 2: Serve the application
+FROM node:21-alpine
 
+WORKDIR /app
 
-COPY --from=builder /app/react/build /usr/share/nginx/html
+COPY --from=build /app/build /app/build
+COPY package*.json ./
 
+RUN npm install -g serve
 
 EXPOSE 3000
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "build", "-l", "3000"]
