@@ -1,5 +1,7 @@
 const path = require('path');
 
+const port = 3000; // The port will not be used directly on deployment
+
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -30,7 +32,7 @@ module.exports = {
     },
     historyApiFallback: true,
     compress: true,
-    port: 3000,
+    port: port,
     open: true,
   },
 };
