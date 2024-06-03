@@ -42,7 +42,7 @@ generate_client_configs() {
         echo "[Peer]" >> $server_config
         echo "PublicKey = $(cat wireguard_configs/peer${i}_public_key)" >> $server_config
         echo "PresharedKey = $preshared_key" >> $server_config
-        echo "AllowedIPs = 10.11.12.${ip_end}/24" >> $server_config
+        echo "AllowedIPs = 0.0.0.0/0" >> $server_config
         echo "" >> $server_config
     done
 }
