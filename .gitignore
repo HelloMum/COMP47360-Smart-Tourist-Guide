@@ -33,3 +33,5 @@ build/
 ### VS Code ###
 .vscode/
 /src/frontend/node_modules/
+/src/data_processing/notebooks/.ipynb_checkpoints/
+/src/data_processing/notebooks/taxi/.ipynb_checkpoints/
