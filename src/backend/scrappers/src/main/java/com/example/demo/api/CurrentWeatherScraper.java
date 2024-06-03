@@ -1,20 +1,21 @@
-package com.example.demo;
+package com.example.demo.api;
 
-import com.example.demo.model.WeatherData;
-import com.example.demo.repository.WeatherRepository;
+import com.example.demo.model.CurrentWeatherData;
+import com.example.demo.repository.CurrentWeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Component
-public class WeatherScraper {
+public class CurrentWeatherScraper {
 
     @Autowired
-    private WeatherRepository weatherRepository;
+    private CurrentWeatherRepository currentWeatherRepository;
 
     private final String apiKey = "71287dae2da257653b6b14989d35491f";
     private final String cityName = "Manhattan";
@@ -22,7 +23,7 @@ public class WeatherScraper {
     private final String countryCode = "US";
 
     @Scheduled(fixedRate = 180000)
-    public WeatherData fetchWeatherData() {
+    public CurrentWeatherData fetchWeatherData() {
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("https://api.openweathermap.org/data/2.5/weather?q=%s,%s,%s&appid=%s",
                 cityName, stateCode, countryCode, apiKey);
@@ -30,17 +31,21 @@ public class WeatherScraper {
         WeatherDataRaw weatherDataRaw = restTemplate.getForObject(url, WeatherDataRaw.class);
 
         if (weatherDataRaw != null && weatherDataRaw.getWeather() != null && !weatherDataRaw.getWeather().isEmpty()) {
-            WeatherData weatherData = new WeatherData();
+            CurrentWeatherData weatherData = new CurrentWeatherData();
             weatherData.setId(UUID.randomUUID());
             weatherData.setWeather(weatherDataRaw.getWeather().get(0));
             weatherData.setMain(weatherDataRaw.getMain());
             weatherData.setVisibility(weatherDataRaw.getVisibility());
             weatherData.setWind(weatherDataRaw.getWind());
             weatherData.setClouds(weatherDataRaw.getClouds());
+            weatherData.setRain(weatherDataRaw.getRain());
+            weatherData.setSnow(weatherDataRaw.getSnow());
             weatherData.setDt(weatherDataRaw.getDt());
+            weatherData.setSys(weatherDataRaw.getSys());
             weatherData.setTimezone(weatherDataRaw.getTimezone());
             weatherData.setCod(weatherDataRaw.getCod());
-            weatherRepository.save(weatherData);
+            weatherData.setFetchTime(LocalDateTime.now());
+            currentWeatherRepository.save(weatherData);
             return weatherData;
         }
 
@@ -49,29 +54,32 @@ public class WeatherScraper {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class WeatherDataRaw {
-        private List<WeatherData.Weather> weather;
-        private WeatherData.Main main;
+        private List<CurrentWeatherData.Weather> weather;
+        private CurrentWeatherData.Main main;
         private int visibility;
-        private WeatherData.Wind wind;
-        private WeatherData.Clouds clouds;
+        private CurrentWeatherData.Wind wind;
+        private CurrentWeatherData.Clouds clouds;
+        private CurrentWeatherData.Rain rain;
+        private CurrentWeatherData.Snow snow;
         private long dt;
+        private CurrentWeatherData.Sys sys;
         private int timezone;
         private int cod;
 
         // Getters and Setters for WeatherDataRaw fields
-        public List<WeatherData.Weather> getWeather() {
+        public List<CurrentWeatherData.Weather> getWeather() {
             return weather;
         }
 
-        public void setWeather(List<WeatherData.Weather> weather) {
+        public void setWeather(List<CurrentWeatherData.Weather> weather) {
             this.weather = weather;
         }
 
-        public WeatherData.Main getMain() {
+        public CurrentWeatherData.Main getMain() {
             return main;
         }
 
-        public void setMain(WeatherData.Main main) {
+        public void setMain(CurrentWeatherData.Main main) {
             this.main = main;
         }
 
@@ -83,20 +91,36 @@ public class WeatherScraper {
             this.visibility = visibility;
         }
 
-        public WeatherData.Wind getWind() {
+        public CurrentWeatherData.Wind getWind() {
             return wind;
         }
 
-        public void setWind(WeatherData.Wind wind) {
+        public void setWind(CurrentWeatherData.Wind wind) {
             this.wind = wind;
         }
 
-        public WeatherData.Clouds getClouds() {
+        public CurrentWeatherData.Clouds getClouds() {
             return clouds;
         }
 
-        public void setClouds(WeatherData.Clouds clouds) {
+        public void setClouds(CurrentWeatherData.Clouds clouds) {
             this.clouds = clouds;
+        }
+
+        public CurrentWeatherData.Rain getRain() {
+            return rain;
+        }
+
+        public void setRain(CurrentWeatherData.Rain rain) {
+            this.rain = rain;
+        }
+
+        public CurrentWeatherData.Snow getSnow() {
+            return snow;
+        }
+
+        public void setSnow(CurrentWeatherData.Snow snow) {
+            this.snow = snow;
         }
 
         public long getDt() {
@@ -105,6 +129,14 @@ public class WeatherScraper {
 
         public void setDt(long dt) {
             this.dt = dt;
+        }
+
+        public CurrentWeatherData.Sys getSys() {
+            return sys;
+        }
+
+        public void setSys(CurrentWeatherData.Sys sys) {
+            this.sys = sys;
         }
 
         public int getTimezone() {
