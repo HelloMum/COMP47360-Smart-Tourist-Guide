@@ -1,0 +1,31 @@
+.header {
+  background-color: pink !important; /* 设置背景色为粉色，使用!important以覆盖MUI默认样式 */
+  padding: 10px; /* 添加一些内边距，使内容不会贴边 */
+  display: flex; /* 使用 Flexbox 布局 */
+  align-items: center; /* 垂直居中 */
+  max-width: 700px; /* 设置最大宽度为700像素 */
+  margin: 0 auto; /* 水平居中 */
+}
+
+.logo {
+  height: 150px; /* 设置logo的高度 */
+  width: 150px; /* 设置logo的宽度 */
+  margin-right: 20px; /* 添加一些右边距 */
+}
+
+.header ul {
+  list-style-type: none; /* 去掉列表项的默认样式 */
+  padding: 0; /* 去掉内边距 */
+  margin: 0; /* 去掉外边距 */
+  display: flex; /* 使用 Flexbox 布局 */
+}
+
+.header ul li {
+  margin-right: 10px; /* 添加右边距 */
+}
+
+.link {
+  color: inherit; /* 继承文本颜色 */
+  text-decoration: none; /* 去掉下划线 */
+  margin-right: 20px; /* 添加一些右边距 */
+}
