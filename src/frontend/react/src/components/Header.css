@@ -3,13 +3,13 @@
   padding: 10px; /* 添加一些内边距，使内容不会贴边 */
   display: flex; /* 使用 Flexbox 布局 */
   align-items: center; /* 垂直居中 */
-  max-width: 700px; /* 设置最大宽度为700像素 */
+  /* max-width: 700px; 设置最大宽度为700像素 */
   margin: 0 auto; /* 水平居中 */
 }
 
 .logo {
-  height: 150px; /* 设置logo的高度 */
-  width: 150px; /* 设置logo的宽度 */
+  height: 60px; /* 设置logo的高度 */
+  width: 60px; /* 设置logo的宽度 */
   margin-right: 20px; /* 添加一些右边距 */
 }
 
