@@ -82,16 +82,8 @@ public class HourlyWeatherForecastData {
         @Column(name = "dt_txt")
         private String dt_txt;
 
-        @ManyToOne
-        @JoinColumn(name = "forecast_response_id")
-        @ToString.Exclude
-        private HourlyWeatherForecastData hourlyWeatherForecastData;
-
         @Embedded
         private Main main;
-
-        @ElementCollection
-        private List<Weather> weather;
 
         @Embedded
         private Clouds clouds;
@@ -107,7 +99,16 @@ public class HourlyWeatherForecastData {
 
         @Embedded
         private Sys sys;
+
+        @Embedded
+        private Weather weather;
+
+        @ManyToOne
+        @JoinColumn
+        @ToString.Exclude
+        private HourlyWeatherForecastData hourlyWeatherForecastData;
     }
+
     @Embeddable
     @Data
     @NoArgsConstructor

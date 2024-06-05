@@ -1,25 +1,29 @@
 package com.example.demo.service;
 
+import com.example.demo.api.CurrentWeatherScraper;
 import com.example.demo.model.CurrentWeatherData;
 import com.example.demo.repository.CurrentWeatherRepository;
-import com.example.demo.api.CurrentWeatherScraper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class CurrentWeatherService {
-    @Autowired
-    private CurrentWeatherRepository currentWeatherRepository;
+
+    private final CurrentWeatherRepository currentWeatherRepository;
+    private final CurrentWeatherScraper weatherScraper;
 
     @Autowired
-    private CurrentWeatherScraper weatherScraper;
+    public CurrentWeatherService(CurrentWeatherRepository currentWeatherRepository,
+                                 CurrentWeatherScraper weatherScraper) {
+        this.currentWeatherRepository = currentWeatherRepository;
+        this.weatherScraper = weatherScraper;
+    }
 
     public CurrentWeatherData getWeather() {
         CurrentWeatherData weatherData = weatherScraper.fetchWeatherData();
-        currentWeatherRepository.save(weatherData);
+        if (weatherData != null) {
+            currentWeatherRepository.save(weatherData);
+        }
         return weatherData;
     }
-
 }

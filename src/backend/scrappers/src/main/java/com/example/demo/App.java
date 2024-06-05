@@ -1,15 +1,16 @@
 package com.example.demo;
 
 import com.example.demo.api.CurrentWeatherScraper;
+import com.example.demo.api.DailyWeatherForecastScraper;
 import com.example.demo.api.HourlyWeatherForecastScraper;
 import com.example.demo.model.CurrentWeatherData;
+import com.example.demo.model.DailyWeatherForecastData;
 import com.example.demo.model.HourlyWeatherForecastData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
 
 @SpringBootApplication
 @EnableScheduling
@@ -21,6 +22,9 @@ public class App implements CommandLineRunner {
     @Autowired
     private HourlyWeatherForecastScraper hourlyWeatherForecastScraper;
 
+    @Autowired
+    private DailyWeatherForecastScraper dailyWeatherForecastScraper;
+
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }
@@ -31,5 +35,7 @@ public class App implements CommandLineRunner {
         System.out.println("currentWeatherData is stored in weather_data table");
         HourlyWeatherForecastData hourlyWeatherForecastData = hourlyWeatherForecastScraper.fetchWeatherData();
         System.out.println("hourlyWeatherForecastData is stored in tables");
+        DailyWeatherForecastData dailyWeatherForecastData = dailyWeatherForecastScraper.fetchWeatherData();
+        System.out.println("dailyWeatherForecastData is stored in tables");
     }
 }

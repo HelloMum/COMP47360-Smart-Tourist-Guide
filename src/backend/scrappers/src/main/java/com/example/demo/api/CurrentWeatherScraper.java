@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import org.springframework.beans.factory.annotation.Value;
 import com.example.demo.model.CurrentWeatherData;
 import com.example.demo.repository.CurrentWeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,17 @@ public class CurrentWeatherScraper {
     @Autowired
     private CurrentWeatherRepository currentWeatherRepository;
 
-    private final String apiKey = "71287dae2da257653b6b14989d35491f";
-    private final String cityName = "Manhattan";
-    private final String stateCode = "NY";
-    private final String countryCode = "US";
+    @Value("${openweather.api.key}")
+    private String apiKey;
+
+    @Value("${openweather.city.name}")
+    private String cityName;
+
+    @Value("${openweather.state.code}")
+    private String stateCode;
+
+    @Value("${openweather.country.code}")
+    private String countryCode;
 
     @Scheduled(fixedRate = 180000)
     public CurrentWeatherData fetchWeatherData() {
@@ -66,7 +74,6 @@ public class CurrentWeatherScraper {
         private int timezone;
         private int cod;
 
-        // Getters and Setters for WeatherDataRaw fields
         public List<CurrentWeatherData.Weather> getWeather() {
             return weather;
         }

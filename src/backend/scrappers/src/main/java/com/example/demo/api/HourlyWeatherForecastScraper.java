@@ -4,6 +4,7 @@ import com.example.demo.model.HourlyWeatherForecastData;
 import com.example.demo.repository.HourlyWeatherForecastRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -12,6 +13,8 @@ import org.springframework.web.client.RestClientException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +26,17 @@ public class HourlyWeatherForecastScraper {
     @Autowired
     private HourlyWeatherForecastRepository hourlyWeatherForecastRepository;
 
-    private final String apiKey = "71287dae2da257653b6b14989d35491f";
-    private final String cityName = "Manhattan";
-    private final String stateCode = "NY";
-    private final String countryCode = "US";
+    @Value("${openweather.api.key}")
+    private String apiKey;
+
+    @Value("${openweather.city.name}")
+    private String cityName;
+
+    @Value("${openweather.state.code}")
+    private String stateCode;
+
+    @Value("${openweather.country.code}")
+    private String countryCode;
 
     @Scheduled(fixedRate = 3600000)
     public HourlyWeatherForecastData fetchWeatherData() {
@@ -53,7 +63,10 @@ public class HourlyWeatherForecastScraper {
             weatherData.setCity(weatherDataRaw.getCity());
             weatherData.setFetchTime(LocalDateTime.now());
 
-            List<HourlyWeatherForecastData.HourlyForecastData> hourlyForecasts = weatherDataRaw.getList();
+            List<HourlyWeatherForecastData.HourlyForecastData> hourlyForecasts = weatherDataRaw.getList().stream()
+                    .map(this::convertToHourlyForecastData)
+                    .collect(Collectors.toList());
+
             logger.info("Fetched {} hourly forecast entries", hourlyForecasts.size());
 
             for (HourlyWeatherForecastData.HourlyForecastData hourlyForecast : hourlyForecasts) {
@@ -70,13 +83,33 @@ public class HourlyWeatherForecastScraper {
         }
     }
 
+    private HourlyWeatherForecastData.HourlyForecastData convertToHourlyForecastData(HourlyForecastDataRaw raw) {
+        HourlyWeatherForecastData.HourlyForecastData data = new HourlyWeatherForecastData.HourlyForecastData();
+        data.setId(UUID.randomUUID());
+        data.setDt(raw.getDt());
+        data.setVisibility(raw.getVisibility());
+        data.setPop(raw.getPop());
+        data.setDt_txt(raw.getDt_txt());
+        data.setMain(raw.getMain());
+        data.setClouds(raw.getClouds());
+        data.setWind(raw.getWind());
+        data.setRain(raw.getRain());
+        data.setSnow(raw.getSnow());
+        data.setSys(raw.getSys());
+        if (raw.getWeather() != null && !raw.getWeather().isEmpty()) {
+            HourlyWeatherForecastData.Weather weather = raw.getWeather().get(0);
+            data.setWeather(weather);
+        }
+        return data;
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class WeatherDataRaw {
         private String cod;
         private int message;
         private int cnt;
         private HourlyWeatherForecastData.City city;
-        private List<HourlyWeatherForecastData.HourlyForecastData> list;
+        private List<HourlyForecastDataRaw> list;
 
         public String getCod() {
             return cod;
@@ -110,12 +143,116 @@ public class HourlyWeatherForecastScraper {
             this.city = city;
         }
 
-        public List<HourlyWeatherForecastData.HourlyForecastData> getList() {
+        public List<HourlyForecastDataRaw> getList() {
             return list;
         }
 
-        public void setList(List<HourlyWeatherForecastData.HourlyForecastData> list) {
+        public void setList(List<HourlyForecastDataRaw> list) {
             this.list = list;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class HourlyForecastDataRaw {
+        private long dt;
+        private int visibility;
+        private double pop;
+        private String dt_txt;
+        private HourlyWeatherForecastData.Main main;
+        private HourlyWeatherForecastData.Clouds clouds;
+        private HourlyWeatherForecastData.Wind wind;
+        private HourlyWeatherForecastData.Rain rain;
+        private HourlyWeatherForecastData.Snow snow;
+        private HourlyWeatherForecastData.Sys sys;
+        private List<HourlyWeatherForecastData.Weather> weather;
+
+        // Getters and Setters
+        public long getDt() {
+            return dt;
+        }
+
+        public void setDt(long dt) {
+            this.dt = dt;
+        }
+
+        public int getVisibility() {
+            return visibility;
+        }
+
+        public void setVisibility(int visibility) {
+            this.visibility = visibility;
+        }
+
+        public double getPop() {
+            return pop;
+        }
+
+        public void setPop(double pop) {
+            this.pop = pop;
+        }
+
+        public String getDt_txt() {
+            return dt_txt;
+        }
+
+        public void setDt_txt(String dt_txt) {
+            this.dt_txt = dt_txt;
+        }
+
+        public HourlyWeatherForecastData.Main getMain() {
+            return main;
+        }
+
+        public void setMain(HourlyWeatherForecastData.Main main) {
+            this.main = main;
+        }
+
+        public HourlyWeatherForecastData.Clouds getClouds() {
+            return clouds;
+        }
+
+        public void setClouds(HourlyWeatherForecastData.Clouds clouds) {
+            this.clouds = clouds;
+        }
+
+        public HourlyWeatherForecastData.Wind getWind() {
+            return wind;
+        }
+
+        public void setWind(HourlyWeatherForecastData.Wind wind) {
+            this.wind = wind;
+        }
+
+        public HourlyWeatherForecastData.Rain getRain() {
+            return rain;
+        }
+
+        public void setRain(HourlyWeatherForecastData.Rain rain) {
+            this.rain = rain;
+        }
+
+        public HourlyWeatherForecastData.Snow getSnow() {
+            return snow;
+        }
+
+        public void setSnow(HourlyWeatherForecastData.Snow snow) {
+            this.snow = snow;
+        }
+
+        public HourlyWeatherForecastData.Sys getSys() {
+            return sys;
+        }
+
+        public void setSys(HourlyWeatherForecastData.Sys sys) {
+            this.sys = sys;
+        }
+
+        public List<HourlyWeatherForecastData.Weather> getWeather() {
+            return weather;
+        }
+
+        public void setWeather(List<HourlyWeatherForecastData.Weather> weather) {
+            this.weather = weather;
         }
     }
 }

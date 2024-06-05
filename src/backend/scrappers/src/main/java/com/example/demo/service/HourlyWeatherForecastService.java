@@ -8,15 +8,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HourlyWeatherForecastService {
-    @Autowired
-    private HourlyWeatherForecastRepository hourlyWeatherForecastRepository;
+
+    private final HourlyWeatherForecastRepository hourlyWeatherForecastRepository;
+    private final HourlyWeatherForecastScraper hourlyWeatherForecastScraper;
 
     @Autowired
-    private HourlyWeatherForecastScraper hourlyWeatherForecastScraper;
+    public HourlyWeatherForecastService(HourlyWeatherForecastRepository hourlyWeatherForecastRepository,
+                                        HourlyWeatherForecastScraper hourlyWeatherForecastScraper) {
+        this.hourlyWeatherForecastRepository = hourlyWeatherForecastRepository;
+        this.hourlyWeatherForecastScraper = hourlyWeatherForecastScraper;
+    }
 
     public HourlyWeatherForecastData getWeather() {
         HourlyWeatherForecastData weatherData = hourlyWeatherForecastScraper.fetchWeatherData();
-        hourlyWeatherForecastRepository.save(weatherData);
+        if (weatherData != null) {
+            hourlyWeatherForecastRepository.save(weatherData);
+        }
         return weatherData;
     }
 }
