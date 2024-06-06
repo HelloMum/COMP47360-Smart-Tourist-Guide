@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button} from 'antd';
 
 const Schedule: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,8 @@ const Schedule: React.FC = () => {
     <div>
       <h1>Schedule</h1>
       {/* 日程规划逻辑 */}
-      <button onClick={goToMap}>Go to Map</button>
+      <Button type="primary" onClick={goToMap}>Go to Map</Button>
+
     </div>
   );
 };

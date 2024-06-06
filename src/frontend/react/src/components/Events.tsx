@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button as AntButton } from 'antd';
+import EventCard from './EventCard';
+import './Events.css'; // 引入CSS文件
 
 // 确保正确定义接口
 interface Event {
@@ -14,14 +17,14 @@ interface Event {
 const dummyEvents: Event[] = [
   {
     id: 1,
-    image: '/path/to/image1.jpg',
+    image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
     name: 'Event 1',
     time: '10:00 AM',
     location: 'Location 1'
   },
   {
     id: 2,
-    image: '/path/to/image2.jpg',
+    image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
     name: 'Event 2',
     time: '11:00 AM',
     location: 'Location 2'
@@ -46,30 +49,35 @@ const Events: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Events</h1>
-      <form onSubmit={handleSearch}>
+    <div className="events-container">
+
+      <div className="search">
+      <form className="search-form" onSubmit={handleSearch}>
         <input 
           type="text" 
           value={query} 
           onChange={(e) => setQuery(e.target.value)} 
           placeholder="Search for events or locations"
+          className="search-input"
         />
-        <button type="submit">Search</button>
+        <AntButton type="primary" >Search</AntButton>
       </form>
+      </div>
+      <br />
+
       <div className="event-list">
-        {results.map((event) => (
-          <div key={event.id} className="event-card">
-            <img src={event.image} alt={event.name} className="event-image" />
-            <div className="event-details">
-              <h3>{event.name}</h3>
-              <p>{event.time}</p>
-              <p>{event.location}</p>
-            </div>
-          </div>
+        {results.map(event => (
+          <EventCard
+            key={event.id}
+            image={event.image}
+            name={event.name}
+            time={event.time}
+            location={event.location}
+          />
         ))}
       </div>
-      <button onClick={goToSchedule}>Go to Schedule</button>
+
+      <AntButton type="primary" onClick={goToSchedule}>Go to Schedule</AntButton>
     </div>
   );
 };

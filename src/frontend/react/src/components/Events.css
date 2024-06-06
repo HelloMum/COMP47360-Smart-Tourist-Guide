@@ -1,35 +1,37 @@
+/* Events.css */
+.events-container {
+  padding: 20px;
+}
+
+.search-form {
+  display: flex;
+  align-items: center; 
+  width: 60%;
+}
+
+.search-input {
+  flex: 1;
+  padding: 8px;
+  margin-right: 8px;
+  font-size: 16px;
+  border: 2px solid grey; /* 设置蓝色边框 */
+}
+
+.search-button {
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
 .event-list {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* 左对齐 */
-  width: 100%; /* 确保容器占据整个宽度 */
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  justify-content: center; /* Center the event list */
 }
 
-.event-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 8px 0;
+.search {
   display: flex;
-  align-items: center;
-  width: 100%; /* 确保卡片占据整个宽度 */
-}
-
-.event-image {
-  width: 100px;
-  height: 100px;
-  border-radius: 8px;
-  margin-right: 16px;
-}
-
-.event-details {
-  flex-grow: 1;
-}
-
-.event-details h3 {
-  margin: 0 0 8px 0;
-}
-
-.event-details p {
-  margin: 4px 0;
+  justify-content: center;
+  margin: 0 auto;
 }

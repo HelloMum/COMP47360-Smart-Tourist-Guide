@@ -7,6 +7,8 @@ import Map from './components/Map';
 import Header from './components/Header';
 import './App.css';
 
+
+
 const googleMapsApiKey = "AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo";
 
 const App: React.FC = () => {

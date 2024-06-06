@@ -1,5 +1,5 @@
 .header {
-  background-color: pink !important; /* 设置背景色为粉色，使用!important以覆盖MUI默认样式 */
+  background-color: lightblue !important; /* 设置背景色为粉色，使用!important以覆盖MUI默认样式 */
   padding: 10px; /* 添加一些内边距，使内容不会贴边 */
   display: flex; /* 使用 Flexbox 布局 */
   align-items: center; /* 垂直居中 */
