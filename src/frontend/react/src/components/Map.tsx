@@ -14,13 +14,12 @@ const center = {
 const Map: React.FC = () => {
   return (
     <div>
-      <h1>Map</h1>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
         zoom={12}
       >
-        { /* You can add more components here */ }
+     
       </GoogleMap>
     </div>
   );
