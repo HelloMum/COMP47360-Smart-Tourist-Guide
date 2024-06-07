@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.api.HourlyWeatherForecastScraper;
+import com.example.demo.scrapers.HourlyWeatherForecastScraper;
 import com.example.demo.model.HourlyWeatherForecastData;
 import com.example.demo.repository.HourlyWeatherForecastRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,22 +1,21 @@
-package com.example.demo.api;
+package com.example.demo.scrapers;
 
 import com.example.demo.model.DailyWeatherForecastData;
 import com.example.demo.repository.DailyWeatherForecastRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component
 public class DailyWeatherForecastScraper {
@@ -50,7 +49,7 @@ public class DailyWeatherForecastScraper {
         try {
             weatherDataRaw = restTemplate.getForObject(url, WeatherDataRaw.class);
         } catch (RestClientException e) {
-            logger.error("Error fetching weather data: {}", e.getMessage());
+            logger.error("Error fetching weather data: {}", e.getClass());
             return null;
         }
 

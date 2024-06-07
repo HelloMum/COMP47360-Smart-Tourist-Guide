@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.api.CurrentWeatherScraper;
+import com.example.demo.scrapers.CurrentWeatherScraper;
 import com.example.demo.model.CurrentWeatherData;
 import com.example.demo.repository.CurrentWeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;

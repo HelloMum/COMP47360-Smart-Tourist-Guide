@@ -1,4 +1,4 @@
-package com.example.demo.api;
+package scrapers;
 
 import org.springframework.beans.factory.annotation.Value;
 import com.example.demo.model.CurrentWeatherData;

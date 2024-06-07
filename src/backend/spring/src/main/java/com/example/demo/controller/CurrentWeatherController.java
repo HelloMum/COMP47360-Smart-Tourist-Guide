@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.CurrentWeatherService;
 import com.example.demo.model.CurrentWeatherData;
+import com.example.demo.service.CurrentWeatherService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
