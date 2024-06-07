@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Header.css'; // 添加导入CSS文件
+import './Header.css'; 
 
 const Header: React.FC = () => {
   return (

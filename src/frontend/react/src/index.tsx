@@ -11,7 +11,7 @@ import '@fontsource/roboto/700.css';
 
 
 const container = document.getElementById('root');
-const root = createRoot(container!); // TypeScript non-null assertion operator
+const root = createRoot(container!); 
 
 root.render(
   <ChakraProvider>

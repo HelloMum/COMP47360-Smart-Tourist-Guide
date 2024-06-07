@@ -12,7 +12,7 @@ const Schedule: React.FC = () => {
   return (
     <div>
       <h1>Schedule</h1>
-      {/* 日程规划逻辑 */}
+   
       <Button type="primary" onClick={goToMap}>Go to Map</Button>
 
     </div>

@@ -14,7 +14,7 @@
   padding: 8px;
   margin-right: 8px;
   font-size: 16px;
-  border: 2px solid grey; /* 设置蓝色边框 */
+  border: 2px solid grey; 
 }
 
 .search-button {

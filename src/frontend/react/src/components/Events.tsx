@@ -4,7 +4,7 @@ import { Button as AntButton } from 'antd';
 import EventCard from './EventCard';
 import './Events.css'; // 引入CSS文件
 
-// 确保正确定义接口
+// 定义 Event 接口
 interface Event {
   id: number;
   image: string;
@@ -50,18 +50,17 @@ const Events: React.FC = () => {
 
   return (
     <div className="events-container">
-
       <div className="search">
-      <form className="search-form" onSubmit={handleSearch}>
-        <input 
-          type="text" 
-          value={query} 
-          onChange={(e) => setQuery(e.target.value)} 
-          placeholder="Search for events or locations"
-          className="search-input"
-        />
-        <AntButton type="primary" >Search</AntButton>
-      </form>
+        <form className="search-form" onSubmit={handleSearch}>
+          <input 
+            type="text" 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)} 
+            placeholder="Search for events or locations"
+            className="search-input"
+          />
+          <AntButton type="primary">Search</AntButton>
+        </form>
       </div>
       <br />
 
