@@ -1,0 +1,3 @@
+rootProject.name = 'backend'
+include 'spring'
+project(':spring').projectDir = file('spring')
