@@ -1,5 +1,5 @@
 
-FROM node:21 as build
+FROM node:hydrogen-alpine3.20 as build
 
 
 WORKDIR /app
