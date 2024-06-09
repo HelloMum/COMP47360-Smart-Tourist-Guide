@@ -1,6 +1,6 @@
 const path = require('path');
 
-const port = 3000; // The port will not be used directly on deployment
+const port = 3000;
 
 module.exports = {
   entry: './src/index.js',
