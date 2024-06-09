@@ -57,8 +57,6 @@ CREATE TABLE public.weather_data (
 );
 
 
-ALTER TABLE public.weather_data OWNER TO "default";
-
 --
 -- TOC entry 3650 (class 0 OID 16841)
 -- Dependencies: 214
