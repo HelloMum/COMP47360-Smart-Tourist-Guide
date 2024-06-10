@@ -1,7 +1,8 @@
 
-FROM node:14 AS builder
+FROM node:hydrogen-alpine3.20 as build
 
-WORKDIR /app/react
+
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -9,15 +10,18 @@ RUN npm install
 
 COPY . .
 
-
 RUN npm run build
 
-FROM nginx:alpine
+FROM node:21-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/build /app/build
+COPY package*.json ./
 
 
-COPY --from=builder /app/react/build /usr/share/nginx/html
+RUN npm install -g serve
 
+EXPOSE 3000
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "build", "-l", "3000"]
