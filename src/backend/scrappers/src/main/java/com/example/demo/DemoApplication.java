@@ -20,7 +20,7 @@ public class DemoApplication implements CommandLineRunner {
     private CurrentWeatherService currentWeatherService;
 
     @Autowired
-    private HourlyWeatherForecastService hourlyWeatherForecastService;;
+    private HourlyWeatherForecastService hourlyWeatherForecastService;
 
     @Autowired
     private DailyWeatherForecastService dailyWeatherForecastService;
@@ -35,7 +35,7 @@ public class DemoApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args){
         currentWeatherService.getCurrentWeather();
         System.out.println("=Current weather data is stored in current_weather_data table");
         hourlyWeatherForecastService.getHourlyWeather();
