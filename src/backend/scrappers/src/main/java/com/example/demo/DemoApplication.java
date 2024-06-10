@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.enviroment.environmentLoader;
 import com.example.demo.service.CurrentWeatherService;
 import com.example.demo.service.DailyWeatherForecastService;
 import com.example.demo.service.EventService;
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+
 @EnableScheduling
 public class DemoApplication implements CommandLineRunner {
 
@@ -27,7 +29,9 @@ public class DemoApplication implements CommandLineRunner {
     private EventService eventService;
 
     public static void main(String[] args) {
+        environmentLoader.load(); // Load environment variables from .env file
         SpringApplication.run(DemoApplication.class, args);
+
     }
 
     @Override
