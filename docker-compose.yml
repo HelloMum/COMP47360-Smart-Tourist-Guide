@@ -1,13 +1,21 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./src/frontend/react
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend
+#  frontend:
+#    build:
+#      context: ./src/frontend/react
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      backend:
+#        condition: service_healthy
+#    environment:
+#      - REACT_APP_BACKEND_URL={REACT_APP_BACKEND_URL}:8080
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
 
   backend:
     build:
@@ -18,17 +26,43 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-    depends_on:
-      - db
+  scrappers:
+    build:
+      context: ./src/backend/scrappers
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+   #depends_on:
+   #  db:
+   #    condition: service_healthy
+   # healthcheck:
+   #   test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/students"]
+   #   interval: 30s
+   #   timeout: 10s
+   #   retries: 3
 
   db:
-    image: postgres:latest
+    build:
+      context: ./src/backend/database
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydatabase
-    volumes:
-      - db-data:/var/lib/postgresql/data
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # volumes:
+    #   - ./src/backend/database/local_data/db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    stop_signal: SIGTERM
 
 volumes:
   db-data:
+    driver: local
