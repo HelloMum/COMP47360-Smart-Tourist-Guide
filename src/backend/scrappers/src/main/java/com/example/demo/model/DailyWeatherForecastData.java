@@ -103,7 +103,7 @@ public class DailyWeatherForecastData {
         private Weather weather;
 
         @ManyToOne
-        @JoinColumn
+        @JoinColumn(name = "daily_weather_forecast_data_id", referencedColumnName = "id")
         @ToString.Exclude
         private DailyWeatherForecastData dailyWeatherForecastData;
     }
