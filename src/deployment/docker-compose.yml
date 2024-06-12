@@ -9,6 +9,8 @@ services:
       - "40000:53/udp"
     networks:
       - wireguard_network
+    env_file:
+      - ../../.env
 
   orchestration:
     build:
@@ -17,6 +19,8 @@ services:
       - "40001:8080/udp"
     networks:
       - wireguard_network
+    env_file:
+      - ../../.env
 
   wireguard:
     build:
@@ -27,6 +31,8 @@ services:
       - dnsmasq
     networks:
       - wireguard_network
+    env_file:
+      - ../../.env
 
 networks:
   wireguard_network:
