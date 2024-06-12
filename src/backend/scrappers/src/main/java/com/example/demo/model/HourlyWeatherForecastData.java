@@ -104,7 +104,7 @@ public class HourlyWeatherForecastData {
         private Weather weather;
 
         @ManyToOne
-        @JoinColumn
+        @JoinColumn(name = "hourly_weather_forecast_data_id", referencedColumnName = "id")
         @ToString.Exclude
         private HourlyWeatherForecastData hourlyWeatherForecastData;
     }
