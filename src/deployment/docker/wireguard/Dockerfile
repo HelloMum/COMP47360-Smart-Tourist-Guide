@@ -14,8 +14,6 @@ ENV PUID=1000 \
     PERSISTENTKEEPALIVE_PEERS=true\
     LOG_CONFS=true
 
-# Create a Docker network
-RUN docker network create wireguard_network
 
 # Expose WireGuard port
 EXPOSE 51820/udp
@@ -43,19 +41,3 @@ CMD ["--name=wireguard", \
      "--sysctl=net.ipv4.conf.all.src_valid_mark=1", \
      "--restart=unless-stopped", \
      "lscr.io/linuxserver/wireguard:latest"]
-
-# Use the official Docker image for DNSmasq
-FROM dockurr/dnsmasq:latest
-
-# Expose DNS port
-EXPOSE 53/udp
-
-# Run DNSmasq container
-CMD ["--name=dnsmasq", \
-     "--restart=unless-stopped", \
-     "--network=wireguard_network", \
-     "--cap-add=NET_ADMIN", \
-     "--dns=8.8.8.8", \
-     "-p", "53:53/udp", \
-     "dockurr/dnsmasq", \
-     "--address=/dev.sodium/10.11.12.2"]

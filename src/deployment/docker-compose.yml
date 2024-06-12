@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+  dnsmasq:
+    build:
+      context: docker/dnsmasq
+    ports:
+      - "40000:53/udp"
+    networks:
+      - wireguard_network
+
+  orchestration:
+    build:
+      context: docker/orchestration
+    ports:
+      - "40001:8080/udp"
+    networks:
+      - wireguard_network
+
+  wireguard:
+    build:
+      context: docker/wireguard
+    ports:
+      - "40002:51820/udp"
+    depends_on:
+      - dnsmasq
+    networks:
+      - wireguard_network
+
+networks:
+  wireguard_network:
+    driver: bridge
