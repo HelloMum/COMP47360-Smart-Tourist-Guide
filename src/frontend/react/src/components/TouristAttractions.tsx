@@ -5,7 +5,7 @@ const TouristAttractions: React.FC = () => {
   return (
     <div className="tourist-attractions">
       <h2>Tourist Attractions</h2>
-      {/* 添加其他内容 */}
+      {/* Add other content */}
     </div>
   );
 };
