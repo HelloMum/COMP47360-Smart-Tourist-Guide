@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Activity from './components/Activity';
 import List from './components/List';
 import Plan from './components/Plan';
+import About from './components/About';
 import './App.css';
 
 const App: React.FC = () => {
@@ -13,9 +14,10 @@ const App: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/activity" element={<Activity />} />
+        <Route path="/activity/*" element={<Activity />} />
         <Route path="/list" element={<List />} />
         <Route path="/plan" element={<Plan />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </Router>
   );
