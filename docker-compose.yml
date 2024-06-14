@@ -51,7 +51,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     # volumes:
-    #   - ./src/backend/database/local_data/db-data:/var/lib/postgresql/data
+    #   - ~/postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     stop_grace_period: 30s
@@ -61,6 +61,14 @@ services:
       timeout: 5s
       retries: 5
     stop_signal: SIGTERM
+
+  backup:
+    image: postgres:latest
+    depends_on:
+      - db
+    volumes:
+      - ~/backup_db:/backup
+    command: [ "bash", "-c", "while true; do PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -U ${POSTGRES_USER} -h db ${POSTGRES_DB} > /backup/backup_$(date +%Y%m%d_%H%M%S).sql; sleep 3600; done" ]
 
 volumes:
   db-data:
