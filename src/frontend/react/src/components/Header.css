@@ -1,31 +1,32 @@
 .header {
-  background-color: lightblue !important; 
-  padding: 10px; 
-  display: flex; 
-  align-items: center; 
-  /* max-width: 700px; */
-  margin: 0 auto; 
-}
-
-.logo {
-  height: 60px;
-  width: 60px; 
-  margin-right: 20px; 
-}
-
-.header ul {
-  list-style-type: none; 
-  padding: 0;
-  margin: 0; 
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: lightblue;
+  padding: 10px 20px;
 }
 
-.header ul li {
-  margin-right: 10px; 
+.header .logo {
+  color: #fff;
+  font-size: 1.5em;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.header nav {
+  display: flex;
+  gap: 20px; /* 添加间距 */
 }
 
-.link {
-  color: inherit; 
-  text-decoration: none; 
-  margin-right: 20px; 
+.header nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  /* background-color: #444; 按钮背景色 */
+  border-radius: 5px; /* 按钮圆角 */
+  transition: background-color 0.3s; /* 过渡效果 */
+}
+
+.header nav a:hover {
+  background-color: #555; /* 悬停时背景色 */
 }
