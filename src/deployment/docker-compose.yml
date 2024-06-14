@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   dnsmasq:
@@ -23,10 +21,31 @@ services:
       - ../../.env
 
   wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - SERVERURL=137.43.49.27
+      - SERVERPORT=51820
+      - PEERS=20
+      - PEERDNS=dnsmasq
+      - INTERNAL_SUBNET=10.11.12.0
+      - ALLOWEDIPS=10.11.12.0/24
+      - LOG_CONFS=true
+    volumes:
+      - ./config/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
     build:
       context: docker/wireguard
-    ports:
-      - "40002:51820/udp"
     depends_on:
       - dnsmasq
     networks:
