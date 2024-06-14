@@ -1,37 +1,4 @@
-/* Events.css */
-.events-container {
-  padding: 20px;
-}
-
-.search-form {
-  display: flex;
-  align-items: center; 
-  width: 60%;
-}
-
-.search-input {
-  flex: 1;
-  padding: 8px;
-  margin-right: 8px;
-  font-size: 16px;
-  border: 2px solid grey; 
-}
-
-.search-button {
-  padding: 8px 16px;
-  font-size: 16px;
-}
-
-.event-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 20px;
-  justify-content: center; /* Center the event list */
-}
-
-.search {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
+.events {
+  background-color: pink; 
+  height: 90%;
 }

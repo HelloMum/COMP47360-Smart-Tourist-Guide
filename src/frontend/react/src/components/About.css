@@ -1,0 +1,26 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.section {
+  background-color: #e0e0e0;
+  height: 200px; /* 您可以根据需要调整高度 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.features {
+  /* 这里您可以添加特定于 features 部分的样式 */
+}
+
+.data-algorithm {
+  /* 这里您可以添加特定于 data & algorithm 部分的样式 */
+}
+
+.team {
+  /* 这里您可以添加特定于 team 部分的样式 */
+}
