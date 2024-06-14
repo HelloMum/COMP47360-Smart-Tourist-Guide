@@ -15,3 +15,6 @@ export const getAllStudents = () =>
     fetch("api/v1/students")
         .then(checkStatus)
         .then(response => response.json());
+
+
+        // test

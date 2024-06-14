@@ -1,31 +1,26 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { LoadScript } from '@react-google-maps/api';
-import Events from './components/Events';
-import Schedule from './components/Schedule';
-import Map from './components/Map';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import Home from './components/Home';
+import Activity from './components/Activity';
+import List from './components/List';
+import Plan from './components/Plan';
+import About from './components/About';
 import './App.css';
-
-
-
-const googleMapsApiKey = "AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo";
 
 const App: React.FC = () => {
   return (
-    <LoadScript googleMapsApiKey={googleMapsApiKey}>
-      <Router>
-        <div>
-          <Header />
-          <Routes>
-            <Route path="/events" element={<Events />} />
-            <Route path="/schedule" element={<Schedule />} />
-            <Route path="/map" element={<Map />} />
-          </Routes>
-        </div>
-      </Router>
-    </LoadScript>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/activity/*" element={<Activity />} />
+        <Route path="/list" element={<List />} />
+        <Route path="/plan" element={<Plan />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
