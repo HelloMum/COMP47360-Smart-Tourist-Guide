@@ -26,6 +26,7 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     environment:
+      - Address = 10.11.12.1/24
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
