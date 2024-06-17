@@ -13,8 +13,8 @@ const center = {
 
 const Map: React.FC = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo', // 替换为你的API密钥
-    libraries: ['places'], // 根据需要加载其他库
+    googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo', 
+    libraries: ['places'], 
   });
 
   if (loadError) {
@@ -31,7 +31,7 @@ const Map: React.FC = () => {
       center={center}
       zoom={12}
     >
-      {/* 在这里添加其他组件，例如标记 */}
+      {/* */}
     </GoogleMap>
   );
 };
