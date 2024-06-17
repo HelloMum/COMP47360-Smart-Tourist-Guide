@@ -1,59 +1,78 @@
-
 services:
-#  frontend:
-#    build:
-#      context: ./src/frontend/react
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      backend:
-#        condition: service_healthy
-#    environment:
-#      - REACT_APP_BACKEND_URL={REACT_APP_BACKEND_URL}:8080
-#    healthcheck:
-#      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
+  wireguard:
+    build:
+      context: .
+    container_name: wireguard-client
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - /lib/modules:/lib/modules
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London 
+    networks:
+      - default 
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src/frontend/react
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:${BACKEND_PORT}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - backend
+    networks:
+      - "${NETWORK_NAME}"
 
   backend:
     build:
       context: ./src/backend/spring
     ports:
-      - "8080:8080"
+      - "${BACKEND_PORT}:8080"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - db
+    networks:
+      - "${NETWORK_NAME}"
+
   scrappers:
     build:
       context: ./src/backend/scrappers
     ports:
-      - "8081:8081"
+      - "${SCRAPPERS_PORT}:8081"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-   #depends_on:
-   #  db:
-   #    condition: service_healthy
-   # healthcheck:
-   #   test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/students"]
-   #   interval: 30s
-   #   timeout: 10s
-   #   retries: 3
+    depends_on:
+      - db
+    networks:
+      - "${NETWORK_NAME}"
 
   db:
-    build:
-      context: ./src/backend/database
+    image: postgres:latest
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    # volumes:
-    #   - ~/postgres_data:/var/lib/postgresql/data
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     stop_grace_period: 30s
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -61,15 +80,21 @@ services:
       timeout: 5s
       retries: 5
     stop_signal: SIGTERM
+    networks:
+      - "${NETWORK_NAME}"
 
   backup:
     image: postgres:latest
     depends_on:
       - db
-    volumes:
-      - ~/backup_db:/backup
-    command: [ "bash", "-c", "while true; do PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -U ${POSTGRES_USER} -h db ${POSTGRES_DB} > /backup/backup_$(date +%Y%m%d_%H%M%S).sql; sleep 3600; done" ]
+    command: ["bash", "-c", "while true; do PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -U ${POSTGRES_USER} -h db ${POSTGRES_DB} > /backup/backup_$(date +%Y%m%d_%H%M%S).sql; sleep 3600; done"]
+    networks:
+      - "${NETWORK_NAME}"
 
 volumes:
   db-data:
     driver: local
+
+networks:
+  microservices-network:
+    driver: bridge
