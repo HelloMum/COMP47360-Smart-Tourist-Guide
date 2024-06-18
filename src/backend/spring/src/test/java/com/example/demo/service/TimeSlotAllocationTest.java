@@ -58,8 +58,8 @@ public class TimeSlotAllocationTest {
         }
 
         // Add assertions to validate the results
-        assertEquals(3, scheduledEventsPerDay.get(1).size());
-        assertEquals(1, scheduledEventsPerDay.get(2).size());
-        assertEquals(1, scheduledEventsPerDay.get(3).size());
+        assertEquals(3, scheduledEventsPerDay.get(1).size(), "Day 1 should have 3 events scheduled");
+        assertEquals(1, scheduledEventsPerDay.get(2).size(), "Day 2 should have 1 event scheduled");
+        assertEquals(1, scheduledEventsPerDay.get(3).size(), "Day 3 should have 1 event scheduled");
     }
 }
