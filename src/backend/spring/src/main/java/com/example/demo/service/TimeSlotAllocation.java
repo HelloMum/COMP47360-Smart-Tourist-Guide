@@ -5,6 +5,7 @@ import com.example.demo.model.test.*;
 import com.example.demo.model.test.Event;
 import com.example.demo.model.test.ScheduledEvent;
 
+import java.time.LocalTime;
 import java.util.*;
 
 public class TimeSlotAllocation {
@@ -14,10 +15,10 @@ public class TimeSlotAllocation {
 
         for (Map.Entry<Integer, List<Event>> entry : dayWiseEvents.entrySet()) {
             int day = entry.getKey();
-            List<Event> events = entry.getValue();
+            List<Event> events = new ArrayList<>(entry.getValue()); // Convert to mutable list
             List<ScheduledEvent> scheduledEvents = new ArrayList<>();
 
-            Collections.sort(events, (e1, e2) -> crowdData.get(e1) - crowdData.get(e2));
+            events.sort(Comparator.comparingInt(crowdData::get));
 
             List<TimeSlot> availableTimeSlots = availability.getTimeSlotsForDay(day);
 
@@ -44,7 +45,7 @@ public class TimeSlotAllocation {
                 double score = calculateTimeSlotScore(timeSlot, crowdVolume);
                 if (score > bestScore) {
                     bestScore = score;
-                    optimalTimeSlot = timeSlot;
+                    optimalTimeSlot = new TimeSlot(timeSlot.getStart(), timeSlot.getStart().plusMinutes((long) (event.getDuration() * 60)));
                 }
             }
         }
@@ -57,6 +58,23 @@ public class TimeSlotAllocation {
     }
 
     private void removeTimeSlot(List<TimeSlot> availableTimeSlots, TimeSlot allocatedTimeSlot) {
-        availableTimeSlots.remove(allocatedTimeSlot);
+        Iterator<TimeSlot> iterator = availableTimeSlots.iterator();
+        while (iterator.hasNext()) {
+            TimeSlot timeSlot = iterator.next();
+            if (timeSlot.getStart().equals(allocatedTimeSlot.getStart()) && timeSlot.getEnd().equals(allocatedTimeSlot.getEnd())) {
+                iterator.remove();
+                break;
+            } else if (timeSlot.getStart().equals(allocatedTimeSlot.getStart())) {
+                timeSlot.setStart(allocatedTimeSlot.getEnd());
+                break;
+            } else if (timeSlot.getEnd().equals(allocatedTimeSlot.getEnd())) {
+                timeSlot.setEnd(allocatedTimeSlot.getStart());
+                break;
+            } else if (timeSlot.getStart().isBefore(allocatedTimeSlot.getStart()) && timeSlot.getEnd().isAfter(allocatedTimeSlot.getEnd())) {
+                availableTimeSlots.add(new TimeSlot(timeSlot.getStart(), allocatedTimeSlot.getStart()));
+                timeSlot.setStart(allocatedTimeSlot.getEnd());
+                break;
+            }
+        }
     }
 }
