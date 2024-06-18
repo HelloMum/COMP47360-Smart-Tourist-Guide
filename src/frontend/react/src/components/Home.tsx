@@ -1,27 +1,50 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Home.css';
+
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
+
+import { useTheme } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-
-  const handleStartNow = () => {
-    navigate('/activity');
-  };
+  const theme=useTheme();
 
   return (
-    <div className="home">
-      <div className="intro">
-        <h1>Smart Tourist Guide in New York</h1>
-        <p>Can have a subtitle if useful</p>
-        <p>
+    <Container fixed  sx={{ mt: 2 }}>
+      <Stack direction="row" spacing={1}>
+      <Box  >
+        <Typography variant='h1' sx={{ mt: 20 }}>
+          <span style={{color:theme.palette.darkBlue.main }}>Smart<br/>
+          Tourist Guide 
+          <br /> 
+          
+          in </span><span style={{color:theme.palette.secondary.main }}>New York</span></Typography>
+
+   
+
+        <Typography variant='body2' sx={{ mt: 2,mr:10,mb:5,color:grey[600] }} >
           Discover your next adventure with our travel planning app! Effortlessly organize your trips, find top destinations, and get personalized recommendations—all in one place. Start planning your dream vacation today!
-        </p>
-        <button onClick={handleStartNow}>Start Now</button>
-        <button onClick={() => navigate('/about')}>About</button>
-      </div>
-      <div className="illustration">Illustration</div>
-    </div>
+        </Typography>
+
+        <Button onClick={() => navigate('/activity')} variant="contained" endIcon={<ArrowForwardRoundedIcon />}  style={{backgroundColor:theme.palette.primary.main,borderRadius:20 ,boxShadow: 'none' }} sx={{ mr:5 }}>
+        Start Now
+        </Button>
+
+        <Button onClick={() => navigate('/about')}variant="contained" color="success" style={{backgroundColor:grey['300'],boxShadow: 'none', borderRadius:20 }}>
+        About
+        </Button>
+
+       
+      </Box>
+      <Box>
+
+        <img src="images\illustration1.jpg" alt="illustration" style={{ width: '700px' }} />
+      </Box>
+     
+      </Stack>
+    </Container>
   );
 };
 
