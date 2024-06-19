@@ -5,10 +5,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-// Define classes for TimeSlot, Event, ScheduledEvent, and UserAvailability
-
-class TimeSlot {
+public class TimeSlot {
     private LocalTime start;
     private LocalTime end;
 
@@ -26,7 +25,7 @@ class TimeSlot {
     }
 
     public double getDuration() {
-        return java.time.Duration.between(start, end).toMinutes() / 60.0;
+        return Duration.between(start, end).toMinutes() / 60.0;
     }
 
     @Override
@@ -35,59 +34,130 @@ class TimeSlot {
     }
 }
 
-class Event {
+
+abstract class Activity {
     private String name;
-    private int date;
-    private double duration; // in hours
     private LocalTime start_time;
     private LocalTime end_time;
+    private double lat;
+    private double lon;
 
-    public Event(String name, int date, LocalTime start_time, LocalTime end_time) {
+    public Activity(String name, double lat, double lon) {
         this.name = name;
-        this.date = date;
-        this.start_time = start_time;
-        this.end_time = end_time;
-        this.duration = Duration.between(end_time, start_time).toMinutes() / 60.0;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getDate() {
-        return date;
+    public void setName(String name) {
+        this.name = name;
     }
-
-    public double getDuration() {
-        return duration;
-    }
-
 
     public LocalTime getStart_time() {
         return start_time;
+    }
+
+    public void setStart_time(LocalTime start_time) {
+        this.start_time = start_time;
     }
 
     public LocalTime getEnd_time() {
         return end_time;
     }
 
-    @Override
-    public String toString() {
-        return "Event(" + name + "Date: " + date + "time: " + start_time + "time: " + end_time + ", Duration: " + duration + "h)";
+    public void setEnd_time(LocalTime end_time) {
+        this.end_time = end_time;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }
 
+class Event extends Activity {
+    private double duration;
+    private int date;
+
+    public Event(String name, int date, LocalTime start_time, LocalTime end_time, double lat, double lon) {
+        super(name, lat, lon);
+        this.date = date;
+        setStart_time(start_time);
+        setEnd_time(end_time);
+        this.duration = Duration.between(start_time, end_time).toMinutes() / 60.0;
+    }
+
+    public int getDate() {
+        return date;
+    }
+
+    public void setDate(int date) {
+        this.date = date;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+}
+
+
+class Attraction extends Activity {
+    private String openingHours;
+    private Map<Integer, Integer> hourlyBusyness;
+
+    public Attraction(String name, Double lat, Double lon, String openingHours, Map<Integer, Integer> hourlyBusyness) {
+        super(name, lat, lon);
+        this.openingHours = openingHours;
+        this.hourlyBusyness = hourlyBusyness;
+    }
+
+    public Attraction(String name, Double lat, Double lon, Map<Integer, Integer> hourlyBusyness) {
+        super(name, lat, lon);
+        this.openingHours = null;
+        this.hourlyBusyness = hourlyBusyness;
+    }
+
+    public int getBusyness(int hour) {
+        return hourlyBusyness.getOrDefault(hour, 0);
+    }
+
+    public String getOpeningHours() {
+        return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
+    }
+}
 class ScheduledEvent {
-    private Event event;
+    private Activity activity;
     private TimeSlot timeSlot;
 
-    public ScheduledEvent(Event event, TimeSlot timeSlot) {
-        this.event = event;
+    public ScheduledEvent(Activity activity, TimeSlot timeSlot) {
+        this.activity = activity;
         this.timeSlot = timeSlot;
     }
 
-    public Event getEvent() {
-        return event;
+    public Activity getActivity() {
+        return activity;
     }
 
     public TimeSlot getTimeSlot() {
@@ -96,7 +166,15 @@ class ScheduledEvent {
 
     @Override
     public String toString() {
-        return "ScheduledEvent(" + event.getName() + ", " + timeSlot + ")";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ScheduledEvent(").append(activity.getName()).append(", ").append(timeSlot);
+        if (activity instanceof Attraction) {
+            Attraction attraction = (Attraction) activity;
+            int busynessStart = attraction.getBusyness(timeSlot.getStart().getHour());
+            sb.append(", Busyness at start: ").append(busynessStart);
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }
 
@@ -109,5 +187,9 @@ class UserAvailability {
 
     public List<TimeSlot> getTimeSlotsForDay(int day) {
         return availability.getOrDefault(day, new ArrayList<>());
+    }
+
+    public Set<Integer> getDays() {
+        return availability.keySet();
     }
 }
