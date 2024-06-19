@@ -1,8 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { Box, Button,  Stack, Typography } from '@mui/material';
-
 import { useTheme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';

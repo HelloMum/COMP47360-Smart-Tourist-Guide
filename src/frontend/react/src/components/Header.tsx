@@ -4,9 +4,10 @@ import { useTheme } from '@mui/material/styles';
 import './Header.css';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { Box, Button, Stack } from '@mui/material';
-import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
+// import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AddLocationAltRoundedIcon from '@mui/icons-material/AddLocationAltRounded';
+import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -19,10 +20,12 @@ const Header: React.FC = () => {
       
       <Stack direction="row" spacing={3} >
 
-      <Button variant="text" onClick={() => navigate('/activity')} style={{color: 'white',borderRadius:20} } startIcon={<AddLocationAltRoundedIcon />}>Activity</Button>
+      <Button variant="text" onClick={() => navigate('/activity')} style={{color: 'white',borderRadius:20} } startIcon={<AddLocationAltRoundedIcon />}>SPOTS</Button>
 
-      <Button variant="text" onClick={() => navigate('/list')} style={{color: 'white',borderRadius:20,paddingLeft:15,paddingRight:15} }  startIcon={<FormatListBulletedRoundedIcon />}>List</Button>
-  
+      {/* <Button variant="text" onClick={() => navigate('/list')} style={{color: 'white',borderRadius:20,paddingLeft:15,paddingRight:15} }  startIcon={<FormatListBulletedRoundedIcon />}>List</Button> */}
+
+
+      <Button variant="text" onClick={() => navigate('/list')} style={{color: 'white',borderRadius:20,paddingLeft:15,paddingRight:15} }  startIcon={<LocalActivityRoundedIcon />}>Events</Button>
 
       <Button variant="text" onClick={() => navigate('/plan')} style={{color: 'white',borderRadius:20} } startIcon={<CalendarMonthRoundedIcon />}>Schedule</Button>
   

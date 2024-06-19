@@ -9,6 +9,7 @@ import About from './components/About';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme'; 
+import 'antd/dist/antd.css';
 
 const App: React.FC = () => {
   return (

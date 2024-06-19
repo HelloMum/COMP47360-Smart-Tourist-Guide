@@ -6,7 +6,7 @@ const List: React.FC = () => {
   return (
     <div className="list">
       <div className="list-content">
-        <h2>List</h2>
+        <h2>List22</h2>
       </div>
       <div className="map">
         <Map />
