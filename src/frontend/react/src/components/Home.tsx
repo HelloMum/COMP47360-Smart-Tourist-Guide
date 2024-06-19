@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { Box, Button,  Stack, Typography } from '@mui/material';
 
 import { useTheme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
@@ -12,9 +12,9 @@ const Home: React.FC = () => {
   const theme=useTheme();
 
   return (
-    <Container fixed  sx={{ mt: 2 }}>
+    <Box  sx={{ mt: 3,mx:"7%",display:'flex', justifyContent: 'space-between'}}>
       <Stack direction="row" spacing={1}>
-      <Box  >
+      <Box   style={{ maxWidth: '600px'  }}>
         <Typography variant='h1' sx={{ mt: 20 }}>
           <span style={{color:theme.palette.darkBlue.main }}>Smart<br/>
           Tourist Guide 
@@ -24,7 +24,7 @@ const Home: React.FC = () => {
 
    
 
-        <Typography variant='body2' sx={{ mt: 2,mr:10,mb:5,color:grey[600] }} >
+        <Typography variant='body2' sx={{ mt: 7,mr:10,mb:4,color:grey[600] }} >
           Discover your next adventure with our travel planning app! Effortlessly organize your trips, find top destinations, and get personalized recommendations—all in one place. Start planning your dream vacation today!
         </Typography>
 
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
       </Box>
      
       </Stack>
-    </Container>
+    </Box>
   );
 };
 
