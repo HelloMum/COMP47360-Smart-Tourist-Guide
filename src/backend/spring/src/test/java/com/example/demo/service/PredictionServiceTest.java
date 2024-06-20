@@ -25,7 +25,7 @@ public class PredictionServiceTest {
     private PredictionService predictionService;
 
     @BeforeEach
-    public void setUp() throws XGBoostError {
+    public void setUp() {
         predictionService = new PredictionService();
     }
 
