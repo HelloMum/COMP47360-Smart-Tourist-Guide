@@ -1,15 +1,15 @@
 import React from 'react';
-import './Activity.css';
-import Map from './Map';
-import Searchbar from './Searchbar';
+import './spots.css';
+import Map from '../../components/Map';
+import Searchbar from '../../components/Searchbar';
 
-import SpotCard from './SpotCard';
+import SpotCard from '../../components/SpotCard';
 import { Box, Stack,   } from '@mui/material';
-import Switch from './Switch';
-import Select from './Select';
+import Switch from '../../components/Switch';
+import Select from '../../components/Sort';
 
 
-const Activity: React.FC = () => {
+const Spots: React.FC = () => {
   return (
     <div className="activity">
       <div className="activity-list">
@@ -48,4 +48,4 @@ const Activity: React.FC = () => {
   );
 };
 
-export default Activity;
+export default Spots;

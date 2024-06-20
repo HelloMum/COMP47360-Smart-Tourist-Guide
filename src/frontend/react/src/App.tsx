@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import Home from './components/Home';
-import Activity from './components/Activity';
-import List from './components/List';
-import Plan from './components/Plan';
-import About from './components/About';
+import Home from './pages/home/Home';
+import Activity from './pages/spots/Spots';
+import List from './pages/events/Events';
+import Plan from './pages/schedule/Schedule';
+import About from './pages/about/About';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme'; 

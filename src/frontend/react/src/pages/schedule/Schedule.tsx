@@ -1,8 +1,8 @@
 import React from 'react';
-import Map from './Map';
-import './Plan.css';
+import Map from '../../components/Map';
+import './schedule.css';
 
-const Plan: React.FC = () => {
+const Schedule: React.FC = () => {
   return (
     <div className="plan">
       <div className="plan-content">
@@ -15,4 +15,4 @@ const Plan: React.FC = () => {
   );
 };
 
-export default Plan;
+export default Schedule;
