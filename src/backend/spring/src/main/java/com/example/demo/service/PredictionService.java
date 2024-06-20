@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import lombok.Getter;
 import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+@Getter
 @Service
 public class PredictionService {
 
@@ -49,7 +51,4 @@ public class PredictionService {
         return predictions[0];
     }
 
-    public Booster getBooster() {
-        return this.booster;
-    }
 }
