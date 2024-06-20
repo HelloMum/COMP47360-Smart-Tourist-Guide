@@ -12,8 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @WebMvcTest(PredictionController.class)
 public class PredictionControllerTest {
@@ -38,6 +39,20 @@ public class PredictionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(featuresJson))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[0.5]"));
+                .andExpect(result -> {
+                    String jsonResponse = result.getResponse().getContentAsString();
+                    float[] predictedValue = new float[]{0.5f};
+                    if (!jsonResponse.equals("[0.5]")) {
+                        System.err.println("Did not get the expected response. Prediction is not accurate.");
+                    }
+                    assertEquals("[0.5]", jsonResponse, "Prediction is not accurate.");
+
+                    // Check if the connection was established
+                    int status = result.getResponse().getStatus();
+                    if (status != 200) {
+                        System.err.println("Connection to the endpoint was not established. Status code: " + status);
+                    }
+                    assertEquals(200, status, "Connection to the endpoint was not established.");
+                });
     }
 }
