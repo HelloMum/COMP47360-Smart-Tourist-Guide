@@ -1,46 +1,78 @@
 import React from 'react';
-import { Card, CardContent, CardMedia, Typography, IconButton, Box } from '@mui/material';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Card, CardMedia, Typography, IconButton, Box, Stack, Button } from '@mui/material';
+import theme from '../theme';
+import { AddCircleRounded, FavoriteBorderRounded, MoreHorizRounded } from '@mui/icons-material';
 
-const SpotCard = () => {
-  const image = "images/spots/test.png"; 
-  const title = 'Empire State Building';
-  const location = 'New York, NY 10004';
+// Define props type
+interface SpotCardProps {
+  image: string;
+  title: string;
+  address: string;
+}
 
+const SpotCard: React.FC<SpotCardProps> = ({ image, title, address }) => {
   return (
-    <Card sx={{ borderRadius: '7px', overflow: 'hidden', boxShadow:0 ,width: "47%" }}>
-      <Box sx={{ position: 'relative' }}>
+    <Card sx={{
+      borderRadius: '8px',
+      overflow: 'hidden',
+      boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
+      width: "47%",
+      marginBottom: 2
+    }}>
+      <Box sx={{ position: 'relative', overflow: 'hidden' }}>
         <CardMedia
           component="img"
           height="170"
           image={image}
           alt={title}
-          sx={{ borderRadius: '15px',boxShadow:0 }}
+          sx={{
+            borderRadius: '0px',
+            boxShadow: 0,
+            transition: 'transform 7s ease',
+            '&:hover': {
+              transform: 'scale(1.4)'
+            }
+          }}
         />
 
-
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            bgcolor: 'rgba(255, 255, 255, 0.7)',
-            borderRadius: '50%',
-          }}
-        >
+        <Box sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255, 255, 255, 0.0)', borderRadius: '50%' }}>
           <IconButton>
-            <FavoriteBorderIcon />
+            <FavoriteBorderRounded style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
           </IconButton>
         </Box>
-         </Box>
-      <CardContent>
-        <Typography gutterBottom variant="h6" component="div">
+      </Box>
+      <Stack sx={{ paddingTop: '8px', paddingLeft: '5px' }}>
+        <Typography sx={{ ...theme.typography.cardTitle }} component="div">
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {location}
+
+        <Typography sx={{ ...theme.typography.cardDesc }}>
+          {address}
         </Typography>
-      </CardContent>
+        <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingBottom: 2 }}>
+          <MoreHorizRounded />
+
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              borderRadius: '25px',
+              padding: '2px 2px',
+              fontSize: '0.8rem',
+              textTransform: 'none',
+              boxShadow: 'none',
+              backgroundColor: 'primary.main',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+                boxShadow: 'none'
+              }
+            }}
+          >
+            add
+          </Button>
+        </Stack>
+      </Stack>
     </Card>
   );
 };

@@ -1,10 +1,13 @@
+/* eslint-disable */
+
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import Home from './pages/home/Home';
-import Activity from './pages/spots/Spots';
-import List from './pages/events/Events';
-import Plan from './pages/schedule/Schedule';
+import HomePage from './pages/home/Home';
+import Spots from './pages/spots/Spots';
+import Events from './pages/events/Events';
+import Schedule from './pages/schedule/Schedule';
 import About from './pages/about/About';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
@@ -18,12 +21,12 @@ const App: React.FC = () => {
     <div className="app-container"> 
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomePage/>} />
 
         {/* `*` Represents all paths beginning with `/activity/` */}
-        <Route path="/activity/*" element={<Activity />} />
-        <Route path="/list" element={<List />} />
-        <Route path="/plan" element={<Plan />} />
+        <Route path="/spots/*" element={<Spots />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/schedule" element={<Schedule />} />
         <Route path="/about" element={<About />} />
       </Routes></div>
     </Router>

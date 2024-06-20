@@ -58,7 +58,7 @@ const App = () => {
   return (
     <FormControlLabel
       control={<FreeSwitch defaultChecked />}
-      label={<FreeLabel>Free</FreeLabel>}
+      label={<FreeLabel    >Free</FreeLabel>}
     />
   );
 };

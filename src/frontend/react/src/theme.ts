@@ -25,11 +25,28 @@ const theme = createTheme({
       fontFamily: 'GothicBold, Arial, sans-serif',
       fontSize: '2.5rem',
     },
+  
+    cardTitle: {
+      // fontFamily: 'Arial, sans-serif',
+      fontSize: '1.15rem',
+      fontWeight: 500,
+      // color: '#111',
+    },
 
-    h3:{
-      fontFamily: 'Roboto, Arial, sans-serif',
-      fontSize: '1.5rem', 
-    }
+    cardDesc: {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '0.8rem',
+      fontWeight: 100,
+      color: '#888',
+    },
+ 
+ 
+    smallText: {
+      fontSize: '0.875rem',
+      fontWeight: 400,
+      color: '#777',
+    },
+
   },
   
 } as ThemeOptions);

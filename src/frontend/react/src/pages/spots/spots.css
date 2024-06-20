@@ -1,10 +1,11 @@
-.activity {
-  display: flex;
+.left {
+
+  overflow-y: auto;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
 }
 
-.activity-list {
-  width: 700px;
-  padding: 20px;
+.left::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
-
-

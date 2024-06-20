@@ -1,9 +1,11 @@
 import React from 'react';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
+import { NAVBAR_HEIGHT } from '../constants';
 
 const containerStyle = {
   width: '100%',
-  height: '90vh'
+  height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+  position: 'fixed',
 };
 
 const center = {
@@ -26,22 +28,46 @@ const mapOptions = {
     {
       featureType: 'road.highway',
       elementType: 'geometry.fill',
-      stylers: [{ color: '#f7f6f6' }] 
+      stylers: [{ color: '#f7f6f6' }]
     },
     {
       featureType: 'road.highway',
       elementType: 'geometry.stroke',
-      stylers: [{ color: '#b4b4b4' }] 
+      stylers: [{ color: '#dddddd' }]
     },
-   
+    {
+      featureType: 'all',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#999999' }]
+    },
+    {
+      featureType: 'all',
+      elementType: 'labels.text.stroke',
+      stylers: [{ color: '#ffffff' }]
+    },
+    {
+      featureType: 'road.local',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }]
+    },
+    {
+      featureType: 'transit.station',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }]
+    },
+    {
+      featureType: 'road',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }] // Hide all road labels
+    },
   ],
-  disableDefaultUI: true, 
+  disableDefaultUI: true,
 };
 
 const Map: React.FC = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo', 
-    libraries: ['places'], 
+    googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
+    libraries: ['places'],
   });
 
   if (loadError) {
@@ -60,7 +86,6 @@ const Map: React.FC = () => {
       options={mapOptions}
     >
       {/* Add any map markers */}
-
     </GoogleMap>
   );
 };

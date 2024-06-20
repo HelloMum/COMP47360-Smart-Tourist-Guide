@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { FormControl, Select as MuiSelect, MenuItem, Typography, Box } from '@mui/material';
+import theme from '../theme';
+
 
 const Sort = () => {
   const [age, setAge] = useState(10); 
@@ -10,18 +12,18 @@ const Sort = () => {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography sx={{ mr: 1, color: 'text.secondary' }}>Sort by</Typography>
+     <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}> sort by  </Typography>
       <FormControl sx={{ minWidth: 100 }}>
         <MuiSelect
           value={age}
           onChange={handleChange}
           displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
-          sx={{ height: 28 }}
+          sx={{ height: 26,...theme.typography.smallText }}
         >
-          <MenuItem value={10} sx={{ height: 28 }}>distance</MenuItem>
-          <MenuItem value={20} sx={{ height: 28 }}>Twenty</MenuItem>
-          <MenuItem value={30} sx={{ height: 28 }}>Thirty</MenuItem>
+          <MenuItem value={10} sx={{ height: 26,...theme.typography.smallText }}>distance</MenuItem>
+          <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>name</MenuItem>
+    
         </MuiSelect>
       </FormControl>
     </Box>

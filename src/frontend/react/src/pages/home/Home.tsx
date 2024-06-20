@@ -26,7 +26,7 @@ const Home: React.FC = () => {
           Discover your next adventure with our travel planning app! Effortlessly organize your trips, find top destinations, and get personalized recommendations—all in one place. Start planning your dream vacation today!
         </Typography>
 
-        <Button onClick={() => navigate('/activity')} variant="contained" endIcon={<ArrowForwardRoundedIcon />}  style={{backgroundColor:theme.palette.primary.main,borderRadius:20 ,boxShadow: 'none' }} sx={{ mr:5 }}>
+        <Button onClick={() => navigate('/spots')} variant="contained" endIcon={<ArrowForwardRoundedIcon />}  style={{backgroundColor:theme.palette.primary.main,borderRadius:20 ,boxShadow: 'none' }} sx={{ mr:5 }}>
         Start Now
         </Button>
 
@@ -38,7 +38,7 @@ const Home: React.FC = () => {
       </Box>
       <Box>
 
-        <img src="images\illustration1.jpg" alt="illustration" style={{ width: '700px' }} />
+        <img src="images\illustration1.jpg" alt="illustration" style={{ width: '700px',marginTop: '10vh' }} />
       </Box>
      
       </Stack>

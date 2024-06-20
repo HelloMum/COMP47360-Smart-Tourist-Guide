@@ -2,6 +2,7 @@
 import React from 'react'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Card,Box, CardContent, CardMedia, IconButton, Typography, Stack, Button } from '@mui/material';
+import theme from '../theme';
 
 
 const EventCard = () => {
@@ -43,7 +44,7 @@ const EventCard = () => {
        </Box>
 
   <CardContent>
-      <Typography gutterBottom variant="h6" component="div">
+  <Typography  sx={{ ...theme.typography.cardTitle }}component="div">
         {title}
       </Typography>
       <Typography variant="body2" color="text.secondary">
