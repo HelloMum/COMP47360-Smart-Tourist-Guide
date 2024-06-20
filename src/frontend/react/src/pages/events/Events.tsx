@@ -26,7 +26,7 @@ const Events: React.FC = () => {
         <EventCard/>
         <EventCard/>
         <EventCard/>
-        <EventCard/>
+    
 
       </Stack>
 

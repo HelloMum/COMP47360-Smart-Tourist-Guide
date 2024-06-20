@@ -7,8 +7,35 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 40.783430,
-  lng: -73.966250
+  lat: 40.73,
+  lng: -73.98
+};
+
+const mapOptions = {
+  styles: [
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }]
+    },
+    {
+      featureType: 'water',
+      elementType: 'geometry.fill',
+      stylers: [{ color: '#abdff0' }]
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.fill',
+      stylers: [{ color: '#f7f6f6' }] 
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.stroke',
+      stylers: [{ color: '#b4b4b4' }] 
+    },
+   
+  ],
+  disableDefaultUI: true, 
 };
 
 const Map: React.FC = () => {
@@ -29,9 +56,11 @@ const Map: React.FC = () => {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={12}
+      zoom={13}
+      options={mapOptions}
     >
-      {/* */}
+      {/* Add any map markers */}
+
     </GoogleMap>
   );
 };

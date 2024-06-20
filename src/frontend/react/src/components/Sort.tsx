@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormControl, Select as MuiSelect, MenuItem, Typography, Box } from '@mui/material';
 
 const Sort = () => {
-  const [age, setAge] = useState(10); // 设置默认值为 10
+  const [age, setAge] = useState(10); 
 
   const handleChange = (event) => {
     setAge(event.target.value);
