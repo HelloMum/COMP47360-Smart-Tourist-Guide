@@ -7,6 +7,11 @@ import ml.dmlc.xgboost4j.java.XGBoostError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 @Service
 public class PredictionService {
@@ -17,9 +22,10 @@ public class PredictionService {
     public PredictionService() {
         try {
             // Load the XGBoost model
-            String modelPath = "../model/XGboost_model_depth_12_lr_0.1_estimators_200_2.bin";
-            logger.info("Loading XGBoost model from: " + modelPath);
-            booster = XGBoost.loadModel(modelPath);
+            File file = ResourceUtils.getFile("classpath:mlm/XGboost_model_depth_12_lr_0.1_estimators_200_2.bin");
+            InputStream modelStream = new FileInputStream(file);
+            logger.info("Loading XGBoost model from: " + file.getPath());
+            booster = XGBoost.loadModel(modelStream);
             logger.info("XGBoost model loaded successfully.");
         } catch (XGBoostError e) {
             logger.error("Failed to load XGBoost model.", e);
@@ -41,5 +47,9 @@ public class PredictionService {
         // Predict
         float[][] predictions = booster.predict(dmatrix);
         return predictions[0];
+    }
+
+    public Booster getBooster() {
+        return this.booster;
     }
 }
