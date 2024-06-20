@@ -7,9 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, UUID> {
+    List<Event> findAll();
     @Query("SELECT e FROM Event e ORDER BY e.time_start ASC")
     List<Event> findAllByOrderByTimeStartAsc();
 
