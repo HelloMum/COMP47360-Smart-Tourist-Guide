@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(PredictionServiceTest.TestConfig.class)
 public class PredictionServiceTest {
@@ -35,7 +34,7 @@ public class PredictionServiceTest {
         assertNotNull(predictionService, "PredictionService is null");
 
         // Test that the loaded model is an XGBoost model
-        assertTrue(predictionService.getBooster() instanceof Booster, "Loaded model is not an XGBoost model");
+        assertInstanceOf(Booster.class, predictionService.getBooster(), "Loaded model is not an XGBoost model");
     }
 
     @Test
