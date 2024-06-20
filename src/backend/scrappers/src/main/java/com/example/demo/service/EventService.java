@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -87,8 +88,11 @@ public class EventService {
                     .filter(event -> !eventRepository.existsByNameAndLatitudeAndLongitude(event.getName(), event.getLatitude(), event.getLongitude()))
                     .filter(event -> !event.getIs_canceled())
                     .filter(event -> {
-                        LocalDateTime timeStart = LocalDateTime.parse(event.getTime_start(), DateTimeFormatter.ISO_DATE_TIME);
-                        return timeStart.isBefore(LocalDateTime.now().plusDays(30));
+                        LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
+                        LocalDateTime timeEnd = event.getTime_end() != null ?
+                                convertToLocalDateTime(event.getTime_end()) :
+                                timeStart.plusHours(2);
+                        return timeStart.toLocalDate().equals(timeEnd.toLocalDate());
                     })
                     .filter(event -> isPointInPolygon(event.getLatitude(), event.getLongitude(), ManhattanArea))
                     .collect(Collectors.toList());
@@ -96,6 +100,13 @@ public class EventService {
             newEvents.forEach(event -> {
                 event.setId(UUID.randomUUID());
                 event.setFetchTime(LocalDateTime.now());
+                if (event.getTime_end() == null) {
+                    LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
+                    event.setTime_end(formatLocalDateTime(timeStart.plusHours(2)));
+                } else {
+                    event.setTime_end(formatLocalDateTime(convertToLocalDateTime(event.getTime_end())));
+                }
+                event.setTime_start(formatLocalDateTime(convertToLocalDateTime(event.getTime_start())));
             });
             eventRepository.saveAll(newEvents);
 
@@ -107,6 +118,17 @@ public class EventService {
         }
         deleteUselessEvents();
     }
+
+    private LocalDateTime convertToLocalDateTime(String dateTimeWithOffset) {
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateTimeWithOffset, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        return offsetDateTime.toLocalDateTime();
+    }
+
+    private String formatLocalDateTime(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+
 
     public void deleteUselessEvents() {
         List<EventData> allEvents = eventRepository.findAll();
