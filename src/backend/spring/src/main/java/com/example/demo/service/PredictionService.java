@@ -14,6 +14,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * Service class for making predictions using a pre-trained XGBoost model.
+ * <p>
+ * This service loads the XGBoost model from the specified file in the classpath
+ * and provides a method to make predictions based on input features.
+ */
 @Getter
 @Service
 public class PredictionService {
@@ -21,6 +27,12 @@ public class PredictionService {
     private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
     private Booster booster;
 
+    /**
+     * Constructs a PredictionService and loads the XGBoost model.
+     * <p>
+     * The model file is expected to be located in the classpath at "mlm/XGboost_model_depth_12_lr_0.1_estimators_200_2.bin".
+     * If the model file cannot be loaded, an error is logged.
+     */
     public PredictionService() {
         try {
             // Load the XGBoost model
@@ -36,6 +48,13 @@ public class PredictionService {
         }
     }
 
+    /**
+     * Makes a prediction based on the input features.
+     * <p>
+     * @param features an array of double values representing the input features.
+     * @return a float array containing the prediction results.
+     * @throws XGBoostError if an error occurs during prediction.
+     */
     public float[] predict(double[] features) throws XGBoostError {
         // Convert features to float array
         float[] floatFeatures = new float[features.length];
@@ -50,5 +69,4 @@ public class PredictionService {
         float[][] predictions = booster.predict(dmatrix);
         return predictions[0];
     }
-
 }
