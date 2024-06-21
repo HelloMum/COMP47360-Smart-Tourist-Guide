@@ -1,0 +1,32 @@
+[
+  {
+    "image": "images/spots/empire_state_building.png",
+    "title": "Empire State Building",
+    "address": "20 W 34th St, New York, NY 10001"
+  },
+  {
+    "image": "images/spots/statue_of_liberty.png",
+    "title": "Statue of Liberty",
+    "address": "Liberty Island, New York, NY 10004"
+  },
+  {
+    "image": "images/spots/central_park.png",
+    "title": "Central Park",
+    "address": "Central Park, New York, NY 10024"
+  },
+  {
+    "image": "images/spots/times_square.png",
+    "title": "Times Square",
+    "address": "Manhattan, NY 10036"
+  },
+  {
+    "image": "images/spots/brooklyn_bridge.png",
+    "title": "Brooklyn Bridge",
+    "address": "Brooklyn Bridge, New York, NY 10038"
+  },
+  {
+    "image": "images/spots/rockefeller_center.png",
+    "title": "Rockefeller Center",
+    "address": "45 Rockefeller Plaza, New York, NY 10111"
+  }
+]

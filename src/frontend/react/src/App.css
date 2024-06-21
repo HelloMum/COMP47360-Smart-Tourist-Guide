@@ -1,10 +1,21 @@
 
-body {
-  font-family: Arial, sans-serif;
-}
+/* clear default css  */
+*  
+ {  
+    margin: 0;  
+    padding: 0;  
+    box-sizing: border-box; 
+} 
 
-.event-list {
+
+/* .event-list {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; 
+} */

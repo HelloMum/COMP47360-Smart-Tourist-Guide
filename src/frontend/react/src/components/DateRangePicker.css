@@ -1,0 +1,14 @@
+
+.custom-range-picker .ant-picker {
+  border-radius: 10px;
+  width: 220px;
+}
+
+.custom-range-picker .ant-picker-focused {
+  border-color: white ; 
+  box-shadow: 0 0 0 0px white;
+}
+
+.custom-range-picker .ant-picker:hover {
+  border-color: white; 
+}
