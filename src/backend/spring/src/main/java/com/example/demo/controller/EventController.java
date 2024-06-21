@@ -35,7 +35,8 @@ public class EventController {
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(value = "isFree", required = false) Boolean isFree,
-            @RequestParam(value = "categories", required = false) String categories) {
+            @RequestParam(value = "categories", required = false) String categories,
+            @RequestParam(value = "name", required = false) String name) {
 
         ZoneOffset zoneOffset = ZoneOffset.of("-04:00");
 
@@ -43,6 +44,6 @@ public class EventController {
         String endDateTime = endDate.atTime(23, 59, 59).atOffset(zoneOffset).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
         List<String> categoryList = (categories != null && !categories.isEmpty()) ? Arrays.asList(categories.split(",")) : null;
-        return eventService.getFilteredEventsWithinDateRange(startDateTime, endDateTime, isFree, categoryList);
+        return eventService.getFilteredEventsWithinDateRange(startDateTime, endDateTime, isFree, categoryList, name);
     }
 }
