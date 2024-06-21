@@ -1,0 +1,11 @@
+.left {
+
+  overflow-y: auto;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.left::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
