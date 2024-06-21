@@ -1,0 +1,59 @@
+services:
+
+  dnsmasq:
+    build:
+      context: docker/dnsmasq
+    ports:
+      - "40000:53/udp"
+    networks:
+      - wireguard_network
+    env_file:
+      - ../../.env
+
+  orchestration:
+    build:
+      context: docker/orchestration
+    ports:
+      - "40001:8080/udp"
+    networks:
+      - wireguard_network
+    env_file:
+      - ../../.env
+
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - Address = 10.11.12.1/24
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - SERVERURL=137.43.49.27
+      - SERVERPORT=51820
+      - PEERS=20
+      - PEERDNS=dnsmasq
+      - INTERNAL_SUBNET=10.11.12.0
+      - ALLOWEDIPS=10.11.12.0/24
+      - LOG_CONFS=true
+    volumes:
+      - ./config/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    build:
+      context: docker/wireguard
+    depends_on:
+      - dnsmasq
+    networks:
+      - wireguard_network
+    env_file:
+      - ../../.env
+
+networks:
+  wireguard_network:
+    driver: bridge
