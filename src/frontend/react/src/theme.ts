@@ -10,7 +10,8 @@ const theme = createTheme({
 
     },
     secondary: {
-      main: '#f76b81',  //purple
+      main: '#f76b81',  //pink
+      light: '#f7a7b3',
     },
     customGreen: {
       main: '#6bc2b4',  //custom green

@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "title": "Slutfest Pridefest - A Party Celebration of Pride!",
+    "location": "New York, NY 10004",
+    "date": "2022-06-24",
+    "time": "19:00",
+    "image": "images/events/1.png",
+    "isFree": true,
+    "category": "Pride"
+  },
+  {
+    "id": 2,
+    "title": "Music Festival Extravaganza",
+    "location": "Los Angeles, CA 90001",
+    "date": "2022-07-10",
+    "time": "18:00",
+    "image": "images/events/2.png",
+    "isFree": false,
+    "category": "Music"
+  },
+  {
+    "id": 3,
+    "title": "Tech Conference 2022",
+    "location": "San Francisco, CA 94105",
+    "date": "2022-08-15",
+    "time": "09:00",
+    "image": "images/events/3.png",
+    "isFree": true,
+    "category": "Technology"
+  },
+  {
+    "id": 4,
+    "title": "Food & Wine Festival",
+    "location": "Chicago, IL 60601",
+    "date": "2022-09-05",
+    "time": "12:00",
+    "image": "images/events/4.png",
+    "isFree": false,
+    "category": "Food"
+  },
+  {
+    "id": 5,
+    "title": "Art Expo 2022",
+    "location": "Miami, FL 33101",
+    "date": "2022-10-20",
+    "time": "10:00",
+    "image": "images/events/5.png",
+    "isFree": true,
+    "category": "Art"
+  },
+  {
+    "id": 6,
+    "title": "Film Festival Premieres",
+    "location": "Austin, TX 73301",
+    "date": "2022-11-11",
+    "time": "20:00",
+    "image": "images/events/6.png",
+    "isFree": false,
+    "category": "Film"
+  },
+  {
+    "id": 7,
+    "title": "Startup Pitch Event",
+    "location": "Boston, MA 02108",
+    "date": "2022-12-01",
+    "time": "14:00",
+    "image": "images/events/7.png",
+    "isFree": true,
+    "category": "Business"
+  }
+]

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Card, CardMedia, Typography, IconButton, Box, Stack, Button } from '@mui/material';
 import theme from '../theme';
-import { AddCircleRounded, FavoriteBorderRounded, MoreHorizRounded } from '@mui/icons-material';
+import { AddCircleRounded, ExpandMoreRounded, FavoriteBorderRounded, MoreHorizRounded } from '@mui/icons-material';
+import Btn_Add from './Btn_Add';
+import Btn_Like from './Btn_Like';
 
 // Define props type
 interface SpotCardProps {
@@ -35,11 +37,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ image, title, address }) => {
           }}
         />
 
-        <Box sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'rgba(255, 255, 255, 0.0)', borderRadius: '50%' }}>
-          <IconButton>
-            <FavoriteBorderRounded style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
-          </IconButton>
-        </Box>
+<Btn_Like/>
       </Box>
       <Stack sx={{ paddingTop: '8px', paddingLeft: '5px' }}>
         <Typography sx={{ ...theme.typography.cardTitle }} component="div">
@@ -49,28 +47,11 @@ const SpotCard: React.FC<SpotCardProps> = ({ image, title, address }) => {
         <Typography sx={{ ...theme.typography.cardDesc }}>
           {address}
         </Typography>
-        <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingBottom: 2 }}>
-          <MoreHorizRounded />
+        <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1.5 }}>
+        
 
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              borderRadius: '25px',
-              padding: '2px 2px',
-              fontSize: '0.8rem',
-              textTransform: 'none',
-              boxShadow: 'none',
-              backgroundColor: 'primary.main',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'primary.dark',
-                boxShadow: 'none'
-              }
-            }}
-          >
-            add
-          </Button>
+          <Btn_Add/>
+          <ExpandMoreRounded />
         </Stack>
       </Stack>
     </Card>

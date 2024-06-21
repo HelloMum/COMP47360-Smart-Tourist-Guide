@@ -1,68 +1,54 @@
-
-import React from 'react'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Card,Box, CardContent, CardMedia, IconButton, Typography, Stack, Button } from '@mui/material';
+import React from 'react';
+import { Card, Box, CardMedia, Typography, Stack } from '@mui/material';
+import { ExpandMoreRounded } from '@mui/icons-material';
 import theme from '../theme';
+import Btn_Like from './Btn_Like';
+import Tag from './Tag';
+import Btn_Add from './Btn_Add';
+
+const EventCard = ({ event }) => {
+  return (
+    <Card sx={{ borderRadius: '7px', overflow: 'hidden', boxShadow: '0 1px 5px rgba(0, 0, 0, 0.15)', width: "100%", paddingX: 2, paddingY: 2, marginBottom: 3 }}>
+      <Stack direction="row">
+        <Box sx={{ position: 'relative' ,width: '130px', height: '100px'}}>
+          <CardMedia
+            component="img"
+            height="110"
+            image={event.image}            alt={event.title}
+            sx={{ borderRadius: '5px', boxShadow: 0 ,marginTop:'10px'}}
+          />
+          <Btn_Like />
+        </Box>
 
 
-const EventCard = () => {
 
-  const image = "images/spots/test.png"; 
-  const title = 'Slutfest Pridefest - A Party Celebration of Pride!';
-  const location = 'New York, NY 10004';
-
-  return (  
-  
-  <Card sx={{ borderRadius: '7px', overflow: 'hidden', boxShadow:0 ,width: "100%" ,padding:2
-  }}>
-    
-    <Stack direction="row">
-
-       <Box sx={{ position: 'relative' }}>
-      <CardMedia
-        component="img"
-        height="120"
-        image={image}
-        alt={title}
-        sx={{ borderRadius: '15px',boxShadow:0 }}
-      />
-
-
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 8,
-          right: 8,
-          bgcolor: 'rgba(255, 255, 255, 0.7)',
-          borderRadius: '50%',
-        }}
-      >
-        <IconButton>
-          <FavoriteBorderIcon />
-        </IconButton>
-      </Box>
-       </Box>
-
-  <CardContent>
-  <Typography  sx={{ ...theme.typography.cardTitle }}component="div">
-        {title}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {location}
-      </Typography>
-
-      <Button variant="contained" sx={{ backgroundColor: 'grey', color: 'white', fontSize: '0.7rem', padding: '4px 9px', minWidth: 'auto',boxShadow:0 }}>
-  free
-</Button>
-
-    </CardContent>
-
-    </Stack>
-   
-  
-  </Card>
-   
-  )
+        <Box  sx={{ marginLeft: '25px', flexGrow: 1 }}>
+          <Typography sx={{ ...theme.typography.cardTitle }} component="div">
+            {event.title}
+          </Typography>
+          <Stack direction='row' spacing={1}>
+            <Tag isFree={event.isFree} category={undefined} />
+            <Tag category={event.category} isFree={undefined} />
+          </Stack>
+          <Box display="flex" alignItems="center">
+            <Typography variant="body2" color="text.secondary" style={{ marginRight: '10px' }}>
+              Date {event.date}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Time {event.time}
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            Address: {event.location}
+          </Typography>
+          <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1 }}>
+            <Btn_Add />
+            <ExpandMoreRounded />
+          </Stack>
+        </Box>
+      </Stack>
+    </Card>
+  );
 }
 
-export default EventCard
+export default EventCard;
