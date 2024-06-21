@@ -17,11 +17,12 @@ public class EventService {
         return eventRepository.findAllByOrderByTimeStartAsc();
     }
 
-    public List<Event> getFilteredEventsWithinDateRange(String startDate, String endDate, Boolean isFree, List<String> categories) {
-        return eventRepository.findFilteredEventsWithinDateRange(startDate, endDate, isFree, categories);
+    public List<Event> getFilteredEventsWithinDateRange(String startDate, String endDate, Boolean isFree, List<String> categories, String name) {
+        return eventRepository.findFilteredEventsWithinDateRange(startDate, endDate, isFree, categories, name);
     }
 
     public List<Event> getSelectedEvents(List<UUID> eventIds) {
         return eventRepository.findAllById(eventIds);
     }
+
 }
