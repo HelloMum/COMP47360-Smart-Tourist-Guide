@@ -35,3 +35,7 @@ build/
 /src/frontend/node_modules/
 /src/data_processing/notebooks/.ipynb_checkpoints/
 /src/data_processing/notebooks/taxi/.ipynb_checkpoints/
+/src/backend/scrappers/gradle/
+/src/backend/scrappers/gradle/
+/src/backend/scrappers/gradle/
+/src/deployment/config/

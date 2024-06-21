@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EventService {
@@ -18,5 +19,9 @@ public class EventService {
 
     public List<Event> getFilteredEventsWithinDateRange(String startDate, String endDate, Boolean isFree, List<String> categories) {
         return eventRepository.findFilteredEventsWithinDateRange(startDate, endDate, isFree, categories);
+    }
+
+    public List<Event> getSelectedEvents(List<UUID> eventIds) {
+        return eventRepository.findAllById(eventIds);
     }
 }
