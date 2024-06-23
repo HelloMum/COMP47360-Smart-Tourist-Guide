@@ -3,11 +3,11 @@ import { Box, Stack } from '@mui/material';
 import Map from '../../components/Map';
 import Searchbar from '../../components/Searchbar';
 import Switch from '../../components/Switch';
-import Select from '../../components/Sort';
 import SpotCard from '../../components/SpotCard';
 import spots from '../../data/spots.json';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import './spots.css';
+import Sort_Spots from '../../components/Sort_Spots';
 
 const Spots: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const Spots: React.FC = () => {
 
         <Stack direction="row" sx={{ paddingX: 4, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
           <Switch />
-          <Select />
+          <Sort_Spots />
         </Stack>
 
 
