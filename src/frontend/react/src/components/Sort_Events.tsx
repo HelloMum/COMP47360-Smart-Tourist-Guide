@@ -13,7 +13,7 @@ const Sort_Events = () => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
      <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}> sort by  </Typography>
-      <FormControl sx={{ minWidth: 100 }}>
+      <FormControl sx={{ minWidth: 90 }}>
         <MuiSelect
           value={age}
           onChange={handleChange}
