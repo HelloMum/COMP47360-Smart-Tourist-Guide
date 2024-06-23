@@ -3,7 +3,7 @@ import { FormControl, Select as MuiSelect, MenuItem, Typography, Box } from '@mu
 import theme from '../theme';
 
 
-const Sort = () => {
+const Sort_Events = () => {
   const [age, setAge] = useState(10); 
 
   const handleChange = (event) => {
@@ -13,7 +13,7 @@ const Sort = () => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
      <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}> sort by  </Typography>
-      <FormControl sx={{ minWidth: 100 }}>
+      <FormControl sx={{ minWidth: 90 }}>
         <MuiSelect
           value={age}
           onChange={handleChange}
@@ -21,8 +21,8 @@ const Sort = () => {
           inputProps={{ 'aria-label': 'Without label' }}
           sx={{ height: 26,...theme.typography.smallText }}
         >
-          <MenuItem value={10} sx={{ height: 26,...theme.typography.smallText }}>distance</MenuItem>
-          <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>name</MenuItem>
+          <MenuItem value={10} sx={{ height: 26,...theme.typography.smallText }}>time</MenuItem>
+          <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>distance</MenuItem>
     
         </MuiSelect>
       </FormControl>
@@ -30,4 +30,4 @@ const Sort = () => {
   );
 };
 
-export default Sort;
+export default Sort_Events;
