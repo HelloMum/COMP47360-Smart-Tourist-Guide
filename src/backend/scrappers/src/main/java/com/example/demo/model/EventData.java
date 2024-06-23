@@ -16,6 +16,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EventData {
 
+    @Version
+    private Long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
