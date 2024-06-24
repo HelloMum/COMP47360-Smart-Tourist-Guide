@@ -12,10 +12,6 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<EventData, UUID> {
 
     @Query("SELECT COUNT(e) > 0 FROM EventData e WHERE " +
-            "e.name = :name AND " +
-            "e.category = :category AND " +
-            "e.description = :description ")
-    boolean existsEvent(@Param("name") String name,
-                        @Param("category") String category,
-                        @Param("description") String description);
+            "e.name = :name ")
+    boolean existsEvent(@Param("name") String name);
 }
