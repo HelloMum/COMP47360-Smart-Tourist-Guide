@@ -27,6 +27,7 @@ const Events: React.FC = () => {
 
   return (
     <div className="list" style={{ display: 'flex' }}>
+      
       <div
         className="left"
         style={{
@@ -38,16 +39,23 @@ const Events: React.FC = () => {
           flexDirection: 'column',
         }}
       >
+
+
+         {/* -------------- search bar --------------------*/}
         <Stack direction="row" justifyContent="center">
           <Searchbar />
         </Stack>
 
+
+        {/* -------------- filter & sort -------------------*/}
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginY: 2 }}>
           <FilterCheckbox />
           <Switch />
           <Sort_Events />
         </Stack>
 
+
+        {/* -------------- event cards ---------------------*/}
         <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
           <Stack>
             {events.map(event => (
@@ -57,6 +65,8 @@ const Events: React.FC = () => {
         </div>
       </div>
 
+
+      {/* --------------- map on the right ------------------*/}      
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
         <Map />
       </div>
