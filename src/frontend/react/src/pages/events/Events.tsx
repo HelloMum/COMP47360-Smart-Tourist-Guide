@@ -68,8 +68,8 @@ const Events: React.FC = () => {
 
       {/* --------------- map on the right ------------------*/}      
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-        <Map />
-      </div>
+  <Map events={events} />
+</div>
     </div>
   );
 };

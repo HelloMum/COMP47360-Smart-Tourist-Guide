@@ -33,7 +33,7 @@ const Spots: React.FC = () => {
       </div>
 
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-        <Map />
+        <Map events={[]}/>
       </div>
     </div>
   );
