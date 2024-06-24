@@ -108,9 +108,7 @@ public class EventService {
                     // Skip the duplicate events
                     for (EventData event : newEvents) {
                         boolean exists = eventRepository.existsEvent(
-                                event.getName(),
-                                event.getCategory(),
-                                event.getDescription()
+                                event.getName()
                         );
 
                         if (!exists) {
