@@ -17,7 +17,7 @@ import java.util.UUID;
 public class EventData {
 
     @Version
-    private Long version;
+    private Long version = 0L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
