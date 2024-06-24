@@ -22,6 +22,7 @@ const formatDateTime = (dateTime) => {
 
 const EventCard = ({ event }) => {
   const { date, time } = formatDateTime(event.time_start);
+  const imageUrl = event.image_url || "images/events/default.jpg";
 
   return (
     <Card sx={{ borderRadius: '7px', overflow: 'hidden', boxShadow: '0 1px 5px rgba(0, 0, 0, 0.15)', width: "99%", paddingX: 2, paddingY: 2, marginBottom: 3, marginLeft: '3px', marginTop: '3px' }}>
@@ -30,7 +31,7 @@ const EventCard = ({ event }) => {
           <CardMedia
             component="img"
             height="100"
-            image={event.image_url}
+            image={imageUrl}
             alt={event.name}
             sx={{ borderRadius: '2px', boxShadow: 1, marginTop: '10px', objectFit: 'cover', width: '130px', height: '120px' }}
           />
