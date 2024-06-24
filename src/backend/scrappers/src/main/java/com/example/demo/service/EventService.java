@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -89,38 +90,58 @@ public class EventService {
                 eventRepository.deleteAllInBatch();
 
                 // Fetch the new data
-                long startDate = LocalDateTime.now().minusDays(1).toEpochSecond(ZoneOffset.UTC);
-                List<EventData> events = eventScraper.fetchYelpEvents(0, startDate);
+                ZoneId newYorkZone = ZoneId.of("America/New_York");
+                LocalDateTime nowInNewYork = LocalDateTime.now(newYorkZone);
+                long startDate = nowInNewYork.toEpochSecond(ZoneOffset.UTC);
+                long endDate = nowInNewYork.plusDays(30).toEpochSecond(ZoneOffset.UTC);
+                List<EventData> events = eventScraper.fetchYelpEvents(0, startDate, endDate);
 
                 if (events != null && !events.isEmpty()) {
                     List<EventData> newEvents = events.stream()
                             .filter(event -> !event.getIs_canceled())
+                            .filter(event -> event.getName() != null && !event.getName().isEmpty())
+                            .filter(event -> event.getEvent_site_url() != null && !event.getEvent_site_url().isEmpty())
                             .filter(event -> {
                                 LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
                                 LocalDateTime timeEnd = event.getTime_end() != null ?
                                         convertToLocalDateTime(event.getTime_end()) :
                                         timeStart.plusHours(2);
-                                return timeStart.toLocalDate().equals(timeEnd.toLocalDate());
+                                if (!timeStart.toLocalDate().equals(timeEnd.toLocalDate())) {
+                                    if (timeStart.plusHours(2).isAfter(timeStart.toLocalDate().atTime(23, 59))) {
+                                        timeEnd = timeStart.toLocalDate().atTime(23, 59);
+                                    } else {
+                                        timeEnd = timeStart.plusHours(2);
+                                    }
+                                }
+                                return timeStart.isAfter(nowInNewYork) &&
+                                        timeStart.isBefore(nowInNewYork.plusDays(30)) &&
+                                        timeEnd.isBefore(nowInNewYork.plusDays(30));
                             })
                             .filter(event -> isPointInPolygon(event.getLatitude(), event.getLongitude(), ManhattanArea))
                             .collect(Collectors.toList());
 
                     // Skip the duplicate events
                     for (EventData event : newEvents) {
-                        boolean exists = eventRepository.existsEvent(
-                                event.getName()
+                        boolean exists = eventRepository.existsEventByNameOrUrl(
+                                event.getName(), event.getEvent_site_url()
                         );
 
                         if (!exists) {
                             event.setId(UUID.randomUUID());
                             event.setFetchTime(LocalDateTime.now());
-                            if (event.getTime_end() == null) {
-                                LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
-                                event.setTime_end(formatLocalDateTime(timeStart.plusHours(2)));
-                            } else {
-                                event.setTime_end(formatLocalDateTime(convertToLocalDateTime(event.getTime_end())));
+                            LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
+                            LocalDateTime timeEnd = event.getTime_end() != null ?
+                                    convertToLocalDateTime(event.getTime_end()) :
+                                    timeStart.plusHours(2);
+                            if (!timeStart.toLocalDate().equals(timeEnd.toLocalDate())) {
+                                if (timeStart.plusHours(2).isAfter(timeStart.toLocalDate().atTime(23, 59))) {
+                                    timeEnd = timeStart.toLocalDate().atTime(23, 59);
+                                } else {
+                                    timeEnd = timeStart.plusHours(2);
+                                }
                             }
-                            event.setTime_start(formatLocalDateTime(convertToLocalDateTime(event.getTime_start())));
+                            event.setTime_start(formatLocalDateTime(timeStart));
+                            event.setTime_end(formatLocalDateTime(timeEnd));
                             eventRepository.save(event);
                         }
                     }
@@ -137,7 +158,7 @@ public class EventService {
 
     private LocalDateTime convertToLocalDateTime(String dateTimeWithOffset) {
         OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateTimeWithOffset, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        return offsetDateTime.toLocalDateTime();
+        return offsetDateTime.atZoneSameInstant(ZoneId.of("America/New_York")).toLocalDateTime();
     }
 
     private String formatLocalDateTime(LocalDateTime localDateTime) {
