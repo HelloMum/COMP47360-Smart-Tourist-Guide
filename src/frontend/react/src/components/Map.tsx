@@ -65,6 +65,16 @@ const Map = ({ events }) => {
         elementType: 'labels',
         stylers: [{ visibility: 'off' }] // Hide all road labels
       },
+      {
+        featureType: 'landscape',
+        elementType: 'geometry',
+        stylers: [{ color: '#f8f4f1' }]  // color of ground
+      },
+      {
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [{ color: '#f2efff' }] 
+      },
     ],
     disableDefaultUI: true,
   };
@@ -86,7 +96,7 @@ const Map = ({ events }) => {
           title={event.name}
           icon={{
             url: '/images/marker/icon.png', 
-            scaledSize: new window.google.maps.Size(30, 40)  
+            scaledSize: new window.google.maps.Size(30, 41)  
           }}
         />
       ))}
