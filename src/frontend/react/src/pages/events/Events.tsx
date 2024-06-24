@@ -4,33 +4,26 @@ import './events.css';
 import EventCard from '../../components/EventCard';
 import Searchbar from '../../components/Searchbar';
 import { Stack } from '@mui/material';
-import Switch from '../../components/Switch';
+import Switch from '../../components/Switch_Events';
 import FilterCheckbox from '../../components/FilterCheckbox';
-import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
-
-
+import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import eventsData from '../../data/events.json';
-
 import Sort_Events from '../../components/Sort_Events';
 
 const Events: React.FC = () => {
+  const [events, setEvents] = useState(eventsData);
 
-  const [events,setEvents] = useState(eventsData);
-  
   useEffect(() => {
-  
     fetch('http://localhost:8080/events/all')
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data); 
-        setEvents(data); 
+        console.log('Fetched data:', data);
+        setEvents(data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, []);
-
-
 
   return (
     <div className="list" style={{ display: 'flex' }}>
@@ -41,7 +34,8 @@ const Events: React.FC = () => {
           padding: '30px',
           marginTop: NAVBAR_HEIGHT,
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Stack direction="row" justifyContent="center">
@@ -54,11 +48,13 @@ const Events: React.FC = () => {
           <Sort_Events />
         </Stack>
 
-        <Stack>
-          {events.map(event => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </Stack>
+        <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
+          <Stack>
+            {events.map(event => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </Stack>
+        </div>
       </div>
 
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
