@@ -61,7 +61,6 @@ public class EventService {
             {-74.04903271144373, 40.68685333783202}
     };
 
-    // Determine whether a point is inside Manhattan
     private boolean isPointInPolygon(double latitude, double longitude, double[][] polygon) {
         int intersectCount = 0;
         for (int i = 0; i < polygon.length - 1; i++) {
@@ -80,45 +79,59 @@ public class EventService {
     @Scheduled(fixedRate = 10800000)
     @Transactional
     public void fetchAndSaveEvents() {
-        // Delete all the data
-        eventRepository.deleteAll();
+        // Retry mechanism to handle potential concurrency issues
+        int retryCount = 0;
+        boolean success = false;
 
-        // Fetch the new data
-        long startDate = LocalDateTime.now().minusDays(1).toEpochSecond(ZoneOffset.UTC);
-        List<EventData> events = eventScraper.fetchYelpEvents(0, startDate);
+        while (retryCount < 3 && !success) {
+            try {
+                // Delete all the data
+                eventRepository.deleteAllInBatch();
 
-        if (events != null && !events.isEmpty()) {
-            List<EventData> newEvents = events.stream()
-                    .filter(event -> !event.getIs_canceled())
-                    .filter(event -> {
-                        LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
-                        LocalDateTime timeEnd = event.getTime_end() != null ?
-                                convertToLocalDateTime(event.getTime_end()) :
-                                timeStart.plusHours(2);
-                        return timeStart.toLocalDate().equals(timeEnd.toLocalDate());
-                    })
-                    .filter(event -> isPointInPolygon(event.getLatitude(), event.getLongitude(), ManhattanArea))
-                    .collect(Collectors.toList());
+                // Fetch the new data
+                long startDate = LocalDateTime.now().minusDays(1).toEpochSecond(ZoneOffset.UTC);
+                List<EventData> events = eventScraper.fetchYelpEvents(0, startDate);
 
-            // Skip the duplicate events
-            for (EventData event : newEvents) {
-                boolean exists = eventRepository.existsEvent(
-                        event.getName(),
-                        event.getCategory(),
-                        event.getDescription()
-                );
+                if (events != null && !events.isEmpty()) {
+                    List<EventData> newEvents = events.stream()
+                            .filter(event -> !event.getIs_canceled())
+                            .filter(event -> {
+                                LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
+                                LocalDateTime timeEnd = event.getTime_end() != null ?
+                                        convertToLocalDateTime(event.getTime_end()) :
+                                        timeStart.plusHours(2);
+                                return timeStart.toLocalDate().equals(timeEnd.toLocalDate());
+                            })
+                            .filter(event -> isPointInPolygon(event.getLatitude(), event.getLongitude(), ManhattanArea))
+                            .collect(Collectors.toList());
 
-                if (!exists) {
-                    event.setId(UUID.randomUUID());
-                    event.setFetchTime(LocalDateTime.now());
-                    if (event.getTime_end() == null) {
-                        LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
-                        event.setTime_end(formatLocalDateTime(timeStart.plusHours(2)));
-                    } else {
-                        event.setTime_end(formatLocalDateTime(convertToLocalDateTime(event.getTime_end())));
+                    // Skip the duplicate events
+                    for (EventData event : newEvents) {
+                        boolean exists = eventRepository.existsEvent(
+                                event.getName(),
+                                event.getCategory(),
+                                event.getDescription()
+                        );
+
+                        if (!exists) {
+                            event.setId(UUID.randomUUID());
+                            event.setFetchTime(LocalDateTime.now());
+                            if (event.getTime_end() == null) {
+                                LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
+                                event.setTime_end(formatLocalDateTime(timeStart.plusHours(2)));
+                            } else {
+                                event.setTime_end(formatLocalDateTime(convertToLocalDateTime(event.getTime_end())));
+                            }
+                            event.setTime_start(formatLocalDateTime(convertToLocalDateTime(event.getTime_start())));
+                            eventRepository.save(event);
+                        }
                     }
-                    event.setTime_start(formatLocalDateTime(convertToLocalDateTime(event.getTime_start())));
-                    eventRepository.save(event);
+                }
+                success = true;
+            } catch (Exception e) {
+                retryCount++;
+                if (retryCount >= 3) {
+                    throw e; // Rethrow the exception if maximum retry count is reached
                 }
             }
         }
