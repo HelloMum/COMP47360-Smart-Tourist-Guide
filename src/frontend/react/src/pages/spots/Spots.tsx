@@ -8,6 +8,7 @@ import spots from '../../data/spots.json';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import './spots.css';
 import Sort_Spots from '../../components/Sort_Spots';
+import FilterCheckbox from '../../components/FilterCheckbox_Spots';
 
 const Spots: React.FC = () => {
   return (
@@ -18,8 +19,9 @@ const Spots: React.FC = () => {
           <Searchbar />
         </Stack>
 
-        <Stack direction="row" sx={{ paddingX: 4, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-          <Switch />
+        <Stack direction="row" sx={{ paddingX: 2, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+          <FilterCheckbox/>
+          <Switch/>
           <Sort_Spots />
         </Stack>
 

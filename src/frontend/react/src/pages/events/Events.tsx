@@ -5,7 +5,7 @@ import EventCard from '../../components/EventCard';
 import Searchbar from '../../components/Searchbar';
 import { Stack } from '@mui/material';
 import Switch from '../../components/Switch_Events';
-import FilterCheckbox from '../../components/FilterCheckbox';
+import FilterCheckbox from '../../components/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import eventsData from '../../data/events.json';
 import Sort_Events from '../../components/Sort_Events';

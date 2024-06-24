@@ -84,6 +84,10 @@ const Map = ({ events }) => {
           key={event.id}
           position={{ lat: event.latitude, lng: event.longitude }}
           title={event.name}
+          icon={{
+            url: '/images/marker/icon.png', 
+            scaledSize: new window.google.maps.Size(30, 40)  
+          }}
         />
       ))}
     </GoogleMap>
