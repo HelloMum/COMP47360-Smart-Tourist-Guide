@@ -31,7 +31,7 @@ public class EventScraper {
     @Value("${yelp.limit}")
     private int limit;
 
-    public List<EventData> fetchYelpEvents(int offset, long startDate) {
+    public List<EventData> fetchYelpEvents(int offset, long startDate, long endDate) {
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("https://api.yelp.com/v3/events?location=%s&limit=%d&offset=%d&start_date=%d", location, limit, offset, startDate);
 
