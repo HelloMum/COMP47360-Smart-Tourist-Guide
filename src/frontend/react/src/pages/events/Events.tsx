@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Map from '../../components/Map';
 import './events.css';
 import EventCard from '../../components/EventCard';
 import Searchbar from '../../components/Searchbar';
 import { Stack } from '@mui/material';
-import Select from '../../components/Sort';
 import Switch from '../../components/Switch';
 import FilterCheckbox from '../../components/FilterCheckbox';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
@@ -12,9 +11,26 @@ import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 
 import eventsData from '../../data/events.json';
 
+import Sort_Events from '../../components/Sort_Events';
+
 const Events: React.FC = () => {
 
-  const [events] = useState(eventsData);
+  const [events,setEvents] = useState(eventsData);
+  
+  useEffect(() => {
+  
+    fetch('http://localhost:8080/events/all')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Fetched data:', data); 
+        setEvents(data); 
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+
 
   return (
     <div className="list" style={{ display: 'flex' }}>
@@ -35,7 +51,7 @@ const Events: React.FC = () => {
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginY: 2 }}>
           <FilterCheckbox />
           <Switch />
-          <Select />
+          <Sort_Events />
         </Stack>
 
         <Stack>
