@@ -57,7 +57,7 @@ const FreeLabel = styled(Typography)(({ theme }) => ({
 const App = () => {
   return (
     <FormControlLabel
-      control={<FreeSwitch defaultChecked />}
+      control={<FreeSwitch  />}
       label={<FreeLabel    >Free</FreeLabel>}
     />
   );

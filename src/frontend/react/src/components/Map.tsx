@@ -1,91 +1,105 @@
 import React from 'react';
-import { GoogleMap, useLoadScript } from '@react-google-maps/api';
-import { NAVBAR_HEIGHT } from '../constants';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 
-const containerStyle = {
-  width: '100%',
-  height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-  position: 'fixed',
-};
-
-const center = {
-  lat: 40.73,
-  lng: -73.98
-};
-
-const mapOptions = {
-  styles: [
-    {
-      featureType: 'poi',
-      elementType: 'labels',
-      stylers: [{ visibility: 'off' }]
-    },
-    {
-      featureType: 'water',
-      elementType: 'geometry.fill',
-      stylers: [{ color: '#abdff0' }]
-    },
-    {
-      featureType: 'road.highway',
-      elementType: 'geometry.fill',
-      stylers: [{ color: '#f7f6f6' }]
-    },
-    {
-      featureType: 'road.highway',
-      elementType: 'geometry.stroke',
-      stylers: [{ color: '#dddddd' }]
-    },
-    {
-      featureType: 'all',
-      elementType: 'labels.text.fill',
-      stylers: [{ color: '#999999' }]
-    },
-    {
-      featureType: 'all',
-      elementType: 'labels.text.stroke',
-      stylers: [{ color: '#ffffff' }]
-    },
-    {
-      featureType: 'road.local',
-      elementType: 'labels',
-      stylers: [{ visibility: 'off' }]
-    },
-    {
-      featureType: 'transit.station',
-      elementType: 'labels',
-      stylers: [{ visibility: 'off' }]
-    },
-    {
-      featureType: 'road',
-      elementType: 'labels',
-      stylers: [{ visibility: 'off' }] // Hide all road labels
-    },
-  ],
-  disableDefaultUI: true,
-};
-
-const Map: React.FC = () => {
+const Map = ({ events }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
     libraries: ['places'],
   });
 
-  if (loadError) {
-    return <div>Error loading maps</div>;
-  }
+  const containerStyle = {
+    width: '100%',
+    height: '100vh',
+    position: 'fixed',
+  };
 
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
+  const center = {
+    lat: 40.725,
+    lng: -73.99
+  };
+
+  const mapOptions = {
+    styles: [
+      {
+        featureType: 'poi',
+        elementType: 'labels',
+        stylers: [{ visibility: 'off' }]
+      },
+      {
+        featureType: 'water',
+        elementType: 'geometry.fill',
+        stylers: [{ color: '#abdff0' }]
+      },
+      {
+        featureType: 'road.highway',
+        elementType: 'geometry.fill',
+        stylers: [{ color: '#f7f6f6' }]
+      },
+      {
+        featureType: 'road.highway',
+        elementType: 'geometry.stroke',
+        stylers: [{ color: '#dddddd' }]
+      },
+      {
+        featureType: 'all',
+        elementType: 'labels.text.fill',
+        stylers: [{ color: '#999999' }]
+      },
+      {
+        featureType: 'all',
+        elementType: 'labels.text.stroke',
+        stylers: [{ color: '#ffffff' }]
+      },
+      {
+        featureType: 'road.local',
+        elementType: 'labels',
+        stylers: [{ visibility: 'off' }]
+      },
+      {
+        featureType: 'transit.station',
+        elementType: 'labels',
+        stylers: [{ visibility: 'off' }]
+      },
+      {
+        featureType: 'road',
+        elementType: 'labels',
+        stylers: [{ visibility: 'off' }] // Hide all road labels
+      },
+      {
+        featureType: 'landscape',
+        elementType: 'geometry',
+        stylers: [{ color: '#f8f4f1' }]  // color of ground
+      },
+      {
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [{ color: '#f2efff' }] 
+      },
+    ],
+    disableDefaultUI: true,
+  };
+
+  if (loadError) return <div>Error loading maps</div>;
+  if (!isLoaded) return <div>Loading...</div>;
 
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={13}
+      zoom={14}
       options={mapOptions}
     >
-      {/* Add any map markers */}
+      {events.map(event => (
+        <Marker
+          key={event.id}
+          position={{ lat: event.latitude, lng: event.longitude }}
+          title={event.name}
+          icon={{
+            url: '/images/marker/icon.png', 
+            scaledSize: new window.google.maps.Size(30, 41)  
+          }}
+        />
+      ))}
     </GoogleMap>
   );
 };
