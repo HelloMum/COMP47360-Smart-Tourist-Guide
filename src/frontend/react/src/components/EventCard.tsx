@@ -59,7 +59,7 @@ const EventCard = ({ event }) => {
             height="100"
             image={imageUrl}
             alt={event.name}
-            sx={{ borderRadius: '4px', boxShadow: 1, marginTop: '10px', objectFit: 'cover', width: '170px', height: isExpanded?'220px' :'128px' }}
+            sx={{ borderRadius: '4px', boxShadow: 1, marginTop: '10px', objectFit: 'cover', width: '170px', height: isExpanded?'200px' :'128px' }}
           />
           {/* <Btn_Like /> */}
         </Box>
