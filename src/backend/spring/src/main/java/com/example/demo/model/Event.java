@@ -20,6 +20,8 @@ public class Event {
 
     private String category;
 
+    private String combined_category;
+
     @Column(name = "description", length = 2000)
     private String description;
 
@@ -84,6 +86,10 @@ public class Event {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getCombined_category() { return combined_category; }
+
+    public void setCombined_category(String combined_category) { this.combined_category = combined_category; }
 
     public Double getLongitude() {
         return longitude;
