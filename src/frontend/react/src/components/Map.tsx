@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import EventCard_PopUp from '../components/EventCard_PopUp';  
 
@@ -9,18 +9,14 @@ const Map = ({ events }) => {
   });
 
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
+  const mapRef = useRef(null);
 
   const containerStyle = {
     width: '100%',
     height: '100vh',
     position: 'fixed',
   };
-
-  const center = {
-    lat: 40.725,
-    lng: -73.99
-  };
-
   const mapOptions = {
     disableDefaultUI: true,
     styles: [
@@ -84,12 +80,13 @@ const Map = ({ events }) => {
 
   const onMarkerClick = (event) => {
     setSelectedEvent(event);
+    // 如果需要将点击的标记置为地图中心，请取消以下注释
+    // mapRef.current.panTo({ lat: event.latitude, lng: event.longitude });
   };
 
   const handleClose = () => {
     setSelectedEvent(null);
   };
-
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -100,6 +97,7 @@ const Map = ({ events }) => {
       center={center}
       zoom={14}
       options={mapOptions}
+      onLoad={map => mapRef.current = map} // 地图加载时获取地图实例
     >
       {events.map(event => (
         <Marker
@@ -113,26 +111,25 @@ const Map = ({ events }) => {
           }}
         />
       ))}
-    {selectedEvent && (
-  <OverlayView
-    position={{ lat: selectedEvent.latitude, lng: selectedEvent.longitude }}
-    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-  >
-    <div style={{
-      position: 'absolute', 
-      transform: 'translate(-50%, -135%)', 
-      padding: '10px',
-      background: 'white',
-      border: '1px solid #ccc',
-      borderRadius: '8px',
-      boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-      maxWidth: '500px' 
-    }}>
-      <EventCard_PopUp event={selectedEvent} onClose={handleClose}/>
-    </div>
-  </OverlayView>
-)}
-
+      {selectedEvent && (
+        <OverlayView
+          position={{ lat: selectedEvent.latitude, lng: selectedEvent.longitude }}
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        >
+          <div style={{
+            position: 'absolute', 
+            transform: 'translate(-50%, -130%)', 
+            padding: '10px',
+            background: 'white',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            maxWidth: '500px' 
+          }}>
+            <EventCard_PopUp event={selectedEvent} onClose={handleClose}/>
+          </div>
+        </OverlayView>
+      )}
     </GoogleMap>
   );
 };
