@@ -88,7 +88,7 @@ const EventCard = ({ event }) => {
           {/*------------------ cartegory & isFree  -------------------- */}
 
           <Stack direction='row' spacing={1}>
-            <Tag_Category category={event.category} />
+            <Tag_Category category={event.combined_category} />
             {event.is_free && <Tag_IsFree isFree={event.is_free} />}
             <PublicRounded sx={{ fontSize: 'large', marginRight: 1 ,cursor:'pointer'}} onClick={() => window.open(event.event_site_url, '_blank')}/>
               
