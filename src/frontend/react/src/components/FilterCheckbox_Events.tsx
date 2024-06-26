@@ -59,6 +59,8 @@ const FilterCheckbox = () => {
         <span style={{ marginLeft: '2px', color: '#777777' }}>category</span>
       </Stack>
 
+
+
       {open && (
         <Box ref={ref} sx={{ boxShadow: 1, p: 1, borderRadius: 1, backgroundColor: '#fff', top: '160px', left: '15px', position: 'absolute', zIndex: 1000 }}>
           <FormGroup

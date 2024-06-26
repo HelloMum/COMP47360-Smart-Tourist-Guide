@@ -1,18 +1,43 @@
-import React from 'react';
-import { Card, CardMedia, Typography, IconButton, Box, Stack, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardMedia, Typography, IconButton, Box, Stack } from '@mui/material';
 import theme from '../theme';
-import { AddCircleRounded, ExpandMoreRounded, FavoriteBorderRounded, MoreHorizRounded } from '@mui/icons-material';
+import { ExpandMoreRounded } from '@mui/icons-material';
 import Btn_Add from './Btn_Add';
 import Btn_Like from './Btn_Like';
 
-// Define props type
 interface SpotCardProps {
-  image: string;
+  image1: string;  
+  image3: string; 
   title: string;
   address: string;
+  onExpand: () => void;
 }
 
-const SpotCard: React.FC<SpotCardProps> = ({ image, title, address }) => {
+const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, address, onExpand }) => {
+  const [currentImage, setCurrentImage] = useState(image1);
+  const [imageStyle, setImageStyle] = useState({
+    transition: 'none',  
+    transform: 'scale(1)' 
+  });
+
+  // hover
+  const handleMouseEnter = () => {
+    setCurrentImage(image3);
+    setImageStyle({
+      transition: 'transform 7s ease',  
+      transform: 'scale(1.4)' 
+    });
+  };
+
+  // mouse leave
+  const handleMouseLeave = () => {
+    setCurrentImage(image1);
+    setImageStyle({
+      transition: 'none',  
+      transform: 'scale(1)'  
+    });
+  };
+
   return (
     <Card sx={{
       borderRadius: '8px',
@@ -25,19 +50,17 @@ const SpotCard: React.FC<SpotCardProps> = ({ image, title, address }) => {
         <CardMedia
           component="img"
           height="170"
-          image={image}
+          image={currentImage}
           alt={title}
           sx={{
             borderRadius: '0px',
             boxShadow: 0,
-            transition: 'transform 7s ease',
-            '&:hover': {
-              transform: 'scale(1.4)'
-            }
+            ...imageStyle
           }}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         />
-
-<Btn_Like/>
+        <Btn_Like/>
       </Box>
       <Stack sx={{ paddingTop: '8px', paddingLeft: '5px' }}>
         <Typography sx={{ ...theme.typography.cardTitle }} component="div">
@@ -48,10 +71,10 @@ const SpotCard: React.FC<SpotCardProps> = ({ image, title, address }) => {
           {address}
         </Typography>
         <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1.5 }}>
-        
-
           <Btn_Add/>
-          <ExpandMoreRounded />
+          <IconButton onClick={onExpand}>
+            <ExpandMoreRounded />
+          </IconButton>
         </Stack>
       </Stack>
     </Card>

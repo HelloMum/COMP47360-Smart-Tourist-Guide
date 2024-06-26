@@ -1,32 +1,80 @@
 [
   {
-    "image": "images/spots/empire_state_building.png",
+    "image1": "images/spots/empire_state_building1.png",
+    "image2": "images/spots/empire_state_building2.png",
+    "image3": "images/spots/empire_state_building3.png",
     "title": "Empire State Building",
-    "address": "20 W 34th St, New York, NY 10001"
+    "address": "20 W 34th St, New York, NY 10001",
+    "description": "The Empire State Building, a New York City icon, stands as an Art Deco skyscraper in Midtown Manhattan. Completed in 1931, it rises 1,454 feet and features observatories and a dynamic lighting system.",
+    "website": "https://www.esbnyc.com",
+    "phone": "+1 212-736-3100",
+    "price": "$42",
+    "rating": 4.5,
+    "category": "entertainment"
   },
   {
-    "image": "images/spots/statue_of_liberty.png",
+    "image1": "images/spots/statue_of_liberty1.png",
+    "image2": "images/spots/statue_of_liberty2.png",
+    "image3": "images/spots/statue_of_liberty3.png",
     "title": "Statue of Liberty",
-    "address": "Liberty Island, New York, NY 10004"
+    "address": "Liberty Island, New York, NY 10004",
+    "description": "The Statue of Liberty is a symbol of freedom and democracy, offering tours and exhibits.",
+    "website": "https://www.nps.gov/stli/index.htm",
+    "phone": "+1 212-363-3200",
+    "price": "$25",
+    "rating": 4.7,
+    "category": "cultural"
   },
   {
-    "image": "images/spots/central_park.png",
+    "image1": "images/spots/central_park1.png",
+    "image2": "images/spots/central_park2.png",
+    "image3": "images/spots/central_park3.png",
     "title": "Central Park",
-    "address": "Central Park, New York, NY 10024"
+    "address": "Central Park, New York, NY 10024",
+    "description": "Central Park offers a peaceful nature escape with walking paths, lakes, and open spaces in the heart of Manhattan.",
+    "website": "https://www.centralparknyc.org",
+    "phone": "+1 212-310-6600",
+    "price": "Free",
+    "rating": 4.8,
+    "category": "natural"
   },
   {
-    "image": "images/spots/times_square.png",
+    "image1": "images/spots/times_square1.png",
+    "image2": "images/spots/times_square2.png",
+    "image3": "images/spots/times_square3.png",
     "title": "Times Square",
-    "address": "Manhattan, NY 10036"
+    "address": "Manhattan, NY 10036",
+    "description": "Times Square is the bustling heart of NYC with bright lights, theaters, and shopping hubs attracting tourists worldwide.",
+    "website": "https://www.timessquarenyc.org",
+    "phone": "+1 212-768-1560",
+    "price": "Free",
+    "rating": 4.2,
+    "category": "shopping and dining"
   },
   {
-    "image": "images/spots/brooklyn_bridge.png",
+    "image1": "images/spots/brooklyn_bridge1.png",
+    "image2": "images/spots/brooklyn_bridge2.png",
+    "image3": "images/spots/brooklyn_bridge3.png",
     "title": "Brooklyn Bridge",
-    "address": "Brooklyn Bridge, New York, NY 10038"
+    "address": "Brooklyn Bridge, New York, NY 10038",
+    "description": "The Brooklyn Bridge is a historic bridge connecting Manhattan and Brooklyn with stunning views of the skyline.",
+    "website": "https://www.nyc.gov/html/dot/html/infrastructure/brooklyn-bridge.shtml",
+    "phone": "+1 311",
+    "price": "Free",
+    "rating": 4.6,
+    "category": "other"
   },
   {
-    "image": "images/spots/rockefeller_center.png",
+    "image1": "images/spots/rockefeller_center1.png",
+    "image2": "images/spots/rockefeller_center2.png",
+    "image3": "images/spots/rockefeller_center3.png",
     "title": "Rockefeller Center",
-    "address": "45 Rockefeller Plaza, New York, NY 10111"
+    "address": "45 Rockefeller Plaza, New York, NY 10111",
+    "description": "Rockefeller Center is renowned for its Top of the Rock Observation Deck, seasonal ice skating rink, and Christmas tree.",
+    "website": "https://www.rockefellercenter.com",
+    "phone": "+1 212-588-8601",
+    "price": "$38",
+    "rating": 4.9,
+    "category": "entertainment"
   }
 ]
