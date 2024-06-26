@@ -13,12 +13,12 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    public List<Event> getAllEvents() {
-        return eventRepository.findAllByOrderByTimeStartAsc();
+    public List<Event> getFilteredEventsWithinDateRange(String startDate, String endDate, Boolean isFree, List<String> combined_categories, String name) {
+        return eventRepository.findFilteredEventsWithinDateRange(startDate, endDate, isFree, combined_categories, name);
     }
 
-    public List<Event> getFilteredEventsWithinDateRange(String startDate, String endDate, Boolean isFree, List<String> categories, String name) {
-        return eventRepository.findFilteredEventsWithinDateRange(startDate, endDate, isFree, categories, name);
+    public List<Event> getFilteredEventsWithoutDateRange(Boolean isFree, List<String> combined_categories, String name) {
+        return eventRepository.findFilteredEventsWithoutDateRange(isFree, combined_categories, name);
     }
 
     public List<Event> getSelectedEvents(List<UUID> eventIds) {

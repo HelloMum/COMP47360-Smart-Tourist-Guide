@@ -101,6 +101,7 @@ public class EventService {
                             .filter(event -> !event.getIs_canceled())
                             .filter(event -> event.getName() != null && !event.getName().isEmpty())
                             .filter(event -> event.getEvent_site_url() != null && !event.getEvent_site_url().isEmpty())
+                            .filter(event -> event.getImage_url() != null && !event.getImage_url().isEmpty())
                             .filter(event -> {
                                 LocalDateTime timeStart = convertToLocalDateTime(event.getTime_start());
                                 LocalDateTime timeEnd = event.getTime_end() != null ?
@@ -123,7 +124,7 @@ public class EventService {
                     // Skip the duplicate events
                     for (EventData event : newEvents) {
                         boolean exists = eventRepository.existsEventByNameOrUrl(
-                                event.getName(), event.getEvent_site_url()
+                                event.getName(), event.getEvent_site_url(), event.getImage_url()
                         );
 
                         if (!exists) {
