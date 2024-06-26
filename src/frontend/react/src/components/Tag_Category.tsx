@@ -6,7 +6,7 @@ const Tag = ({ category }) => {
 
   return (
     <span  style={{
-      backgroundColor: '#4aaaaa', 
+      backgroundColor: '#72b2c7', 
       color: 'white',
       padding: '0px 9px',
       borderRadius: '4px',
