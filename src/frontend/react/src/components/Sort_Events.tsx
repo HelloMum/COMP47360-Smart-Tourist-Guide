@@ -12,8 +12,8 @@ const Sort_Events = () => {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-     <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}> sort by  </Typography>
-      <FormControl sx={{ minWidth: 90 }}>
+     <Typography sx={{ ...theme.typography.smallText, marginRight: 1,color:'#aaaaaa' }}> sort by start time </Typography>
+      {/* <FormControl sx={{ minWidth: 90 }}>
         <MuiSelect
           value={age}
           onChange={handleChange}
@@ -25,7 +25,7 @@ const Sort_Events = () => {
           <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>distance</MenuItem>
     
         </MuiSelect>
-      </FormControl>
+      </FormControl> */}
     </Box>
   );
 };
