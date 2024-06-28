@@ -3,24 +3,18 @@ import { FilterAltTwoTone } from "@mui/icons-material";
 import { Box, Checkbox, FormControlLabel, FormGroup, Stack } from "@mui/material";
 
 const categories = [
-  { label: "Music", value: "music" },
-  { label: "Visual Arts", value: "visual-arts" },
-  { label: "Performing Arts", value: "performing-arts" },
-  { label: "Film", value: "film" },
-  { label: "Lectures & Books", value: "lectures-books" },
-  { label: "Fashion", value: "fashion" },
-  { label: "Food & Drink", value: "food-and-drink" },
-  { label: "Festivals & Fairs", value: "festivals-fairs" },
-  { label: "Charities", value: "charities" },
-  { label: "Sports & Active Life", value: "sports-active-life" },
-  { label: "Nightlife", value: "nightlife" },
-  { label: "Kids & Family", value: "kids-family" },
-  { label: "Other", value: "other" },
+  { label: "Music", value: "Music" },
+  { label: "Art & Fashion", value: "Art & Fashion" },
+  { label: "Lectures & Books", value: "Lecture & Books" },
+  { label: "Food & Festival", value: "Food & Festival" },
+  { label: "Sports & Active", value: "Sports & Active" },
+  { label: "Kids & Family", value: "Kids & Family" },
+  { label: "Other", value: "Other" },
 ];
 
-const CustomFormControlLabel = ({ label }) => (
+const CustomFormControlLabel = ({ label, value, checked, onChange }) => (
   <FormControlLabel
-    control={<Checkbox sx={{
+    control={<Checkbox checked={checked} onChange={() => onChange(value)} sx={{
       '& .MuiSvgIcon-root': { fontSize: 17 },
       '& .MuiCheckbox-root': { borderRadius: 2 },
       '& .MuiCheckbox-root:hover': { borderColor: 'rgba(0, 0, 0, 0.23)' },
@@ -31,7 +25,7 @@ const CustomFormControlLabel = ({ label }) => (
   />
 );
 
-const FilterCheckbox = () => {
+const FilterCheckbox = ({ onChange, selectedCategories }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -59,8 +53,6 @@ const FilterCheckbox = () => {
         <span style={{ marginLeft: '2px', color: '#777777' }}>category</span>
       </Stack>
 
-
-
       {open && (
         <Box ref={ref} sx={{ boxShadow: 1, p: 1, borderRadius: 1, backgroundColor: '#fff', top: '160px', left: '15px', position: 'absolute', zIndex: 1000 }}>
           <FormGroup
@@ -72,7 +64,13 @@ const FilterCheckbox = () => {
             }}
           >
             {categories.map(category => (
-              <CustomFormControlLabel key={category.value} label={category.label} value={category.value} />
+              <CustomFormControlLabel
+                key={category.value}
+                label={category.label}
+                value={category.value}
+                checked={selectedCategories.includes(category.value)}
+                onChange={onChange}
+              />
             ))}
           </FormGroup>
         </Box>

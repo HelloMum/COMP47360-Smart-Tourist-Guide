@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { Card, CardMedia, Typography, IconButton, Box, Stack } from '@mui/material';
+import { Card, CardMedia, Typography, IconButton, Box, Stack, Rating } from '@mui/material';
 import theme from '../theme';
-import { ExpandMoreRounded } from '@mui/icons-material';
+import { ConfirmationNumber, ExpandMoreRounded } from '@mui/icons-material';
 import Btn_Add from './Btn_Add';
 import Btn_Like from './Btn_Like';
+import Tag_Category from './Tag_Category';
+import Tag_IsFree from './Tag_IsFree';
 
 interface SpotCardProps {
   image1: string;  
   image3: string; 
   title: string;
   address: string;
+  rating: number;
+  isFree: boolean;
+  category: string;
+  onAdd: () => void;
   onExpand: () => void;
 }
 
-const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, address, onExpand }) => {
+const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating,category,price, onExpand }) => {
   const [currentImage, setCurrentImage] = useState(image1);
   const [imageStyle, setImageStyle] = useState({
     transition: 'none',  
@@ -46,6 +52,10 @@ const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, address, onE
       width: "47%",
       marginBottom: 2
     }}>
+
+
+      {/* ---------------------   image   ---------------------- */}
+
       <Box sx={{ position: 'relative', overflow: 'hidden' }}>
         <CardMedia
           component="img"
@@ -62,19 +72,53 @@ const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, address, onE
         />
         <Btn_Like/>
       </Box>
-      <Stack sx={{ paddingTop: '8px', paddingLeft: '5px' }}>
+
+    {/* --------------------- content below image   ---------------------- */}
+
+       <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }}>
+
+
+     {/* ---------------------   title   ---------------------- */}
+
+   
         <Typography sx={{ ...theme.typography.cardTitle }} component="div">
           {title}
         </Typography>
 
-        <Typography sx={{ ...theme.typography.cardDesc }}>
-          {address}
-        </Typography>
-        <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1.5 }}>
+
+      {/* ---------------------   rating & isFree   ---------------------- */}
+
+        <Stack direction={"row"} gap={1} >
+      <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly  sx={{ fontSize: '1.2rem' }}  /> 
+      {rating}
+  
+      <Tag_IsFree isFree={true}/>
+</Stack>
+
+
+        {/* ---------------------   price  ---------------------- */}
+
+<Box display="flex" alignItems="center" >
+          {/* <ConfirmationNumber sx={{ fontSize: 'large', marginRight: '8px' }}/> */}
+          <Typography variant="body2" color="text.secondary">
+           from   {price } per adult
+          </Typography>
+        </Box>
+
+        
+  {/* ---------------------   two buttons  ---------------------- */}
+
+<Box display="flex" alignItems="center" ></Box>
+        <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5 }}>
+          
           <Btn_Add/>
+
+
           <IconButton onClick={onExpand}>
             <ExpandMoreRounded />
           </IconButton>
+
+          
         </Stack>
       </Stack>
     </Card>

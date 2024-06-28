@@ -12,9 +12,31 @@ import Sort_Events from '../../components/Sort_Events';
 
 const Events: React.FC = () => {
   const [events, setEvents] = useState(eventsData);
+  const [isFree, setIsFree] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
-  useEffect(() => {
-    fetch('http://localhost:8080/events/all')
+  const fetchEvents = () => {
+    let url = 'http://localhost:8080/events/all';
+    const params = new URLSearchParams();
+
+    if (isFree) {
+      params.append('isFree', 'true');
+    }
+
+    if (selectedCategories.length > 0) {
+      params.append('combined_categories', selectedCategories.join(','));
+    }
+
+    if (searchText) {
+      params.append('name', searchText);
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    fetch(url)
       .then(response => response.json())
       .then(data => {
         console.log('Fetched data:', data);
@@ -23,11 +45,30 @@ const Events: React.FC = () => {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, [isFree, selectedCategories, searchText]);
+
+  const handleSwitchChange = () => {
+    setIsFree(!isFree);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(item => item !== category)
+        : [...prev, category]
+    );
+  };
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+  };
 
   return (
     <div className="list" style={{ display: 'flex' }}>
-      
       <div
         className="left"
         style={{
@@ -40,20 +81,17 @@ const Events: React.FC = () => {
         }}
       >
 
-
-         {/* -------------- search bar --------------------*/}
+        {/* -------------- search bar --------------------*/}
         <Stack direction="row" justifyContent="center">
-          <Searchbar />
+          <Searchbar onSearch={handleSearch} />
         </Stack>
-
 
         {/* -------------- filter & sort -------------------*/}
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginY: 2 }}>
-          <FilterCheckbox />
-          <Switch />
+          <FilterCheckbox onChange={handleCategoryChange} selectedCategories={selectedCategories} />
+          <Switch checked={isFree} onChange={handleSwitchChange} />
           {/* <Sort_Events /> */}
         </Stack>
-
 
         {/* -------------- event cards ---------------------*/}
         <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
@@ -65,11 +103,10 @@ const Events: React.FC = () => {
         </div>
       </div>
 
-
       {/* --------------- map on the right ------------------*/}      
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-  <Map events={events} />
-</div>
+        <Map events={events} />
+      </div>
     </div>
   );
 };
