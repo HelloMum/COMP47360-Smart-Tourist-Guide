@@ -1,168 +1,242 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Entity;
+
+import java.util.List;
+
 public class Attraction {
-    private String id;
-    private String name;
-    private Double lat;
-    private Double lon;
-    private String tourism;
-    private String addrCity;
-    private String addrPostcode;
-    private String addrState;
-    private String addrStreet;
-    private String website;
-    private String openingHours;
-    private String phone;
-    private String email;
-    private String wheelchair;
-    private Double ele;
-    private String source;
-    private String wikidata;
-    private String wikipedia;
+    private int index;
+    private int taxiZone;
+    private String zoneName;
+    private String attractionPlaceId;
+    private String attractionName;
+    private double attractionLatitude;
+    private double attractionLongitude;
+    private String attractionVicinity;
+    private double attractionRating;
+    private double userRatingsTotal;
+    private String attractionPhoneNumber;
+    private String attractionWebsite;
+    private List<String> openingHours;
+    private int priceLevel;
+    private List<String> types;
+    private String internationalPhoneNumber;
+    private String url;
+    private String icon;
+    private String formattedHours;
+    private String category;
+    private String description;
+    private double price;
+    private boolean isFree;
+    private String popularTimes;
+    private String timeSpent;
+    private double currentPopularity;
 
-    public String getId() {
-        return id;
+    public int getIndex() {
+        return index;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
-    public String getName() {
-        return name;
+    public int getTaxiZone() {
+        return taxiZone;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTaxiZone(int taxiZone) {
+        this.taxiZone = taxiZone;
     }
 
-    public Double getLat() {
-        return lat;
+    public String getZoneName() {
+        return zoneName;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setZoneName(String zoneName) {
+        this.zoneName = zoneName;
     }
 
-    public Double getLon() {
-        return lon;
+    public String getAttractionPlaceId() {
+        return attractionPlaceId;
     }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
+    public void setAttractionPlaceId(String attractionPlaceId) {
+        this.attractionPlaceId = attractionPlaceId;
     }
 
-    public String getTourism() {
-        return tourism;
+    public String getAttractionName() {
+        return attractionName;
     }
 
-    public void setTourism(String tourism) {
-        this.tourism = tourism;
+    public void setAttractionName(String attractionName) {
+        this.attractionName = attractionName;
     }
 
-    public String getAddrCity() {
-        return addrCity;
+    public double getAttractionLongitude() {
+        return attractionLongitude;
     }
 
-    public void setAddrCity(String addrCity) {
-        this.addrCity = addrCity;
+    public void setAttractionLongitude(double attractionLongitude) {
+        this.attractionLongitude = attractionLongitude;
     }
 
-    public String getAddrPostcode() {
-        return addrPostcode;
+    public double getAttractionLatitude() {
+        return attractionLatitude;
     }
 
-    public void setAddrPostcode(String addrPostcode) {
-        this.addrPostcode = addrPostcode;
+    public void setAttractionLatitude(double attractionLatitude) {
+        this.attractionLatitude = attractionLatitude;
     }
 
-    public String getAddrState() {
-        return addrState;
+    public String getAttractionVicinity() {
+        return attractionVicinity;
     }
 
-    public void setAddrState(String addrState) {
-        this.addrState = addrState;
+    public void setAttractionVicinity(String attractionVicinity) {
+        this.attractionVicinity = attractionVicinity;
     }
 
-    public String getAddrStreet() {
-        return addrStreet;
+    public double getAttractionRating() {
+        return attractionRating;
     }
 
-    public void setAddrStreet(String addrStreet) {
-        this.addrStreet = addrStreet;
+    public void setAttractionRating(double attractionRating) {
+        this.attractionRating = attractionRating;
     }
 
-    public String getWebsite() {
-        return website;
+    public double getUserRatingsTotal() {
+        return userRatingsTotal;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setUserRatingsTotal(double userRatingsTotal) {
+        this.userRatingsTotal = userRatingsTotal;
     }
 
-    public String getOpeningHours() {
+    public String getAttractionPhoneNumber() {
+        return attractionPhoneNumber;
+    }
+
+    public void setAttractionPhoneNumber(String attractionPhoneNumber) {
+        this.attractionPhoneNumber = attractionPhoneNumber;
+    }
+
+    public String getAttractionWebsite() {
+        return attractionWebsite;
+    }
+
+    public void setAttractionWebsite(String attractionWebsite) {
+        this.attractionWebsite = attractionWebsite;
+    }
+
+    public List<String> getOpeningHours() {
         return openingHours;
     }
 
-    public void setOpeningHours(String openingHours) {
+    public void setOpeningHours(List<String> openingHours) {
         this.openingHours = openingHours;
     }
 
-    public String getPhone() {
-        return phone;
+    public int getPriceLevel() {
+        return priceLevel;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPriceLevel(int priceLevel) {
+        this.priceLevel = priceLevel;
     }
 
-    public String getEmail() {
-        return email;
+    public List<String> getTypes() {
+        return types;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
-    public String getWheelchair() {
-        return wheelchair;
+    public String getInternationalPhoneNumber() {
+        return internationalPhoneNumber;
     }
 
-    public void setWheelchair(String wheelchair) {
-        this.wheelchair = wheelchair;
+    public void setInternationalPhoneNumber(String internationalPhoneNumber) {
+        this.internationalPhoneNumber = internationalPhoneNumber;
     }
 
-    public Double getEle() {
-        return ele;
+    public String getUrl() {
+        return url;
     }
 
-    public void setEle(Double ele) {
-        this.ele = ele;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getSource() {
-        return source;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public String getWikidata() {
-        return wikidata;
+    public String getFormattedHours() {
+        return formattedHours;
     }
 
-    public void setWikidata(String wikidata) {
-        this.wikidata = wikidata;
+    public void setFormattedHours(String formattedHours) {
+        this.formattedHours = formattedHours;
     }
 
-    public String getWikipedia() {
-        return wikipedia;
+    public String getCategory() {
+        return category;
     }
 
-    public void setWikipedia(String wikipedia) {
-        this.wikipedia = wikipedia;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public boolean isFree() {
+        return isFree;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
+    }
+
+    public String getPopularTimes() {
+        return popularTimes;
+    }
+
+    public void setPopularTimes(String popularTimes) {
+        this.popularTimes = popularTimes;
+    }
+
+    public double getCurrentPopularity() {
+        return currentPopularity;
+    }
+
+    public void setCurrentPopularity(double currentPopularity) {
+        this.currentPopularity = currentPopularity;
+    }
+
+    public String getTimeSpent() {
+        return timeSpent;
+    }
+
+    public void setTimeSpent(String timeSpent) {
+        this.timeSpent = timeSpent;
     }
 }
-
-
