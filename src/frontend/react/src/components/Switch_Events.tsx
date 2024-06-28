@@ -54,13 +54,13 @@ const FreeLabel = styled(Typography)(({ theme }) => ({
   marginLeft: theme.spacing(1),
 }));
 
-const App = () => {
+const Switch_Events = ({ checked, onChange }) => {
   return (
     <FormControlLabel
-      control={<FreeSwitch  />}
-      label={<FreeLabel    >Free</FreeLabel>}
+      control={<FreeSwitch checked={checked} onChange={onChange} />}
+      label={<FreeLabel>Free</FreeLabel>}
     />
   );
 };
 
-export default App;
+export default Switch_Events;
