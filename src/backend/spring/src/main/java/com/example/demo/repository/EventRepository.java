@@ -14,7 +14,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     List<Event> findAll();
 
     @Query("SELECT e FROM Event e WHERE " +
-            "(:name IS NULL OR CAST(e.name AS string) LIKE '%' || CAST(:name AS string) || '%') AND " +
+            "(:name IS NULL OR CAST(e.name AS string) ILIKE '%' || CAST(:name AS string) || '%') AND " +
             "(:isFree IS NULL OR e.is_free = :isFree) AND " +
             "(:combined_categories IS NULL OR e.combined_category IN :combined_categories) AND " +
             "((e.time_start >= :startDate AND e.time_start <= :endDate) OR " +
@@ -28,7 +28,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
                                                   @Param("name") String name);
 
     @Query("SELECT e FROM Event e WHERE " +
-            "(:name IS NULL OR CAST(e.name AS string) LIKE '%' || CAST(:name AS string) || '%') AND " +
+            "(:name IS NULL OR CAST(e.name AS string) ILIKE '%' || CAST(:name AS string) || '%') AND " +
             "(:isFree IS NULL OR e.is_free = :isFree) AND " +
             "(:combined_categories IS NULL OR e.combined_category IN :combined_categories) " +
             "ORDER BY e.time_start ASC")

@@ -1,19 +1,26 @@
-FROM gradle:8.7.0-jdk21 AS dependencies
+FROM eclipse-temurin:21-jdk AS dependencies
 
 WORKDIR /app
 
-COPY build.gradle .
-COPY settings.gradle .
+COPY gradlew /app/gradlew
+COPY gradle /app/gradle
+COPY build.gradle /app/build.gradle
+COPY settings.gradle /app/settings.gradle
 
-RUN gradle build --no-daemon || return 0
+RUN chmod +x gradlew
+
+RUN ./gradlew dependencyUpdates --no-daemon
 
 FROM dependencies AS builder
 
+WORKDIR /app
+
 COPY . .
 
-RUN gradle build --no-daemon
+RUN ./gradlew build --no-daemon
 
-FROM eclipse-temurin:22.0.1_8-jre-ubi9-minimal
+FROM eclipse-temurin:21-jre
+
 WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar
