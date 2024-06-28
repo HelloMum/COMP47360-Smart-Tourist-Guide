@@ -32,13 +32,10 @@ public class AttractionController {
     public List<Attraction> filterAttractions(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean isFree,
-            @RequestParam(required = false) List<String> category,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false, defaultValue = "rating") String sortBy,
             @RequestParam(required = false) String order) {
 
-        if (category == null || category.isEmpty()) {
-
-        }
 
         if (order == null) {
             if ("price".equalsIgnoreCase(sortBy)) {
