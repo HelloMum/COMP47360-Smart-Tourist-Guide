@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+
 import com.example.demo.model.Attraction;
 import com.example.demo.model.DailyForecastData;
 import ml.dmlc.xgboost4j.java.Booster;
@@ -9,11 +10,10 @@ import ml.dmlc.xgboost4j.java.XGBoostError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -105,18 +105,19 @@ public class PredictionService {
             "hour_23"
     );
 
+    /**
+     * Constructs a PredictionService and loads the XGBoost model.
+     */
     public PredictionService() {
         try {
             // Load the XGBoost model
-            File file = ResourceUtils.getFile("classpath:mlm/XGboost_model_depth_12_lr_0.1_estimators_200_2.bin");
-            InputStream modelStream = new FileInputStream(file);
-            logger.info("Loading XGBoost model from: " + file.getPath());
+            ClassPathResource resource = new ClassPathResource("mlm/XGboost_model_depth_12_lr_0.1_estimators_200_2.bin");
+            InputStream modelStream = resource.getInputStream();
+            logger.info("Loading XGBoost model from: " + resource.getURL().getPath());
             booster = XGBoost.loadModel(modelStream);
             logger.info("XGBoost model loaded successfully.");
-        } catch (XGBoostError e) {
+        } catch (IOException | XGBoostError e) {
             logger.error("Failed to load XGBoost model.", e);
-        } catch (Exception e) {
-            logger.error("Unexpected error during model loading.", e);
         }
     }
 
@@ -158,11 +159,20 @@ public class PredictionService {
         }
 
         // Create DMatrix from the float array
-        DMatrix dmatrix = new DMatrix(floatFeatures, 1, features.length, Float.NaN);
+        DMatrix dmatrix;
+        try {
+            dmatrix = new DMatrix(floatFeatures, 1, features.length, Float.NaN);
+        } catch (XGBoostError e) {
+            throw new RuntimeException("Failed to create DMatrix for prediction.", e);
+        }
 
         // Predict
-        float[][] predictions = booster.predict(dmatrix);
-        return predictions[0];
+        try {
+            float[][] predictions = booster.predict(dmatrix);
+            return predictions[0];
+        } catch (XGBoostError e) {
+            throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
+        }
     }
 
     private double[] prepareFeatures(Attraction attraction, DailyForecastData dailyForecastData) {
