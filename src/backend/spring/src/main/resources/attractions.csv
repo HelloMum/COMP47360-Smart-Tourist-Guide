@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b259ae6049a8df132ac923dda0518df589d1c2e678dcf656e98a92fa46752283
-size 247192
+id,name,lat,lon,tourism,addr:city,addr:postcode,addr:state,addr:street,website,opening_hours,phone,email,wheelchair,ele,source,wikidata,wikipedia
+158809984,SoHo,40.72288,-73.9987505,attraction,,,,,,,,,,9,,Q461572,"en:SoHo, Manhattan"
+320948228,South Street Seaport,40.7057505,-74.0029056,attraction,,,,,,,,,yes,,,Q223000,en:South Street Seaport
+368043598,Stonewall Inn,40.7338007,-74.0021484,attraction,New York,10014,NY,Christopher Street,https://thestonewallinnnyc.com/,,,,limited,7,USGS Geonames,Q1261362,en:Stonewall Inn
+368052081,Fraunces Tavern Museum,40.7033867,-74.0113536,museum,New York,10004,NY,Pearl Street,https://www.frauncestavernmuseum.org/,We-Su 12:00-17:00,+1 212-425-1778,,yes,,,,
+368061337,National Museum of the American Indian,40.7040265,-74.0137472,museum,New York,10004,NY,Bowling Green,https://americanindian.si.edu/,Mo-Su 10:00-17:00,+12125143700,,yes,3,,Q5539979,
+368061605,Yeshiva University Museum,40.737978,-73.9938312,museum,,,NY,,https://www.yumuseum.org/,,,,,11,USGS Geonames,Q8052851,en:Yeshiva University Museum
+368061607,Dahesh Museum of Art,40.7250957,-74.0049076,museum,,,NY,,https://www.daheshmuseum.org/,,,,,16,,Q2999991,en:Dahesh Museum of Art
+368061657,Museum of African Art,40.725,-73.9977778,museum,,,NY,,,,,,,10,USGS Geonames,,
+368061660,Lower East Side Tenement Museum,40.7187837,-73.9900266,museum,New York,,NY,Orchard Street,https://www.tenement.org/,Mo-Su 10:00-18:00,+1 212-982-8420,,,12,USGS Geonames,Q901533,en:Lower East Side Tenement Museum
+566445454,International Center of Photography,40.7557394,-73.9837251,museum,New York,10036,NY,6th Avenue,https://www.icp.org/,,,info@icp.org,,,,Q636942,en:International Center of Photography
+1240900810,Tortoise,40.7679978,-73.9727565,attraction,,,,,,,,,yes,,,,
+1240900824,Seal,40.7683715,-73.9716059,attraction,,,,,,,,,yes,,,,
+1240900847,Puffin,40.7681959,-73.9713336,attraction,,,,,,,,,,,,,
+1240900912,California Sea Lion,40.767819,-73.9717588,attraction,,,,,,,,,yes,,,,
+1240900960,Gentoo Penguin,40.7683299,-73.971457,attraction,,,,,,,,,,,,,
+1240900963,Grizzly Bear,40.7684111,-73.971913,attraction,,,,,,,,,limited,,,,
+1240901027,Snow Monkey,40.7681796,-73.9723113,attraction,,,,,,,,,,,,,
+1240901089,Red Panda,40.7682913,-73.9727846,attraction,,,,,,,,,yes,,,,
+1240901124,Snow Leopard,40.7686428,-73.9726493,attraction,,,,,,,,,,,,,
+1549441335,Dyckman Farmhouse Museum,40.8673822,-73.9228859,museum,New York,10034,NY,Broadway,https://dyckmanfarmhouse.org/,Th-Sa 11:00-16:00; Su 11:00-15:00,+1-212-304-9422,info@dyckmanfarmhouse.org,no,,,Q2865930,
