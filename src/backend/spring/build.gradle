@@ -37,6 +37,10 @@ dependencies {
 		exclude group: "commons-logging", module: 'commons-logging'
 	}
 
+	// Native library dependencies for XGBoost
+	runtimeOnly 'org.bytedeco:openblas:0.3.21-1.5.8'
+	runtimeOnly 'org.bytedeco:openblas-platform:0.3.21-1.5.8'
+
 	// JUnit 5 dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
