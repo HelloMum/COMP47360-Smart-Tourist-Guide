@@ -3,7 +3,9 @@ package com.example.demo.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -11,13 +13,13 @@ import java.util.UUID;
 public class DailyForecastData {
     @Id
     private UUID id;
-    private double clouds;
-    private int dt;
+    private Timestamp fetch_time;
+    private long dt;
+    @Column(name = "temp_day")
+    private double tempDay;
     private double rain;
-    private String weather_icon;
-    private int weather_id;
-    private String weather_main;
-    private UUID daily_weather_forecast_data_id;
+    private double snow;
+    private double speed;
 
     public UUID getId() {
         return id;
@@ -27,20 +29,36 @@ public class DailyForecastData {
         this.id = id;
     }
 
-    public double getClouds() {
-        return clouds;
+    public Timestamp getFetch_time() {
+        return fetch_time;
     }
 
-    public void setClouds(double clouds) {
-        this.clouds = clouds;
+    public void setFetch_time(Timestamp fetch_time) {
+        this.fetch_time = fetch_time;
     }
 
-    public int getDt() {
+    public long getDt() {
         return dt;
     }
 
-    public void setDt(int dt) {
+    public void setDt(long dt) {
         this.dt = dt;
+    }
+
+    public double getTempDay() {
+        return tempDay;
+    }
+
+    public void setTempDay(double tempDay) {
+        this.tempDay = tempDay;
+    }
+
+    public double getSnow() {
+        return snow;
+    }
+
+    public void setSnow(double snow) {
+        this.snow = snow;
     }
 
     public double getRain() {
@@ -51,35 +69,11 @@ public class DailyForecastData {
         this.rain = rain;
     }
 
-    public String getWeather_icon() {
-        return weather_icon;
+    public double getSpeed() {
+        return speed;
     }
 
-    public void setWeather_icon(String weather_icon) {
-        this.weather_icon = weather_icon;
-    }
-
-    public int getWeather_id() {
-        return weather_id;
-    }
-
-    public void setWeather_id(int weather_id) {
-        this.weather_id = weather_id;
-    }
-
-    public String getWeather_main() {
-        return weather_main;
-    }
-
-    public void setWeather_main(String weather_main) {
-        this.weather_main = weather_main;
-    }
-
-    public UUID getDaily_weather_forecast_data_id() {
-        return daily_weather_forecast_data_id;
-    }
-
-    public void setDaily_weather_forecast_data_id(UUID daily_weather_forecast_data_id) {
-        this.daily_weather_forecast_data_id = daily_weather_forecast_data_id;
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 }

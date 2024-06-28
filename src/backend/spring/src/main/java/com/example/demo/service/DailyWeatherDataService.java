@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DailyWeatherDataService {
@@ -19,23 +17,33 @@ public class DailyWeatherDataService {
     @Autowired
     private DailyWeatherDataRepository repository;
 
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     public List<DailyForecastData> getLatestForecast() {
-        List<UUID> latestIdList = repository.findLatestId(PageRequest.of(0, 1));
-        UUID latestId = latestIdList.isEmpty() ? null : latestIdList.get(0);
-        return repository.findForecastByWeatherDataId(latestId);
+        return repository.findLatestForecast(PageRequest.of(0, 30));
     }
 
     public List<DailyForecastData> getForecastByDate(LocalDate date) {
-        List<UUID> latestIdList = repository.findLatestId(PageRequest.of(0, 1));
-        UUID latestId = latestIdList.isEmpty() ? null : latestIdList.get(0);
-        List<DailyForecastData> latestForecasts = repository.findForecastByWeatherDataId(latestId);
-
+        // Convert the given date to the start of the day in New York time and add 12 hours to match the target timestamp
         ZonedDateTime startOfDayET = date.atStartOfDay(ZoneId.of("America/New_York")).plusHours(12);
         long targetDt = startOfDayET.toEpochSecond();
 
-        return latestForecasts.stream()
-                .filter(forecast -> forecast.getDt() == targetDt)
+        return repository.findForecastByDt(targetDt).stream()
+                .map(this::convertUnits)
                 .collect(Collectors.toList());
     }
 
+    private DailyForecastData convertUnits(DailyForecastData data) {
+        // Convert temperature from Kelvin to Celsius and format to 4 decimal places
+        data.setTempDay(formatToFourDecimalPlaces(data.getTempDay() - 273.15));
+        // Convert snow from millimeters to centimeters and format to 4 decimal places
+        data.setSnow(formatToFourDecimalPlaces(data.getSnow() / 10));
+        // Convert speed from meters/second to kilometers/hour and format to 4 decimal places
+        data.setSpeed(formatToFourDecimalPlaces(data.getSpeed() * 3.6));
+        return data;
+    }
+
+    private double formatToFourDecimalPlaces(double value) {
+        return Math.round(value * 10000.0) / 10000.0;
+    }
 }
