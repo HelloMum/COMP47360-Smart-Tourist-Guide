@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Box, CardMedia, Typography, Stack } from '@mui/material';
-import { AccessTimeRounded, DateRangeRounded, ExpandLessRounded, ExpandMoreRounded, LocationOnRounded, PublicRounded } from '@mui/icons-material';
+import { Card, Box, CardMedia, Typography, Stack, IconButton } from '@mui/material';
+import { AccessTimeRounded, CloseRounded, DateRangeRounded, ExpandLessRounded, ExpandMoreRounded, LocationOnRounded, PublicRounded } from '@mui/icons-material';
 import theme from '../theme';
 import Btn_Like from './Btn_Like';
 import Btn_Add from './Btn_Add';
@@ -22,7 +22,7 @@ const formatDateTime = (dateTime) => {
   return { date: formattedDate, time: formattedTime };
 };
 
-const EventCard = ({ event }) => {
+const EventCard_PopUp = ({ event,onClose }) => {
 
   const theme = useTheme(); 
   const { date, time } = formatDateTime(event.time_start);
@@ -32,35 +32,33 @@ const EventCard = ({ event }) => {
     setIsExpanded(!isExpanded);
   };
   
+
+  
   
   return (
 
-  <Card sx={{
-  borderRadius: '7px',
-  overflow: 'hidden',
-  boxShadow: '0 1px 5px rgba(0, 0, 0, 0.15)',
-  width: "98%",
-  paddingX: '20px',
-  paddingY: '12px',
-  marginBottom: 3,
-  marginLeft: '3px',
-  marginTop: '3px',
-  height: isExpanded ? 'auto' : '170px'  
-}}>
 
 
-      <Stack direction="row">
+      <Stack direction="row" width='450px'>
+
+          {/*--------------------- Close Button ---------------*/}
+          
+      <Box position="absolute" top={0} right={0} zIndex="tooltip">
+        <IconButton onClick={onClose} sx={{fontSize:'small'}}>
+          <CloseRounded />
+        </IconButton>
+      </Box>
 
         {/*------------------   picture  -------------------- */}
 
-        <Box sx={{ position: 'relative', width: '180px', height: isExpanded?'190px' :'128px',boxShadow: 1 ,borderRadius: '4px',marginTop: '10px',}}>
+        <Box sx={{ position: 'relative', width: '140px', height: isExpanded?'190px' :'128px',boxShadow: 1 ,borderRadius: '2px',marginTop: '5px',}}>
           <CardMedia
           
             component="img"
             height="100"
             image={imageUrl}
             alt={event.name}
-            sx={{   objectFit: 'cover', borderRadius: '4px',width: '180px', height: isExpanded?'190px' :'128px', }}
+            sx={{   objectFit: 'cover', borderRadius: '2px',width: '140px', height: isExpanded?'190px' :'135px', }}
           />
           {/* <Btn_Like /> */}
         </Box>
@@ -68,14 +66,14 @@ const EventCard = ({ event }) => {
 
           {/*------------------   title  -------------------- */}
 
-        <Box sx={{ marginLeft: '30px', flexGrow: 1 }}>
+        <Box sx={{ marginLeft: '20px', flexGrow: 1 }}>
         <Typography
   sx={{
     ...theme.typography.cardTitle,
     whiteSpace: isExpanded ? 'normal' : 'nowrap', 
     overflow: 'hidden',
     textOverflow: isExpanded ? 'clip' : 'ellipsis',
-    maxWidth: '350px',
+    maxWidth: '250px',
     display: 'inline-block', 
   }}
   component="div"
@@ -126,7 +124,7 @@ const EventCard = ({ event }) => {
 
 
            {/* address */}
-  { event.address &&      (<Box display="flex" alignItems="center" >
+           <Box display="flex" alignItems="center" >
 
           <LocationOnRounded sx={{ fontSize: 'large' ,marginRight:1}}/>
           <Typography variant="body2" color="text.secondary">
@@ -134,11 +132,11 @@ const EventCard = ({ event }) => {
         
             {event.address}
           </Typography>
-             </Box> )}
+             </Box> 
  
 
 {isExpanded&&
-             (<Typography variant="body2" color="text.secondary" sx={{ ...theme.typography.smallText,marginLeft: '3px' }}>               
+             (<Typography variant="body2" color="text.secondary" sx={{ ...theme.typography.smallText,marginLeft: '3px' ,width: '300px'}}>               
         {event.description}
       </Typography>)}
 
@@ -149,15 +147,15 @@ const EventCard = ({ event }) => {
 
           <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1 }}>
             <Btn_Add />
-           {!isExpanded && <ExpandMoreRounded onClick={toggleExpand} />}
+           {/* {!isExpanded && <ExpandMoreRounded onClick={toggleExpand} />} */}
           {isExpanded && <ExpandLessRounded onClick={toggleExpand} />}
           </Stack> 
           
           
         </Box>
       </Stack>
-    </Card>
+
   );
 }
 
-export default EventCard;
+export default EventCard_PopUp;

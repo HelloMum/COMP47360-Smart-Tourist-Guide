@@ -51,7 +51,12 @@ const Spots: React.FC = () => {
                   image1={spot.image1}
                   image3={spot.image3}
                   title={spot.title}
-                  address={spot.address}
+                               rating={spot.rating}
+                               price={spot.price}
+                            
+              
+                  category={spot.category}
+
                   onExpand={() => handleExpand(spot)}
                 />
               ))}
