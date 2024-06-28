@@ -183,7 +183,7 @@ public class PredictionService {
         }
 
         // Map attraction and weather data to features
-        features[expected_features.indexOf("taxi_zone")] = attraction.getTaxiZone();
+        features[expected_features.indexOf("taxi_zone")] = attraction.getTaxi_zone();
         features[expected_features.indexOf("temperature_2m (°C)")] = dailyForecastData.getTempDay();
         features[expected_features.indexOf("rain (mm)")] = dailyForecastData.getRain();
         features[expected_features.indexOf("snow_depth (m)")] = 0;
