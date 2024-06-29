@@ -8,13 +8,14 @@ import Switch from '../../components/Switch_Events';
 import FilterCheckbox from '../../components/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 
-import Sort_Events from '../../components/Sort_Events';
 
 const Events: React.FC = () => {
   const [events, setEvents] = useState([]);
   const [isFree, setIsFree] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
+
+const [hoveredEventId, setHoveredEventId] = useState(null);  
 
   const fetchEvents = () => {
     let url = 'http://localhost:8080/events/all';
@@ -97,7 +98,8 @@ const Events: React.FC = () => {
         <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
           <Stack>
             {events.map(event => (
-              <EventCard key={event.id} event={event} />
+              <EventCard key={event.id} event={event} onMouseEnter={() => setHoveredEventId(event.id)}
+              onMouseLeave={() => setHoveredEventId(null)}/>
             ))}
           </Stack>
         </div>
@@ -105,7 +107,7 @@ const Events: React.FC = () => {
 
       {/* --------------- map on the right ------------------*/}      
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-        <Map events={events} />
+        <Map events={events} hoveredEventId={hoveredEventId}/>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import EventCard_PopUp from './EventCard_PopUp';
 
-const Map = ({ events: data }) => {
+const Map = ({ events: data,hoveredEventId  }) => {
   
   // useLoadScript hook to load google maps api
   const { isLoaded, loadError } = useLoadScript({
@@ -138,26 +138,31 @@ const getHoverIconUrl = (category) => {
   // useEffect to add markers only after the map is loaded
   useEffect(() => {
     if (isLoaded && mapRef.current) {
-      const newMarkers = data.map(m => {
+      const newMarkers = data.map(event => {
+        const isEventHovered = hoveredEventId === event.id;
+        const isActive = isEventHovered || hoveredMarker === event.id || selectedMarker?.id === event.id;
+        const iconSize = isActive ? 43 : 38;  
+  
         return (
           <Marker
-            key={m.id}
-            position={{ lat: m.latitude, lng: m.longitude }}
-            title={m.name}
-            onClick={() => setSelectedMarker(m)}
+            key={event.id}
+            position={{ lat: event.latitude, lng: event.longitude }}
+            title={event.name}
+            onClick={() => setSelectedMarker(event)}
             icon={{
-              url: hoveredMarker===m.id || selectedMarker?.id === m.id ? getHoverIconUrl(m.combined_category):  getIconUrl(m.combined_category),
-              scaledSize: new window.google.maps.Size(hoveredMarker === m.id || selectedMarker?.id === m.id ? 45 : 38, hoveredMarker === m.id  || selectedMarker?.id === m.id? 45 : 38)
+              url: isActive ? getHoverIconUrl(event.combined_category) : getIconUrl(event.combined_category),
+              scaledSize: new window.google.maps.Size(iconSize, iconSize),
+              anchor: new window.google.maps.Point(iconSize / 2, iconSize / 2) 
             }}
-            onMouseOver={() => setHoveredMarker(m.id)}
+            zIndex={isActive ? 1000 : 1}
+            onMouseOver={() => setHoveredMarker(event.id)}
             onMouseOut={() => setHoveredMarker(null)}
           />
         );
       });
       setMarkers(newMarkers);
     }
-  }, [isLoaded, data, hoveredMarker]); 
-
+  }, [isLoaded, data, hoveredMarker, hoveredEventId, selectedMarker]);
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
 
