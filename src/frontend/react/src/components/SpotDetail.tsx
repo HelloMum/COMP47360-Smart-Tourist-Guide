@@ -15,8 +15,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
       margin: "5px auto",
 
     }}>
-  
-  
+    
 
     {/*------------------   picture  -------------------- */}
 
@@ -29,8 +28,8 @@ const SpotDetail = ({ spot, onCollapse }) => {
 }}>
   <CardMedia
     component="img"
-    image={spot.image2}
-    alt={spot.title}
+    image={`/images/spots/${spot.index}_2.webp`}
+    alt={spot.attraction_name}
     sx={{
       borderTopLeftRadius: '6px',
       boxShadow: 1,
@@ -44,8 +43,8 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
   <CardMedia
     component="img"
-    image={spot.image3}
-    alt={spot.title}
+    image={`/images/spots/${spot.index}_3.webp`}
+    alt={spot.attraction_name}
     sx={{
       borderTopRightRadius: '6px',
       boxShadow: 1,
@@ -63,14 +62,14 @@ const SpotDetail = ({ spot, onCollapse }) => {
 <Stack sx={{ p: 3, px: 5 }}>
 
 
-      <h2>{spot.title}</h2>
+      <h2>{spot.attraction_name}</h2>
 
   {/*---------- rating & two Tag---------------------- */}
 
 
       <Stack direction={"row"} gap={1}>
-      <Rating name="half-rating-read" defaultValue={spot.rating} precision={0.1} readOnly /> 
-      {spot.rating}
+      <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly /> 
+      {spot.attraction_rating}
       <Tag_Category category={spot.category} />
       <Tag_IsFree isFree={true}/>
 </Stack>
@@ -90,7 +89,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         <Box display="flex" alignItems="center" >
           <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
           <Typography variant="body2" color="text.secondary" sx={{ marginRight: '24px' }}>
-            {spot.address} 
+            {spot.attraction_vicinity} 
           </Typography>
           </Box>
 
@@ -108,16 +107,18 @@ const SpotDetail = ({ spot, onCollapse }) => {
         <Box display="flex" alignItems="center">
           <PublicRounded sx={{ fontSize: 'large', marginRight: '8px' }}/>
           <Typography variant="body2" color="text.secondary">
-            {spot.website || 'No address provided'}  
+            {spot.attractionWebsite || 'No address provided'}  
           </Typography>
         </Box>
 
 
       {/* phone */}
-      <Box display="flex" alignItems="center">
+      <Box display="flex" >
           <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }}/>
           <Typography variant="body2" color="text.secondary">
-            {spot.phone || 'No address provided'}  
+           local: {spot.attraction_phone_number || 'No local phone provided'}   <br /> 
+        
+           international:  {spot.international_phone_number || 'No international phone provided'}  
           </Typography>
         </Box>
       

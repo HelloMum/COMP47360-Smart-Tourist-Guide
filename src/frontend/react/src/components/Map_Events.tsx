@@ -187,7 +187,7 @@ const getHoverIconUrl = (category) => {
         >
           <div style={{
             position: 'absolute',
-            transform: 'translate(-50%, -130%)',  //the position of card
+            transform: 'translate(-50%, -115%)',  //the position of card
             padding: '10px',
             background: 'white',
             border: '1px solid #ccc',

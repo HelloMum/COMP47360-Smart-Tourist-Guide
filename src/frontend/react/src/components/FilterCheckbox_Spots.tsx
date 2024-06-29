@@ -15,13 +15,13 @@ const categories = [
 const CustomFormControlLabel = ({ label }) => (
   <FormControlLabel
     control={<Checkbox sx={{
-      '& .MuiSvgIcon-root': { fontSize: 17 },
+      '& .MuiSvgIcon-root': { fontSize: 20 },
       '& .MuiCheckbox-root': { borderRadius: 2 },
       '& .MuiCheckbox-root:hover': { borderColor: 'rgba(0, 0, 0, 0.23)' },
       '& .Mui-checked': { color: '#999' },
     }} />}
     label={label}
-    sx={{ '.MuiTypography-root': { fontSize: '0.75rem' }, margin: '-3px 0', color: '#777' }}
+    sx={{ '.MuiTypography-root': { fontSize: '0.78rem' }, margin: '-3px 0', color: '#777' }}
   />
 );
 

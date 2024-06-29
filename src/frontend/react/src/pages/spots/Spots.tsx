@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Stack } from '@mui/material';
-import Map from '../../components/Map_Events';
+import Map from '../../components/Map_Spots';
 import Searchbar from '../../components/Searchbar';
 import Switch from '../../components/Switch_Spots';
 import SpotCard from '../../components/SpotCard';
@@ -13,7 +13,7 @@ import FilterCheckbox from '../../components/FilterCheckbox_Spots';
 
 const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
-
+  const [spots, setSpots] = useState([]); 
   const handleExpand = (spot) => {
     setActiveSpot(spot);
   };
@@ -21,6 +21,19 @@ const Spots: React.FC = () => {
   const handleCollapse = () => {
     setActiveSpot(null);
   };
+
+  useEffect(() => {
+
+    fetch('http://localhost:8080/attractions/all')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched data:", data); 
+        setSpots(data); 
+      })
+      .catch(error => {
+        console.error('Error fetching attractions data:', error);
+      });
+  }, []); 
 
   return (
     <div style={{ display: 'flex' }}>
@@ -48,12 +61,11 @@ const Spots: React.FC = () => {
               {spots.map((spot) => (
                 <SpotCard
                   key={spot.id}
-                  image1={spot.image1}
-                  image3={spot.image3}
-                  title={spot.title}
-                               rating={spot.rating}
-                               price={spot.price}
-                            
+                  image1={`/images/spots/${spot.index}_1.webp`}
+                  image3={`/images/spots/${spot.index}_3.webp`}
+                  title={spot.attraction_name}
+                  rating={spot.attraction_rating}
+                  price={spot.price}                            
               
                   category={spot.category}
 

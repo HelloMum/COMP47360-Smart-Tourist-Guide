@@ -42,7 +42,7 @@ const EventCard = ({ event, onMouseEnter, onMouseLeave }) => {
         height: isExpanded ? 'auto' : '170px',
         transition: 'box-shadow 0.3s',
         '&:hover': {
-          boxShadow: '0 8px 10px rgba(0, 0, 0, 0.2)' 
+          boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)' 
         }
       }}
       onMouseEnter={() => { onMouseEnter(); }}  
