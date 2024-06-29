@@ -7,11 +7,11 @@ import { Stack } from '@mui/material';
 import Switch from '../../components/Switch_Events';
 import FilterCheckbox from '../../components/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
-import eventsData from '../../data/events.json';
+
 import Sort_Events from '../../components/Sort_Events';
 
 const Events: React.FC = () => {
-  const [events, setEvents] = useState(eventsData);
+  const [events, setEvents] = useState([]);
   const [isFree, setIsFree] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchText, setSearchText] = useState('');

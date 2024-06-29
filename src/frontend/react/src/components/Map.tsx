@@ -2,23 +2,34 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import EventCard_PopUp from '../components/EventCard_PopUp';  
 
-const Map = ({ events }) => {
+const Map = ({ events: data }) => {
+  // useLoadScript hook to load google maps api
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
     libraries: ['places'],
   });
 
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  // keep this line to get rid of the bug: always reposition to center when click a marker
   const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
-  const mapRef = useRef(null);
 
+  // all markers
+  const [markers, setMarkers] = useState([]); 
+
+  // selected marker 
+  const [selectedMarker, setSelectedMarker] = useState(null);
+
+  const mapRef = useRef(null); 
+
+  // map container style
   const containerStyle = {
     width: '100%',
     height: '100vh',
     position: 'fixed',
   };
+
+  // map style
   const mapOptions = {
-    disableDefaultUI: true,
+    disableDefaultUI: true, 
     styles: [
       {
         featureType: 'poi',
@@ -78,47 +89,64 @@ const Map = ({ events }) => {
     ],
   };
 
-  const onMarkerClick = (event) => {
-    setSelectedEvent(event);
-    // 如果需要将点击的标记置为地图中心，请取消以下注释
-    // mapRef.current.panTo({ lat: event.latitude, lng: event.longitude });
-  };
+  // log the initial state and data
+  console.log('Initial isLoaded:', isLoaded);
+  console.log('Initial data:', data);
 
-  const handleClose = () => {
-    setSelectedEvent(null);
-  };
+  // useEffect to add markers only after the map is loaded
+  useEffect(() => {
+    console.log('useEffect triggered');
+    console.log('isLoaded:', isLoaded);
+
+    if (isLoaded && mapRef.current) {
+      console.log('【Map is fully loaded】');
+      console.log('markers data:', data);
+     
+      if (data) {
+        const newMarkers = data.map(m => (
+          <Marker
+            key={m.id}
+            position={{ lat: m.latitude, lng: m.longitude }} 
+            title={m.name}
+            onClick={() => setSelectedMarker(m)} 
+            icon={{
+              url: '/images/marker/icon.png',
+              scaledSize: new window.google.maps.Size(30, 41)
+            }}
+          />
+        ));
+        setMarkers(newMarkers);
+        console.log('【Markers are loaded】');
+      }
+    }
+  }, [isLoaded, data]);
 
   if (loadError) return <div>Error loading maps</div>;
+
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
     <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={center}
-      zoom={14}
-      options={mapOptions}
-      onLoad={map => mapRef.current = map} // 地图加载时获取地图实例
+      mapContainerStyle={containerStyle} 
+      center={center} 
+      zoom={14} 
+      options={mapOptions} 
+      onLoad={map => {
+        console.log('Map onLoad triggered');
+        mapRef.current = map;
+      }} 
     >
-      {events.map(event => (
-        <Marker
-          key={event.id}
-          position={{ lat: event.latitude, lng: event.longitude }}
-          title={event.name}
-          onClick={() => onMarkerClick(event)}
-          icon={{
-            url: '/images/marker/icon.png',
-            scaledSize: new window.google.maps.Size(30, 41)
-          }}
-        />
-      ))}
-      {selectedEvent && (
+      {markers}
+
+      {/* when select is true, pop up a card */}
+      {selectedMarker && (
         <OverlayView
-          position={{ lat: selectedEvent.latitude, lng: selectedEvent.longitude }}
-          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }} 
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET} 
         >
           <div style={{
             position: 'absolute', 
-            transform: 'translate(-50%, -130%)', 
+            transform: 'translate(-50%, -130%)',  //the position of card
             padding: '10px',
             background: 'white',
             border: '1px solid #ccc',
@@ -126,7 +154,7 @@ const Map = ({ events }) => {
             boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
             maxWidth: '500px' 
           }}>
-            <EventCard_PopUp event={selectedEvent} onClose={handleClose}/>
+            <EventCard_PopUp event={selectedMarker} onClose={() => setSelectedMarker(null)} />
           </div>
         </OverlayView>
       )}
