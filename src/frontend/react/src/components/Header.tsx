@@ -44,7 +44,8 @@ const Header: React.FC = () => {
    <DateRangePicker/>
       </Stack>
 
-      <Link to="/" className="logo" style={{color:'white'}}>NAME</Link>
+      <Link to="/" className="logo" style={{color:'white'}}>Hello,World!
+  </Link>
 
       <Stack direction="row" spacing={3}alignItems="center">
         

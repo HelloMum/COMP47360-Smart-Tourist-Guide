@@ -1,5 +1,5 @@
 import React from 'react';
-import Map from '../../components/Map';
+import Map from '../../components/Map_Events';
 import './schedule.css';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 

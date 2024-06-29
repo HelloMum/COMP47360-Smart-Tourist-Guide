@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Map from '../../components/Map';
+import Map from '../../components/Map_Events';
 import './events.css';
 import EventCard from '../../components/EventCard';
 import Searchbar from '../../components/Searchbar';

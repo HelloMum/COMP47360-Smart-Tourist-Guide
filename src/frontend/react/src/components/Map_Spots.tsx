@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
-import EventCard_PopUp from '../components/EventCard_PopUp';  
+import EventCard_PopUp from './EventCard_PopUp';  
 
 const Map = ({ events: data }) => {
   // useLoadScript hook to load google maps api

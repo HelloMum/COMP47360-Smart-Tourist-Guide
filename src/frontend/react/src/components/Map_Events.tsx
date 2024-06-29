@@ -3,6 +3,7 @@ import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-map
 import EventCard_PopUp from './EventCard_PopUp';
 
 const Map = ({ events: data }) => {
+  
   // useLoadScript hook to load google maps api
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
@@ -92,25 +93,47 @@ const Map = ({ events: data }) => {
     ],
   };
 
-  // get different icon based on category
-  const getIconUrl = (category) => {
-    switch (category) {
-      case 'Music':
-        return '/images/event_marker/music.png';
-      case 'Art & Fashion':
-        return '/images/event_marker/art.png';
-      case 'Lectures & Books':
-        return '/images/event_marker/book.png';
-      case 'Food & Festival':
-        return '/images/event_marker/food.png';
-      case 'Sports & Active':
-        return '/images/event_marker/sports.png';
-      case 'Kids & Family':
-        return '/images/event_marker/kids.png';
-      default:
-        return '/images/event_marker/other.png';
-    }
-  };
+
+// get different icon based on category
+const getIconUrl = (category) => {
+  switch (category) {
+    case 'Music':
+      return '/images/event_marker/music.png';
+    case 'Art & Fashion':
+      return '/images/event_marker/art.png';
+    case 'Lectures & Books':
+      return '/images/event_marker/book.png';
+    case 'Food & Festival':
+      return '/images/event_marker/food.png';
+    case 'Sports & Active':
+      return '/images/event_marker/sports.png';
+    case 'Kids & Family':
+      return '/images/event_marker/kids.png';
+    default:
+      return '/images/event_marker/other.png';
+  }
+};
+
+
+const getHoverIconUrl = (category) => {
+  switch (category) {
+    case 'Music':
+      return '/images/event_marker/music_hover.png';
+    case 'Art & Fashion':
+      return '/images/event_marker/art_hover.png';
+    case 'Lectures & Books':
+      return '/images/event_marker/book_hover.png';
+    case 'Food & Festival':
+      return '/images/event_marker/food_hover.png';
+    case 'Sports & Active':
+      return '/images/event_marker/sports_hover.png';
+    case 'Kids & Family':
+      return '/images/event_marker/kids_hover.png';
+    default:
+      return '/images/event_marker/other_hover.png';
+  }
+};
+
 
   // useEffect to add markers only after the map is loaded
   useEffect(() => {
@@ -123,8 +146,8 @@ const Map = ({ events: data }) => {
             title={m.name}
             onClick={() => setSelectedMarker(m)}
             icon={{
-              url: getIconUrl(m.combined_category),
-              scaledSize: new window.google.maps.Size(hoveredMarker === m.id ? 45 : 38, hoveredMarker === m.id ? 45 : 38)
+              url: hoveredMarker===m.id || selectedMarker?.id === m.id ? getHoverIconUrl(m.combined_category):  getIconUrl(m.combined_category),
+              scaledSize: new window.google.maps.Size(hoveredMarker === m.id || selectedMarker?.id === m.id ? 45 : 38, hoveredMarker === m.id  || selectedMarker?.id === m.id? 45 : 38)
             }}
             onMouseOver={() => setHoveredMarker(m.id)}
             onMouseOut={() => setHoveredMarker(null)}
@@ -133,7 +156,7 @@ const Map = ({ events: data }) => {
       });
       setMarkers(newMarkers);
     }
-  }, [isLoaded, data, hoveredMarker]); // Include hoveredMarker to re-render markers when hovered state changes
+  }, [isLoaded, data, hoveredMarker]); 
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -152,7 +175,6 @@ const Map = ({ events: data }) => {
       {markers}
 
       {/* when select is true, pop up a card */}
-
       {selectedMarker && (
         <OverlayView
           position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }}

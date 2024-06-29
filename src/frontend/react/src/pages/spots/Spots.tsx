@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Stack } from '@mui/material';
-import Map from '../../components/Map';
+import Map from '../../components/Map_Events';
 import Searchbar from '../../components/Searchbar';
 import Switch from '../../components/Switch_Spots';
 import SpotCard from '../../components/SpotCard';
