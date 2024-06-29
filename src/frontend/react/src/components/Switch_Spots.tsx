@@ -4,7 +4,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 
-const FreeSwitch = styled((props) => (
+const StyledSwitch = styled((props) => (
   <Switch
     focusVisibleClassName=".Mui-focusVisible"
     disableRipple
@@ -54,13 +54,13 @@ const FreeLabel = styled(Typography)(({ theme }) => ({
   marginLeft: theme.spacing(1),
 }));
 
-const App = () => {
+const FreeSwitch = ({ checked, onChange }) => {
   return (
     <FormControlLabel
-      control={<FreeSwitch  />}
-      label={<FreeLabel    >Free</FreeLabel>}
+      control={<StyledSwitch checked={checked} onChange={onChange} />}
+      label={<FreeLabel>Free</FreeLabel>}
     />
   );
 };
 
-export default App;
+export default FreeSwitch;

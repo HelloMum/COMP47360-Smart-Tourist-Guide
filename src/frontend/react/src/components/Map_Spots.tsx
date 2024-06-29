@@ -2,32 +2,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import EventCard_PopUp from './EventCard_PopUp';  
 
-const Map = ({ events: data }) => {
-  // useLoadScript hook to load google maps api
+const Map = ({ events }) => { 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
     libraries: ['places'],
   });
 
-  // keep this line to get rid of the bug: always reposition to center when click a marker
   const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
-
-  // all markers
   const [markers, setMarkers] = useState([]); 
-
-  // selected marker 
   const [selectedMarker, setSelectedMarker] = useState(null);
-
   const mapRef = useRef(null); 
 
-  // map container style
   const containerStyle = {
     width: '100%',
     height: '100vh',
     position: 'fixed',
   };
 
-  // map style
   const mapOptions = {
     disableDefaultUI: true, 
     styles: [
@@ -89,40 +80,25 @@ const Map = ({ events: data }) => {
     ],
   };
 
-  // log the initial state and data
-  console.log('Initial isLoaded:', isLoaded);
-  console.log('Initial data:', data);
-
-  // useEffect to add markers only after the map is loaded
   useEffect(() => {
-    console.log('useEffect triggered');
-    console.log('isLoaded:', isLoaded);
-
-    if (isLoaded && mapRef.current) {
-      console.log('【Map is fully loaded】');
-      console.log('markers data:', data);
-     
-      if (data) {
-        const newMarkers = data.map(m => (
-          <Marker
-            key={m.id}
-            position={{ lat: m.latitude, lng: m.longitude }} 
-            title={m.name}
-            onClick={() => setSelectedMarker(m)} 
-            icon={{
-              url: '/images/marker/icon.png',
-              scaledSize: new window.google.maps.Size(30, 41)
-            }}
-          />
-        ));
-        setMarkers(newMarkers);
-        console.log('【Markers are loaded】');
-      }
+    if (isLoaded && events) {
+      const newMarkers = events.map(event => (
+        <Marker
+          key={event.id}
+          position={{ lat: event.attraction_latitude, lng: event.attraction_longitude }} 
+          title={event.attraction_name}
+          onClick={() => setSelectedMarker(event)} 
+          icon={{
+            url: '/images/marker/icon.png',
+            scaledSize: new window.google.maps.Size(30, 41)
+          }}
+        />
+      ));
+      setMarkers(newMarkers);
     }
-  }, [isLoaded, data]);
+  }, [isLoaded, events]);
 
   if (loadError) return <div>Error loading maps</div>;
-
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
@@ -132,21 +108,19 @@ const Map = ({ events: data }) => {
       zoom={14} 
       options={mapOptions} 
       onLoad={map => {
-        console.log('Map onLoad triggered');
         mapRef.current = map;
       }} 
     >
       {markers}
 
-      {/* when select is true, pop up a card */}
       {selectedMarker && (
         <OverlayView
-          position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }} 
+          position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }} 
           mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET} 
         >
           <div style={{
             position: 'absolute', 
-            transform: 'translate(-50%, -130%)',  //the position of card
+            transform: 'translate(-50%, -130%)', 
             padding: '10px',
             background: 'white',
             border: '1px solid #ccc',

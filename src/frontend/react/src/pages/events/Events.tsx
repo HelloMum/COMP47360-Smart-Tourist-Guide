@@ -88,11 +88,14 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
         </Stack>
 
         {/* -------------- filter & sort -------------------*/}
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginY: 2 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginTop: 2 }}>
           <FilterCheckbox onChange={handleCategoryChange} selectedCategories={selectedCategories} />
           <Switch checked={isFree} onChange={handleSwitchChange} />
           {/* <Sort_Events /> */}
         </Stack>
+
+        
+        <h2 style={{marginLeft:6,marginTop:5}}>{events.length} results</h2>
 
         {/* -------------- event cards ---------------------*/}
         <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>

@@ -4,26 +4,25 @@ import theme from '../theme';
 
 
 const Sort_Spots = () => {
-  const [age, setAge] = useState(10); 
-
+ 
   const handleChange = (event) => {
-    setAge(event.target.value);
+   
   };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
      <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}> sort by  </Typography>
-      <FormControl sx={{ minWidth: 80 }}>
+      <FormControl sx={{ minWidth: 100 }}>
         <MuiSelect
-          value={age}
+          value={5}
           onChange={handleChange}
           displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
           sx={{ height: 26,...theme.typography.smallText }}
         >
+        <MenuItem value={5} sx={{ height: 26,...theme.typography.smallText }}>popularity</MenuItem>
           <MenuItem value={10} sx={{ height: 26,...theme.typography.smallText }}>rating</MenuItem>
-          <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>name</MenuItem>
-    
+          <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>price</MenuItem>
         </MuiSelect>
       </FormControl>
     </Box>

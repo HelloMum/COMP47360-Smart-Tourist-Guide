@@ -35,46 +35,74 @@ const SpotDetail = ({ spot, onCollapse }) => {
         height: '30vh',
         justifyContent: 'space-between'
       }}>
-        <CardMedia
-          component="img"
-          image={`/images/spots_small/${spot.index}_2.webp`}
-          alt={spot.attraction_name}
-          sx={{
-            borderTopLeftRadius: '6px',
-            boxShadow: 1,
-            marginTop: '10px',
-            objectFit: 'cover',
-            height: '100%',
-            width: '35.5%',
-            flexShrink: 0,
-            cursor: 'pointer'  // Add cursor pointer
-          }}
-          onClick={() => handleOpen(`/images/spots/${spot.index}_2.webp`)}  // Handle click event
-        />
-        <CardMedia
-          component="img"
-          image={`/images/spots_small/${spot.index}_3.webp`}
-          alt={spot.attraction_name}
-          sx={{
-            borderTopRightRadius: '6px',
-            boxShadow: 1,
-            marginTop: '10px',
-            objectFit: 'cover',
-            height: '100%',
-            width: '64%',
-            flexShrink: 0,
-            cursor: 'pointer'  // Add cursor pointer
-          }}
-          onClick={() => handleOpen(`/images/spots/${spot.index}_3.webp`)}  // Handle click event
-        />
-      </Box>
+        <Box sx={{ 
+          borderTopLeftRadius: '6px', 
+          boxShadow: 1, 
+          marginTop: '10px', 
+          height: '100%', 
+          width: '35.5%', 
+          flexShrink: 0, 
+          overflow: 'hidden', 
+          cursor: 'pointer' 
+        }}>
+          <CardMedia
+            component="img"
+            image={`/images/spots_small/${spot.index}_2.webp`}
+            alt={spot.attraction_name}
+            sx={{
+              objectFit: 'cover',
+              height: '100%',
+              width: '100%',
+              transition: 'transform 3s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.4)'
+                
+              },
 
+              '&:not(:hover)': {
+                transition: 'transform 0.01s ease-in-out'
+              }
+            
+            }}
+            onClick={() => handleOpen(`/images/spots/${spot.index}_2.webp`)}
+          />
+        </Box>
+        <Box sx={{ 
+          borderTopRightRadius: '6px', 
+          boxShadow: 1, 
+          marginTop: '10px', 
+          height: '100%', 
+          width: '64%', 
+          flexShrink: 0, 
+          overflow: 'hidden', 
+          cursor: 'pointer' 
+        }}>
+          <CardMedia
+            component="img"
+            image={`/images/spots_small/${spot.index}_3.webp`}
+            alt={spot.attraction_name}
+            sx={{
+              objectFit: 'cover',
+              height: '100%',
+              width: '100%',
+              transition: 'transform 3s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.4)'
+              },
+              '&:not(:hover)': {
+                transition: 'transform 0.01s ease-in-out'
+              }
+            }}
+            onClick={() => handleOpen(`/images/spots/${spot.index}_3.webp`)}
+          />
+        </Box>
+      </Box>
       {/*------------------ content below pictures -------------------*/}
       <Stack sx={{ p: 3, px: 5 }}>
 
 
 
-        {/*---------- title & two tags ---------------------- */}
+        {/*--------------- title & two tags -------------------------- */}
       
         <h2 style={{ marginBottom:4 }}>{spot.attraction_name}</h2>
             <Stack marginBottom={1}>
@@ -86,13 +114,13 @@ const SpotDetail = ({ spot, onCollapse }) => {
           </span>
         </Stack>
 
-        {/*---------- rating ---------------------- */}
+        {/*-------------------- rating ---------------------- */}
         <Stack direction={"row"} gap={1}>
           <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly />
           {spot.attraction_rating} by {spot.user_ratings_total} people
         </Stack>
 
-        <Typography variant="body2" marginTop={1}>
+        <Typography variant="body2" marginTop={2}>
           {spot.description}
         </Typography>
 
@@ -141,7 +169,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           </Box>
 
 
-        {/*------------------ two buttons -------------------- */}
+        {/*------------------------------------- two buttons ------------------------- */}
 
           <Box display="flex" alignItems="center" justifyContent="space-between" marginTop={2}>
             <Btn_Add />
