@@ -13,7 +13,7 @@ import FilterCheckbox from '../../components/FilterCheckbox_Spots';
 
 const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
-  const [spots, setSpots] = useState([]); 
+  const [spots, setSpots] = useState([]); // 新状态用于存储从API获取的景点数据
   const handleExpand = (spot) => {
     setActiveSpot(spot);
   };
@@ -61,8 +61,8 @@ const Spots: React.FC = () => {
               {spots.map((spot) => (
                 <SpotCard
                   key={spot.id}
-                  image1={`/images/spots/${spot.index}_1.webp`}
-                  image3={`/images/spots/${spot.index}_3.webp`}
+                  image1={`/images/spots_small/${spot.index}_1.webp`}
+                  image3={`/images/spots_small/${spot.index}_3.webp`}
                   title={spot.attraction_name}
                   rating={spot.attraction_rating}
                   price={spot.price}                            

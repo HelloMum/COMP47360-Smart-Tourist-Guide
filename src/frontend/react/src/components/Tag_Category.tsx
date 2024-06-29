@@ -11,8 +11,9 @@ const Tag = ({ category }) => {
       padding: '0px 9px',
       borderRadius: '4px',
       fontSize: '12px',
-      // fontWeight: 'bold',
-      // display: 'inline-block'
+      marginRight: '6px', 
+      display: 'inline-block' ,
+      boxSizing: 'border-box',
     }}>
       {category}
     </span>

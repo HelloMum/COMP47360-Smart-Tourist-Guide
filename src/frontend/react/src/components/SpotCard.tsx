@@ -81,9 +81,18 @@ const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating,categ
      {/* ---------------------   title   ---------------------- */}
 
    
-        <Typography sx={{ ...theme.typography.cardTitle }} component="div">
-          {title}
-        </Typography>
+     <Typography
+      sx={{
+        ...theme.typography.cardTitle,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis', 
+        maxWidth: '95%'           
+      }}
+      component="div"
+    >
+      {title}
+    </Typography>
 
 
       {/* ---------------------   rating & isFree   ---------------------- */}
