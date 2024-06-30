@@ -1,162 +1,3 @@
-//package com.example.demo.service;
-//
-//import com.example.demo.model.Attraction;
-//import com.opencsv.CSVReader;
-//import org.springframework.core.io.ClassPathResource;
-//import org.springframework.core.io.Resource;
-//import org.springframework.stereotype.Service;
-//
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.Comparator;
-//import java.util.List;
-//import java.util.stream.Collectors;
-//
-//@Service
-//public class AttractionService {
-//
-//    private List<Attraction> attractions = new ArrayList<>();
-//
-//    public AttractionService() {
-//        loadAttractions();
-//    }
-//
-//    private void loadAttractions() {
-//        try {
-//            // ClassPathResource to load file
-//            Resource resource = new ClassPathResource("attractions.csv");
-//            InputStream inputStream = resource.getInputStream();
-//            CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
-//
-//            reader.readNext();
-//
-//            String[] line;
-//            while ((line = reader.readNext()) != null) {
-//                Attraction attraction = new Attraction();
-//                attraction.setIndex(parseInt(line[0]));
-//                attraction.setTaxiZone(parseInt(line[1]));
-//                attraction.setZone_name(parseString(line[2]));
-//                attraction.setAttraction_place_id(parseString(line[3]));
-//                attraction.setAttraction_name(parseString(line[4]));
-//                attraction.setAttraction_latitude(parseDouble(line[5]));
-//                attraction.setAttraction_longitude(parseDouble(line[6]));
-//                attraction.setAttraction_vicinity(parseString(line[7]));
-//                attraction.setAttraction_rating(parseDouble(line[8]));
-//                attraction.setUser_ratings_total(parseInt(line[9]));
-//                attraction.setAttraction_phone_number(parseString(line[10]));
-//                attraction.setAttractionWebsite(parseString(line[11]));
-//                attraction.setOpening_hours(parseString(line[12]));
-//                attraction.setPrice_level(parseIntFromDouble(line[13]));
-//                attraction.setTypes(parseList(line[14]));
-//                attraction.setInternational_phone_number(parseString(line[15]));
-//                attraction.setUrl(parseString(line[16]));
-//                attraction.setIcon(parseString(line[17]));
-//                attraction.setFormatted_hours(parseString(line[18]));
-//                attraction.setCategory(parseString(line[19]));
-//                attraction.setDescription(parseString(line[20]));
-//                attraction.setPrice(parseDouble(line[21]));
-//                attraction.setFree(parseBoolean(line[22]));
-//                attraction.setPopular_times(parseString(line[23]));
-//                attraction.setTime_spent(parseList(line[24]));
-//                attraction.setCurrent_popularity(parseDouble(line[25]));
-//                attractions.add(attraction);
-//            }
-//            reader.close();
-//        } catch (IOException e) {
-//            System.err.println("Error reading CSV file: " + e.getMessage());
-//            e.printStackTrace();
-//        } catch (NumberFormatException e) {
-//            System.err.println("Error parsing number from CSV file: " + e.getMessage());
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            System.err.println("Error processing CSV file: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private int parseInt(String value) {
-//        try {
-//            return value.isEmpty() ? 0 : Integer.parseInt(value);
-//        } catch (NumberFormatException e) {
-//            System.err.println("Error parsing int from value: " + value);
-//            return 0;
-//        }
-//    }
-//
-//    private int parseIntFromDouble(String value) {
-//        try {
-//            return value.isEmpty() ? 0 : (int) Double.parseDouble(value);
-//        } catch (NumberFormatException e) {
-//            System.err.println("Error parsing int from double value: " + value);
-//            return 0;
-//        }
-//    }
-//
-//    private double parseDouble(String value) {
-//        try {
-//            return value.isEmpty() ? 0.0 : Double.parseDouble(value);
-//        } catch (NumberFormatException e) {
-//            System.err.println("Error parsing double from value: " + value);
-//            return 0.0;
-//        }
-//    }
-//
-//    private String parseString(String value) {
-//        return value.isEmpty() ? null : value;
-//    }
-//
-//    private List<String> parseList(String value) {
-//        if (value.isEmpty()) {
-//            return new ArrayList<>();
-//        }
-//        return List.of(value.replace("[", "").replace("]", "").split(", "));
-//    }
-//
-//    private boolean parseBoolean(String value) {
-//        return value.isEmpty() ? false : Boolean.parseBoolean(value);
-//    }
-//
-//    public List<Attraction> getAttractions() {
-//        return attractions;
-//    }
-//
-//    public Attraction getAttractionByIndex(int index) {
-//        return attractions.stream()
-//                .filter(attraction -> attraction.getIndex() == index)
-//                .findFirst()
-//                .orElse(null);
-//    }
-//
-//    public List<Attraction> filterAndSortAttractions(String name, Boolean isFree, String category, String sortBy, String order) {
-//        return attractions.stream()
-//                .filter(attraction -> (name == null || attraction.getAttraction_name().toLowerCase().contains(name.toLowerCase())) &&
-//                        (isFree == null || attraction.isFree() == isFree) &&
-//                        (category == null || category.isEmpty() || attraction.getCategory().equalsIgnoreCase(category)))
-//                .sorted(getComparator(sortBy, order))
-//                .collect(Collectors.toList());
-//    }
-//
-//    private Comparator<Attraction> getComparator(String sortBy, String order) {
-//        Comparator<Attraction> comparator;
-//
-//        if ("price".equalsIgnoreCase(sortBy)) {
-//            comparator = Comparator.comparingDouble(Attraction::getPrice);
-//            if ("desc".equalsIgnoreCase(order)) {
-//                comparator = comparator.reversed();
-//            }
-//        } else {
-//            comparator = Comparator.comparingDouble(Attraction::getAttraction_rating).reversed();
-//            if ("asc".equalsIgnoreCase(order)) {
-//                comparator = Comparator.comparingDouble(Attraction::getAttraction_rating);
-//            }
-//        }
-//
-//        return comparator;
-//    }
-//}
-
 package com.example.demo.service;
 
 import com.example.demo.model.Attraction;
@@ -170,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -290,11 +132,12 @@ public class AttractionService {
                 .orElse(null);
     }
 
-    public List<Attraction> filterAndSortAttractions(String name, Boolean isFree, String category, String sortBy, String order) {
+    public List<Attraction> filterAndSortAttractions(String name, Boolean isFree, List<String> categoryList, String sortBy, String order) {
         return attractions.stream()
                 .filter(attraction -> (name == null || attraction.getAttraction_name().toLowerCase().contains(name.toLowerCase())) &&
                         (isFree == null || attraction.isFree() == isFree) &&
-                        (category == null || category.isEmpty() || attraction.getCategory().equalsIgnoreCase(category)))
+                        (categoryList == null || categoryList.isEmpty() || categoryList.stream()
+                                .anyMatch(category -> category.equalsIgnoreCase(attraction.getCategory()))))
                 .sorted(getComparator(sortBy, order))
                 .collect(Collectors.toList());
     }
