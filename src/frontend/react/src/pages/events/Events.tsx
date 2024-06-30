@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Map from '../../components/events/Map_Events';
 import './events.css';
 import EventCard from '../../components/events/EventCard';
-import Searchbar from '../../components/Searchbar';
+import Searchbar from '../../components/events/Searchbar';
 import { Stack } from '@mui/material';
 import Switch from '../../components/events/Switch_Events';
 import FilterCheckbox from '../../components/events/FilterCheckbox_Events';

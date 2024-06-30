@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Box, Stack } from '@mui/material';
 import Map from '../../components/spots/Map_Spots';
-import Searchbar from '../../components/Searchbar';
+import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
 import SpotDetail from '../../components/spots/SpotDetail'; 
@@ -17,6 +17,9 @@ const Spots: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [displayedSpots, setDisplayedSpots] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [sortOption, setSortOption] = useState('user_ratings_total');
+  const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
@@ -27,9 +30,19 @@ const Spots: React.FC = () => {
     setActiveSpot(null);
   }, []);
 
-  const fetchSpots = useCallback((free) => {
+  const fetchSpots = useCallback(() => {
     setLoading(true); 
-    const url = free ? 'http://localhost:8080/attractions/filter?isFree=true' : 'http://localhost:8080/attractions/all';
+    let url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
+    if (isFree) {
+      url += '&isFree=true';
+    }
+    if (categories.length > 0) {
+      url += `&categories=${categories.join(',')}`;
+    }
+    if (searchTerm) {
+      url += `&name=${searchTerm}`;
+    }
+
     fetch(url)
       .then(response => response.json())
       .then(data => {
@@ -44,11 +57,11 @@ const Spots: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [sortOption, isFree, categories, searchTerm]);
 
   useEffect(() => {
-    fetchSpots(isFree);
-  }, [isFree, fetchSpots]);
+    fetchSpots();
+  }, [sortOption, isFree, categories, searchTerm, fetchSpots]);
 
   const handleSwitchChange = useCallback(() => {
     setIsFree(!isFree);
@@ -71,6 +84,18 @@ const Spots: React.FC = () => {
     }
   }, [loadMoreSpots]);
 
+  const handleSortChange = (event) => {
+    setSortOption(event.target.value);
+  };
+
+  const handleCategoryChange = (selectedCategories) => {
+    setCategories(selectedCategories);
+  };
+
+  const handleSearch = (searchText) => {
+    setSearchTerm(searchText);
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <div className="left" 
@@ -84,12 +109,12 @@ const Spots: React.FC = () => {
         {!activeSpot && (
           <>
             <Stack direction="row" justifyContent="center">
-              <Searchbar />
+              <Searchbar onSearch={handleSearch} />
             </Stack>
             <Stack direction="row" sx={{ paddingX: 2, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-              <FilterCheckbox />
+              <FilterCheckbox onChange={handleCategoryChange} />
               <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
-              <Sort_Spots />
+              <Sort_Spots value={sortOption} onChange={handleSortChange} />
             </Stack>
 
             <h2 style={{marginLeft:15,marginTop:10}}>{spots.length} spots</h2>
