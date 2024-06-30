@@ -27,25 +27,22 @@ jobs:
       - name: Build and push frontend image
         env:
           DOCKER_REGISTRY: sodium-11.tail49328.ts.net:5000
-          DOCKER_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
           docker build -t $DOCKER_REGISTRY/frontend:${{ github.sha }} ./src/frontend/react
+          docker login $DOCKER_REGISTRY -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           docker push $DOCKER_REGISTRY/frontend:${{ github.sha }}
 
       - name: Build and push backend image
         env:
           DOCKER_REGISTRY: sodium-11.tail49328.ts.net:5000
-          DOCKER_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
           docker build -t $DOCKER_REGISTRY/backend:${{ github.sha }} ./src/backend/spring
+          docker login $DOCKER_REGISTRY -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           docker push $DOCKER_REGISTRY/backend:${{ github.sha }}
 
       - name: Deploy using ArgoCD
         env:
           ARGOCD_SERVER: https://argocd-argocd-server.tail49328.ts.net
-          ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
         run: |
-          argocd login --insecure --grpc-web $ARGOCD_SERVER --username admin --password $ARGOCD_TOKEN
+          argocd login --insecure --grpc-web $ARGOCD_SERVER --username admin --password ${{ secrets.ARGOCD_TOKEN }}
           argocd app sync SMART-TOURIST-GUIDE
