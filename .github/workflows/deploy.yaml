@@ -1,0 +1,51 @@
+name: Deploy to ArgoCD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Tailscale
+        run: |
+          curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.gpg | sudo apt-key add -
+          curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+          sudo apt-get update
+          sudo apt-get install tailscale
+          sudo tailscale up --authkey "${{ secrets.TAILSCALE_AUTHKEY }}"
+
+      - name: Docker Login to Private Registry
+        run: docker login sodium-11.tail49328.ts.net:5000 -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push frontend image
+        env:
+          DOCKER_REGISTRY: sodium-11.tail49328.ts.net:5000
+          DOCKER_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          docker build -t $DOCKER_REGISTRY/frontend:${{ github.sha }} ./src/frontend/react
+          docker push $DOCKER_REGISTRY/frontend:${{ github.sha }}
+
+      - name: Build and push backend image
+        env:
+          DOCKER_REGISTRY: sodium-11.tail49328.ts.net:5000
+          DOCKER_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          docker build -t $DOCKER_REGISTRY/backend:${{ github.sha }} ./src/backend/spring
+          docker push $DOCKER_REGISTRY/backend:${{ github.sha }}
+
+      - name: Deploy using ArgoCD
+        env:
+          ARGOCD_SERVER: https://argocd-argocd-server.tail49328.ts.net
+          ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
+        run: |
+          argocd login --insecure --grpc-web $ARGOCD_SERVER --username admin --password $ARGOCD_TOKEN
+          argocd app sync SMART-TOURIST-GUIDE
