@@ -3,12 +3,14 @@ import { FilterAltTwoTone } from "@mui/icons-material";
 import { Box, Checkbox, FormControlLabel, FormGroup, Stack } from "@mui/material";
 
 const categories = [
+  { label: "Landmark", value: "landmark" },
   { label: "Natural", value: "natural" },
   { label: "Cultural", value: "cultural" },
   { label: "Arts", value: "arts" },
   { label: "Religious", value: "religious" },
-  { label: "Shopping and Dining", value: "shopping and dining" },
+  { label: "Shopping & Dining", value: "shopping and dining" },
   { label: "Entertainment", value: "entertainment" },
+ 
   { label: "Other", value: "other" },
 ];
 
