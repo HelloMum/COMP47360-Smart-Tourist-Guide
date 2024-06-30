@@ -82,25 +82,22 @@ const Map = ({ events }) => {
 
   const getIconUrl = (category) => {
     switch (category) {
-      case 'Natural':
-        return '/images/marker_spots/nature.png';
-      case 'Natural':
+
+      case 'natural':
           return '/images/marker_spots/nature.png';
-      case 'Cultural':
-        return '/images/marker_spots/culture.png';
+
       case 'cultural':
           return '/images/marker_spots/culture.png';
-      case 'Arts':
-        return '/images/marker_spots/art.png';
+
         case 'arts':
           return '/images/marker_spots/art.png';
-      case 'Religious':
+      case 'religious':
         return '/images/marker_spots/religious.png';
-      case 'Shopping and Dining':
+      case 'shopping and dining':
         return '/images/marker_spots/shopping.png';
-      case 'Entertainment':
+      case 'entertainment':
         return '/images/marker_spots/entertainment.png';
-      case 'Landmark':
+      case 'landmark':
         return '/images/marker_spots/landmark.png';
       default:
         return '/images/marker_spots/other.png';
