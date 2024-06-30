@@ -44,5 +44,5 @@ jobs:
         env:
           ARGOCD_SERVER: https://argocd-argocd-server.tail49328.ts.net
         run: |
-          argocd login --insecure --grpc-web $ARGOCD_SERVER --username admin --password ${{ secrets.ARGOCD_TOKEN }}
+          argocd login --insecure --grpc-web $ARGOCD_SERVER --username admin --password ${{ secrets.ARGOCD_PASSWORD }}
           argocd app sync SMART-TOURIST-GUIDE
