@@ -5,6 +5,7 @@ import com.example.demo.service.AttractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -32,7 +33,7 @@ public class AttractionController {
     public List<Attraction> filterAttractions(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean isFree,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String categories,
             @RequestParam(required = false, defaultValue = "rating") String sortBy,
             @RequestParam(required = false) String order) {
 
@@ -44,7 +45,10 @@ public class AttractionController {
                 order = "desc";
             }
         }
-        return attractionService.filterAndSortAttractions(name, isFree, category, sortBy, order);
+
+        List<String> categoryList = categories != null ? Arrays.asList(categories.split(",")) : null;
+
+        return attractionService.filterAndSortAttractions(name, isFree, categoryList, sortBy, order);
     }
 
 }
