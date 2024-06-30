@@ -4,7 +4,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import HomePage from './pages/home/Home2';
+import HomePage from './pages/home/Home';
 import Spots from './pages/spots/Spots';
 import Events from './pages/events/Events';
 import Schedule from './pages/schedule/Schedule';

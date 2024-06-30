@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Map from '../../components/Map_Events';
+import Map from '../../components/events/Map_Events';
 import './events.css';
-import EventCard from '../../components/EventCard';
+import EventCard from '../../components/events/EventCard';
 import Searchbar from '../../components/Searchbar';
 import { Stack } from '@mui/material';
-import Switch from '../../components/Switch_Events';
-import FilterCheckbox from '../../components/FilterCheckbox_Events';
+import Switch from '../../components/events/Switch_Events';
+import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 
 

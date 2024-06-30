@@ -6,8 +6,8 @@ const Tag = ({ category }) => {
 
   return (
     <span  style={{
-      backgroundColor: '#72b2c7', 
-      color: 'white',
+      backgroundColor: '#f3f3f3', 
+      color: '#616161',
       padding: '0px 9px',
       borderRadius: '4px',
       fontSize: '12px',

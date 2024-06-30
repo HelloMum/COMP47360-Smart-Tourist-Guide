@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Box, Stack } from '@mui/material';
-import Map from '../../components/Map_Spots';
+import Map from '../../components/spots/Map_Spots';
 import Searchbar from '../../components/Searchbar';
-import FreeSwitch from '../../components/Switch_Spots';
-import SpotCard from '../../components/SpotCard';
-import SpotDetail from '../../components/SpotDetail'; 
+import FreeSwitch from '../../components/spots/Switch_Spots';
+import SpotCard from '../../components/spots/SpotCard';
+import SpotDetail from '../../components/spots/SpotDetail'; 
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import './spots.css';
-import Sort_Spots from '../../components/Sort_Spots';
-import FilterCheckbox from '../../components/FilterCheckbox_Spots';
+import Sort_Spots from '../../components/spots/Sort_Spots';
+import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';
 
 const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -113,6 +113,7 @@ const Spots: React.FC = () => {
                     rating={spot.attraction_rating}
                     price={spot.price}
                     category={spot.category}
+                    user_ratings_total={spot.user_ratings_total}
                     onExpand={() => handleExpand(spot)}
                   />
                 ))

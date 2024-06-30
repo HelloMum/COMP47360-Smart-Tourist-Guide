@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { AccessTimeRounded, ConfirmationNumber, DateRangeRounded, ExpandLessRounded, LocationOnRounded, PhoneEnabledRounded, PublicRounded, Close } from '@mui/icons-material';
 import { Box, Card, CardMedia, Rating, Stack, Typography, Modal, IconButton } from '@mui/material';
-import Btn_Add from '../Btn_Add';
-import Tag_Category from '../Tag_Category';
-import Tag_IsFree from '../Tag_IsFree';
+import Btn_Add from './../Btn_Add';
+import Tag_Category from './../Tag_Category';
+import Tag_IsFree from './../Tag_IsFree';
 
 const SpotDetail = ({ spot, onCollapse }) => {
   const [open, setOpen] = useState(false);
