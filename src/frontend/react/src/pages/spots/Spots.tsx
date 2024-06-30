@@ -14,7 +14,10 @@ const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
   const [spots, setSpots] = useState([]);
   const [isFree, setIsFree] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  const [displayedSpots, setDisplayedSpots] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
     setActiveSpot(spot);
@@ -32,6 +35,8 @@ const Spots: React.FC = () => {
       .then(data => {
         console.log("Fetched data:", data); 
         setSpots(data); 
+        setDisplayedSpots(data.slice(0, batchSize));
+        setCurrentIndex(batchSize);
       })
       .catch(error => {
         console.error('Error fetching attractions data:', error);
@@ -43,15 +48,39 @@ const Spots: React.FC = () => {
 
   useEffect(() => {
     fetchSpots(isFree);
-  }, [isFree, fetchSpots]); 
+  }, [isFree, fetchSpots]);
 
   const handleSwitchChange = useCallback(() => {
     setIsFree(!isFree);
   }, [isFree]);
 
+  const loadMoreSpots = useCallback(() => {
+    if (loading) return;
+    setLoading(true);
+    const nextIndex = currentIndex + batchSize;
+    const newDisplayedSpots = spots.slice(0, nextIndex);
+    setDisplayedSpots(newDisplayedSpots);
+    setCurrentIndex(nextIndex);
+    setLoading(false);
+  }, [currentIndex, spots, loading]);
+
+  const handleScroll = useCallback((e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (scrollHeight - scrollTop <= clientHeight + 50) { 
+      loadMoreSpots();
+    }
+  }, [loadMoreSpots]);
+
   return (
     <div style={{ display: 'flex' }}>
-      <div className="left" style={{ width: LEFT_WIDTH, padding: LEFT_PADDING, marginTop: NAVBAR_HEIGHT, height: `calc(100vh - ${NAVBAR_HEIGHT})`, display: 'flex', flexDirection: 'column' }}>
+      <div className="left" 
+      style={{ width: LEFT_WIDTH, 
+        padding: '18px 30px 0px 30px', 
+        marginTop: NAVBAR_HEIGHT, 
+        height: `calc(100vh - ${NAVBAR_HEIGHT})`, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        overflowY: 'hidden' }}>
         {!activeSpot && (
           <>
             <Stack direction="row" justifyContent="center">
@@ -67,7 +96,7 @@ const Spots: React.FC = () => {
           </>
         )}
 
-        <div className="spot-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
+        <div className="spot-card-container" style={{ flexGrow: 1, overflowY: 'auto' }} onScroll={handleScroll}>
           {activeSpot ? (
             <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
           ) : (
@@ -75,7 +104,7 @@ const Spots: React.FC = () => {
               {loading ? (
                 <div>Loading...</div> 
               ) : (
-                spots.map((spot) => (
+                displayedSpots.map((spot) => (
                   <SpotCard
                     key={spot.id}
                     image1={`/images/spots_small/${spot.index}_1.webp`}
@@ -92,7 +121,7 @@ const Spots: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
+      <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
         <Map events={spots} /> 
       </div>
     </div>

@@ -141,7 +141,7 @@ const getHoverIconUrl = (category) => {
       const newMarkers = data.map(event => {
         const isEventHovered = hoveredEventId === event.id;
         const isActive = isEventHovered || hoveredMarker === event.id || selectedMarker?.id === event.id;
-        const iconSize = isActive ? 43 : 38;  
+        const iconSize = isActive ? 45 : 38;  
   
         return (
           <Marker

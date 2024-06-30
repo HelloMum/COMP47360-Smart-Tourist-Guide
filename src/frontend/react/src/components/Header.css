@@ -8,15 +8,16 @@
 
 
 .logo {
-  font-size: 2.1rem;
+  font-size: 2rem;
   font-weight: bold;
   text-decoration: none;
   color: white;
   font-family: "Concert One", sans-serif;
   font-weight: 400;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-right:0px;
+  /* position: absolute; */
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
 }
 
 

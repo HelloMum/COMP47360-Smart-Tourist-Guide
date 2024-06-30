@@ -74,7 +74,7 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
         className="left"
         style={{
           width: LEFT_WIDTH,
-          padding: '30px',
+          padding: '18px 30px 0px 30px',
           marginTop: NAVBAR_HEIGHT,
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
           display: 'flex',
@@ -94,7 +94,7 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
           {/* <Sort_Events /> */}
         </Stack>
 
-        
+
         <h2 style={{marginLeft:6,marginTop:5}}>{events.length} results</h2>
 
         {/* -------------- event cards ---------------------*/}
