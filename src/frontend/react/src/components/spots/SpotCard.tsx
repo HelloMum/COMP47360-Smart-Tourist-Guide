@@ -100,7 +100,8 @@ const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating,categ
 
         <Stack direction={"row"} gap={1} >
       <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly  sx={{ fontSize: '1.2rem' }}  /> 
-      {rating} by {user_ratings_total} people
+      {rating}<span style={{ color: '#888' }}>by {user_ratings_total} people</span>
+
        
 </Stack>
 

@@ -44,9 +44,9 @@ const theme = createTheme({
  
  
     smallText: {
-      fontSize: '0.85rem',
+      fontSize: '0.8rem',
       fontWeight: 200,
-      color: '#777',
+      color: '#555',
     },
 
   },
