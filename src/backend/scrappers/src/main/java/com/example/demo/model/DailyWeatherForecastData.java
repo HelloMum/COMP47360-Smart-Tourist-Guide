@@ -6,14 +6,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "daily_weather_data_30_day")
+@Table(name = "daily_forecast_data")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,87 +24,46 @@ public class DailyWeatherForecastData {
     @Column(name = "fetch_time")
     private LocalDateTime fetchTime;
 
-    @Column(name = "code")
-    private String code;
+    @Column(name = "dt")
+    private long dt;
 
-    @Column(name = "message")
-    private double message;
+    @Column(name = "sunrise")
+    private long sunrise;
 
-    @Column(name = "cnt")
-    private int cnt;
+    @Column(name = "sunset")
+    private long sunset;
+
+    @Column(name = "pressure")
+    private double pressure;
+
+    @Column(name = "humidity")
+    private double humidity;
+
+    @Column(name = "clouds")
+    private double clouds;
+
+    @Column(name = "rain")
+    private double rain;
+
+    @Column(name = "snow")
+    private double snow;
+
+    @JsonProperty("speed")
+    @Column(name = "speed")
+    private double windSpeed;
+
+    @JsonProperty("deg")
+    @Column(name = "deg")
+    private double windDeg;
 
     @Embedded
-    private City city;
+    private Temp temp;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dailyWeatherForecastData")
-    private List<DailyForecastData> list;
+    @Embedded
+    private Feels_like feels_like;
 
-    @Embeddable
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class City {
-        @Column(name = "timezone")
-        private int timezone;
-    }
-
-    @Entity
-    @Table(name = "daily_forecast_data")
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DailyForecastData {
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        @JsonIgnore
-        private UUID id;
-
-        @Column(name = "dt")
-        private long dt;
-
-        @Column(name = "sunrise")
-        private long sunrise;
-
-        @Column(name = "sunset")
-        private long sunset;
-
-        @Column(name = "pressure")
-        private double pressure;
-
-        @Column(name = "humidity")
-        private double humidity;
-
-        @Column(name = "clouds")
-        private double clouds;
-
-        @Column(name = "rain")
-        private double rain;
-
-        @Column(name = "snow")
-        private double snow;
-
-        @JsonProperty("speed")
-        @Column(name = "speed")
-        private double windSpeed;
-
-        @JsonProperty("deg")
-        @Column(name = "deg")
-        private double windDeg;
-
-        @Embedded
-        private Temp temp;
-
-        @Embedded
-        private Feels_like feels_like;
-
-        @Embedded
-        private Weather weather;
-
-        @ManyToOne
-        @JoinColumn(name = "daily_weather_forecast_data_id", referencedColumnName = "id")
-        @ToString.Exclude
-        private DailyWeatherForecastData dailyWeatherForecastData;
-    }
+    @Embedded
+    private Weather weather;
 
     @Embeddable
     @Data

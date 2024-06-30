@@ -48,7 +48,6 @@ public class DailyWeatherForecastScraper {
         private String code;
         private double message;
         private int cnt;
-        private DailyWeatherForecastData.City city;
         private List<DailyForecastDataRaw> list;
 
         public String getCode() {
@@ -73,14 +72,6 @@ public class DailyWeatherForecastScraper {
 
         public void setCnt(int cnt) {
             this.cnt = cnt;
-        }
-
-        public DailyWeatherForecastData.City getCity() {
-            return city;
-        }
-
-        public void setCity(DailyWeatherForecastData.City city) {
-            this.city = city;
         }
 
         public List<DailyForecastDataRaw> getList() {

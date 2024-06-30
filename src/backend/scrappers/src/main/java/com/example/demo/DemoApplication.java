@@ -40,7 +40,7 @@ public class DemoApplication implements CommandLineRunner {
         System.out.println("=Current weather data is stored in current_weather_data table");
         hourlyWeatherForecastService.getHourlyWeather();
         System.out.println("Hourly weather forecast data is stored in tables");
-        dailyWeatherForecastService.getDailyWeather();
+        dailyWeatherForecastService.getDailyForecasts();
         System.out.println("Daily weather forecast data is stored in tables");
         eventService.fetchAndSaveEvents();
         System.out.println("Event data is fetched and stored in events table");

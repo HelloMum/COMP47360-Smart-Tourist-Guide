@@ -2,31 +2,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: lightblue;
-  padding: 10px 20px;
+  /* height: 50px; */
+  /* box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); */
 }
 
-.header .logo {
-  color: #fff;
-  font-size: 1.5em;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.header nav {
-  display: flex;
-  gap: 20px;
-}
 
-.header nav a {
-  color: #fff;
+.logo {
+  font-size: 1.9rem;
+  font-weight: bold;
   text-decoration: none;
-  padding: 10px;
-
-  border-radius: 5px; 
-  transition: background-color 0.3s; 
+  color: white;
+  font-family: "Concert One", sans-serif;
+  font-weight: 400;
+  margin-right:0px;
+  /* position: absolute; */
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
 }
 
-.header nav a:hover {
-  background-color: #555; 
-}
+
