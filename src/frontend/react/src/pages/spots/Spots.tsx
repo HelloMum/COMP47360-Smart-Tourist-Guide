@@ -92,7 +92,7 @@ const Spots: React.FC = () => {
               <Sort_Spots />
             </Stack>
 
-            <h2 style={{marginLeft:15,marginTop:10}}>{spots.length} results</h2>
+            <h2 style={{marginLeft:15,marginTop:10}}>{spots.length} spots</h2>
           </>
         )}
 

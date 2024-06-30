@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
-import EventCard_PopUp from './EventCard_PopUp';  
+import EventCard_PopUp from './EventCard_PopUp';
 
-const Map = ({ events }) => { 
+const Map = ({ events }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
     libraries: ['places'],
   });
 
   const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
-  const [markers, setMarkers] = useState([]); 
+  const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const mapRef = useRef(null); 
+  const mapRef = useRef(null);
 
   const containerStyle = {
     width: '100%',
@@ -20,7 +20,7 @@ const Map = ({ events }) => {
   };
 
   const mapOptions = {
-    disableDefaultUI: true, 
+    disableDefaultUI: true,
     styles: [
       {
         featureType: 'poi',
@@ -80,17 +80,44 @@ const Map = ({ events }) => {
     ],
   };
 
+  const getIconUrl = (category) => {
+    switch (category) {
+      case 'Natural':
+        return '/images/marker_spots/nature.png';
+      case 'Natural':
+          return '/images/marker_spots/nature.png';
+      case 'Cultural':
+        return '/images/marker_spots/culture.png';
+      case 'cultural':
+          return '/images/marker_spots/culture.png';
+      case 'Arts':
+        return '/images/marker_spots/art.png';
+        case 'arts':
+          return '/images/marker_spots/art.png';
+      case 'Religious':
+        return '/images/marker_spots/religious.png';
+      case 'Shopping and Dining':
+        return '/images/marker_spots/shopping.png';
+      case 'Entertainment':
+        return '/images/marker_spots/entertainment.png';
+      case 'Landmark':
+        return '/images/marker_spots/landmark.png';
+      default:
+        return '/images/marker_spots/other.png';
+    }
+  };
+
   useEffect(() => {
     if (isLoaded && events) {
       const newMarkers = events.map(event => (
         <Marker
           key={event.id}
-          position={{ lat: event.attraction_latitude, lng: event.attraction_longitude }} 
+          position={{ lat: event.attraction_latitude, lng: event.attraction_longitude }}
           title={event.attraction_name}
-          onClick={() => setSelectedMarker(event)} 
+          onClick={() => setSelectedMarker(event)}
           icon={{
-            url: '/images/marker/icon.png',
-            scaledSize: new window.google.maps.Size(30, 41)
+            url: getIconUrl(event.category),
+            scaledSize: new window.google.maps.Size(38, 38)
           }}
         />
       ));
@@ -103,30 +130,30 @@ const Map = ({ events }) => {
 
   return (
     <GoogleMap
-      mapContainerStyle={containerStyle} 
-      center={center} 
-      zoom={14} 
-      options={mapOptions} 
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={14}
+      options={mapOptions}
       onLoad={map => {
         mapRef.current = map;
-      }} 
+      }}
     >
       {markers}
 
       {selectedMarker && (
         <OverlayView
-          position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }} 
-          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET} 
+          position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }}
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
         >
           <div style={{
-            position: 'absolute', 
-            transform: 'translate(-50%, -130%)', 
+            position: 'absolute',
+            transform: 'translate(-50%, -130%)',
             padding: '10px',
             background: 'white',
             border: '1px solid #ccc',
             borderRadius: '8px',
             boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-            maxWidth: '500px' 
+            maxWidth: '500px'
           }}>
             <EventCard_PopUp event={selectedMarker} onClose={() => setSelectedMarker(null)} />
           </div>

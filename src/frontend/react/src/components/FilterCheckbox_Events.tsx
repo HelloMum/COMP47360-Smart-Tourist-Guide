@@ -17,7 +17,7 @@ const CustomFormControlLabel = ({ label, value, checked, onChange }) => (
     control={<Checkbox checked={checked} onChange={() => onChange(value)} sx={{
       '& .MuiSvgIcon-root': { fontSize: 20 },
       '& .MuiCheckbox-root': { borderRadius: 2 },
-      '& .MuiCheckbox-root:hover': { borderColor: 'rgba(0, 0, 0, 0.23)' },
+      '& .MuiCheckbox-root:hover': { borderColor: 'rgba(0, 0, 0, 0.3)' },
       '& .Mui-checked': { color: '#999' },
     }} />}
     label={label}
@@ -53,8 +53,10 @@ const FilterCheckbox = ({ onChange, selectedCategories }) => {
         <span style={{ marginLeft: '2px', color: '#777777' }}>category</span>
       </Stack>
 
+
+      {/*------------------------ checkbox----------------------- */}
       {open && (
-        <Box ref={ref} sx={{ boxShadow: 1, p: 1, borderRadius: 1, backgroundColor: '#fff', top: '160px', left: '15px', position: 'absolute', zIndex: 1000 }}>
+        <Box ref={ref} sx={{ boxShadow: 1, p: 1, borderRadius: 1, backgroundColor: '#fff', top: '145px', left: '15px', position: 'absolute', zIndex: 1000 }}>
           <FormGroup
             sx={{
               display: 'grid',

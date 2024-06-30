@@ -95,7 +95,11 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
         </Stack>
 
 
-        <h2 style={{marginLeft:6,marginTop:5}}>{events.length} results</h2>
+       {/* -------------- total number  -------------------*/}
+
+        <h2 style={{marginLeft:6,marginTop:5}}>{events.length} events</h2>
+
+
 
         {/* -------------- event cards ---------------------*/}
         <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>

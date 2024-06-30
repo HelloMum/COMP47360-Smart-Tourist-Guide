@@ -98,19 +98,19 @@ const Map = ({ events: data,hoveredEventId  }) => {
 const getIconUrl = (category) => {
   switch (category) {
     case 'Music':
-      return '/images/event_marker/music.png';
+      return '/images/marker_event/music.png';
     case 'Art & Fashion':
-      return '/images/event_marker/art.png';
+      return '/images/marker_event/art.png';
     case 'Lectures & Books':
-      return '/images/event_marker/book.png';
+      return '/images/marker_event/book.png';
     case 'Food & Festival':
-      return '/images/event_marker/food.png';
+      return '/images/marker_event/food.png';
     case 'Sports & Active':
-      return '/images/event_marker/sports.png';
+      return '/images/marker_event/sports.png';
     case 'Kids & Family':
-      return '/images/event_marker/kids.png';
+      return '/images/marker_event/kids.png';
     default:
-      return '/images/event_marker/other.png';
+      return '/images/marker_event/other.png';
   }
 };
 
@@ -118,19 +118,19 @@ const getIconUrl = (category) => {
 const getHoverIconUrl = (category) => {
   switch (category) {
     case 'Music':
-      return '/images/event_marker/music_hover.png';
+      return '/images/marker_event/music_hover.png';
     case 'Art & Fashion':
-      return '/images/event_marker/art_hover.png';
+      return '/images/marker_event/art_hover.png';
     case 'Lectures & Books':
-      return '/images/event_marker/book_hover.png';
+      return '/images/marker_event/book_hover.png';
     case 'Food & Festival':
-      return '/images/event_marker/food_hover.png';
+      return '/images/marker_event/food_hover.png';
     case 'Sports & Active':
-      return '/images/event_marker/sports_hover.png';
+      return '/images/marker_event/sports_hover.png';
     case 'Kids & Family':
-      return '/images/event_marker/kids_hover.png';
+      return '/images/marker_event/kids_hover.png';
     default:
-      return '/images/event_marker/other_hover.png';
+      return '/images/marker_event/other_hover.png';
   }
 };
 
