@@ -1,23 +1,4 @@
 services:
-  wireguard:
-    build:
-      context: .
-    container_name: wireguard-client
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    volumes:
-      - /lib/modules:/lib/modules
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London 
-    networks:
-      - default 
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-    restart: unless-stopped
-
   frontend:
     build:
       context: ./src/frontend/react

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrappers
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scrappers
+  template:
+    metadata:
+      labels:
+        app: scrappers
+    spec:
+      containers:
+        - name: scrappers
+          image: your-scrappers-image
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://db:5432/${POSTGRES_DB}"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "${POSTGRES_USER}"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "${POSTGRES_PASSWORD}"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      restartPolicy: Always
