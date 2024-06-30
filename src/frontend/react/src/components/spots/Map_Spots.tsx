@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
-import EventCard_PopUp from '../events/EventCard_PopUp';
 import SpotsCard_PopUp from './SpotsCard_PopUp';
 
-const Map = ({ events }) => {
+const Map = ({ events, onMarkerClick }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
     libraries: ['places'],
@@ -83,13 +82,12 @@ const Map = ({ events }) => {
 
   const getIconUrl = (category) => {
     switch (category) {
-
       case 'natural':
-          return '/images/marker_spots/nature.png';
+        return '/images/marker_spots/nature.png';
       case 'cultural':
-          return '/images/marker_spots/culture.png';
-        case 'arts':
-          return '/images/marker_spots/art.png';
+        return '/images/marker_spots/culture.png';
+      case 'arts':
+        return '/images/marker_spots/art.png';
       case 'religious':
         return '/images/marker_spots/religious.png';
       case 'shopping and dining':
@@ -143,15 +141,23 @@ const Map = ({ events }) => {
         >
           <div style={{
             position: 'absolute',
-            transform: 'translate(-50%, -130%)',
-            padding: '10px',
+            transform: 'translate(-50%, -115%)',         
             background: 'white',
             border: '1px solid #ccc',
             borderRadius: '8px',
             boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
             maxWidth: '500px'
           }}>
-            <SpotsCard_PopUp event={selectedMarker} onClose={() => setSelectedMarker(null)} />
+            <SpotsCard_PopUp
+              image1={`/images/spots_small/${selectedMarker.index}_1.webp`}
+              image3={`/images/spots_small/${selectedMarker.index}_3.webp`}
+              title={selectedMarker.attraction_name}
+              rating={selectedMarker.attraction_rating}
+              category={selectedMarker.category}
+              isFree={selectedMarker.isFree}
+              user_ratings_total={selectedMarker.user_ratings_total}
+              onClose={() => setSelectedMarker(null)}
+            />
           </div>
         </OverlayView>
       )}

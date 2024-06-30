@@ -9,6 +9,7 @@ import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import './spots.css';
 import Sort_Spots from '../../components/spots/Sort_Spots';
 import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';
+import SpotCard_PopUp from '../../components/spots/SpotsCard_PopUp';
 
 const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -20,6 +21,7 @@ const Spots: React.FC = () => {
   const [sortOption, setSortOption] = useState('user_ratings_total');
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [popupSpot, setPopupSpot] = useState(null);
   const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
@@ -96,6 +98,10 @@ const Spots: React.FC = () => {
     setSearchTerm(searchText);
   };
 
+  const handleMarkerClick = useCallback((spot) => {
+    setPopupSpot(spot);
+  }, []);
+
   return (
     <div style={{ display: 'flex' }}>
       <div className="left" 
@@ -148,7 +154,19 @@ const Spots: React.FC = () => {
         </div>
       </div>
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
-        <Map events={spots} /> 
+        <Map events={spots} onMarkerClick={handleMarkerClick} /> 
+        {popupSpot && (
+          <SpotCard_PopUp
+            image1={`/images/spots_small/${popupSpot.index}_1.webp`}
+            image3={`/images/spots_small/${popupSpot.index}_3.webp`}
+            title={popupSpot.attraction_name}
+            rating={popupSpot.attraction_rating}
+            category={popupSpot.category}
+            isFree={popupSpot.isFree}
+            user_ratings_total={popupSpot.user_ratings_total}
+            onClose={() => setPopupSpot(null)}
+          />
+        )}
       </div>
     </div>
   );
