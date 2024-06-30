@@ -132,8 +132,8 @@ const Spots: React.FC = () => {
                 displayedSpots.map((spot) => (
                   <SpotCard
                     key={spot.id}
-                    image1={`/images/spots/${spot.index}_1.webp`}
-                    image3={`/images/spots/${spot.index}_3.webp`}
+                    image1={`/images/spots_small/${spot.index}_1.webp`}
+                    image3={`/images/spots_small/${spot.index}_3.webp`}
                     title={spot.attraction_name}
                     rating={spot.attraction_rating}
                     price={spot.price}
