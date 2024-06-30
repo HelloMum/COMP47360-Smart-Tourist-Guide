@@ -32,8 +32,8 @@ const Searchbar = ({ onSearch }) => {
           ),
         }}
         sx={{
-          width: '450px',
-          height: '38px',
+          width: '400px',
+          height: '32px',
           '& .MuiOutlinedInput-root': {
             borderRadius: '20px',
             height: '100%',
@@ -41,6 +41,15 @@ const Searchbar = ({ onSearch }) => {
           '& .MuiOutlinedInput-input': {
             height: '100%',
             padding: '10px 14px',
+            fontSize: '14px', // Adjust input text font size
+          },
+          '& .MuiInputLabel-root': {
+            fontSize: '12px', // Adjust placeholder font size
+          },
+        }}
+        InputLabelProps={{
+          sx: {
+            fontSize: '12px', // Adjust placeholder font size
           },
         }}
       />
