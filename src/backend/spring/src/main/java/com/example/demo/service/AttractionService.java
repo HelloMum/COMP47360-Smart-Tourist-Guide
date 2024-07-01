@@ -132,20 +132,21 @@ public class AttractionService {
                 .orElse(null);
     }
 
-    public List<Attraction> filterAndSortAttractions(String name, Boolean isFree, String category, String sortBy, String order) {
+    public List<Attraction> filterAndSortAttractions(String name, Boolean isFree, List<String> categoryList, String sortBy, String order) {
         List<String> keywords = name != null ? List.of(name.toLowerCase().split("\\s+")) : List.of();
 
         return attractions.stream()
                 .filter(attraction -> (name == null || keywords.stream()
                         .allMatch(keyword -> attraction.getAttraction_name().toLowerCase().contains(keyword))) &&
                         (isFree == null || attraction.isFree() == isFree) &&
-                        (category == null || category.isEmpty() || attraction.getCategory().equalsIgnoreCase(category)))
+                        (categoryList == null || categoryList.isEmpty() || categoryList.stream()
+                                .anyMatch(category -> category.equalsIgnoreCase(attraction.getCategory()))))
                 .sorted(getComparator(sortBy, order))
                 .collect(Collectors.toList());
     }
 
 
-    public List<Attraction> filterAndSortAttractionsWithDate(String name, Boolean isFree, String category, String sortBy, String order, LocalDate startDate, LocalDate endDate) {
+    public List<Attraction> filterAndSortAttractionsWithDate(String name, Boolean isFree, List<String> categoryList, String sortBy, String order, LocalDate startDate, LocalDate endDate) {
         List<Integer> daysOfWeek = startDate.datesUntil(endDate.plusDays(1))
                 .map(LocalDate::getDayOfWeek)
                 .map(day -> day.getValue() - 1)
@@ -156,9 +157,10 @@ public class AttractionService {
         return attractions.stream()
                 .filter(attraction -> (name == null || keywords.stream()
                         .allMatch(keyword -> attraction.getAttraction_name().toLowerCase().contains(keyword))) &&
+                        (isOpenOnDays(attraction.getFormatted_hours(), daysOfWeek)) &&
                         (isFree == null || attraction.isFree() == isFree) &&
-                        (category == null || category.isEmpty() || attraction.getCategory().equalsIgnoreCase(category)) &&
-                        isOpenOnDays(attraction.getFormatted_hours(), daysOfWeek))
+                        (categoryList == null || categoryList.isEmpty() || categoryList.stream()
+                                .anyMatch(category -> category.equalsIgnoreCase(attraction.getCategory()))))
                 .sorted(getComparator(sortBy, order))
                 .collect(Collectors.toList());
     }

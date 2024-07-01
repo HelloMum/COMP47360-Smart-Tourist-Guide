@@ -7,8 +7,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/attractions")
@@ -29,10 +29,11 @@ public class AttractionController {
     public List<Attraction> filterAttractions(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean isFree,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String categories,
             @RequestParam(required = false, defaultValue = "rating") String sortBy,
             @RequestParam(required = false) String order) {
 
+        List<String> categoryList = categories != null ? Arrays.asList(categories.split(",")) : null;
 
         if (order == null) {
             if ("price".equalsIgnoreCase(sortBy)) {
@@ -41,7 +42,7 @@ public class AttractionController {
                 order = "desc";
             }
         }
-        return attractionService.filterAndSortAttractions(name, isFree, category, sortBy, order);
+        return attractionService.filterAndSortAttractions(name, isFree, categoryList, sortBy, order);
     }
 
     // Filter logic (isFree, category)
@@ -52,7 +53,7 @@ public class AttractionController {
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean isFree,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String categories,
             @RequestParam(required = false, defaultValue = "rating") String sortBy,
             @RequestParam(required = false) String order) {
 
@@ -65,6 +66,8 @@ public class AttractionController {
             }
         }
 
-        return attractionService.filterAndSortAttractionsWithDate(name, isFree, category, sortBy, order, startDate, endDate);
+        List<String> categoryList = categories != null ? Arrays.asList(categories.split(",")) : null;
+
+        return attractionService.filterAndSortAttractionsWithDate(name, isFree, categoryList, sortBy, order, startDate, endDate);
     }
 }
