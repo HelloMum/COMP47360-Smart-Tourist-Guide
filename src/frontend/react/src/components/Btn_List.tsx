@@ -1,7 +1,11 @@
 import React from 'react';
 import { Box } from '@mui/material';
 
-const Btn_List = ({ onClick }) => {
+interface BtnListProps {
+  onClick: () => void;
+}
+
+const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
   return (
     <Box
       sx={{
@@ -12,11 +16,11 @@ const Btn_List = ({ onClick }) => {
         zIndex: 10000,
         boxShadow: 4, 
         borderRadius: '50px',
-        cursor: 'pointer' // Add cursor pointer for better UX
+        cursor: 'pointer'
       }}
-      onClick={onClick} // Handle button click
+      onClick={onClick}
     >
-      <img src="images/note4.png" width="50px" height="50px" alt="list icon" />
+      <img src="images/note3.png" width="50px" height="50px" alt="list icon" />
     </Box>
   );
 };

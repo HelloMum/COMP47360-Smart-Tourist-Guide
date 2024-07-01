@@ -10,7 +10,7 @@ import './spots.css';
 import Sort_Spots from '../../components/spots/Sort_Spots';
 import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';
 import SpotCard_PopUp from '../../components/spots/SpotsCard_PopUp';
-import List from '../../components/List';
+import List from '../../components/list/List';
 import Btn_List from '../../components/Btn_List';
 
 const Spots: React.FC = () => {
@@ -24,7 +24,7 @@ const Spots: React.FC = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
-  const [showList, setShowList] = useState(false); // State to control visibility of List component
+  const [showList, setShowList] = useState(false); 
   const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
@@ -34,7 +34,6 @@ const Spots: React.FC = () => {
   const handleCollapse = useCallback(() => {
     setActiveSpot(null);
   }, []);
-
 
   // fecth data from backend api 
   const fetchSpots = useCallback(() => {
@@ -109,12 +108,10 @@ const Spots: React.FC = () => {
     setPopupSpot(spot);
   }, []);
 
-  // Handle button click to show List component
   const handleBtnListClick = () => {
     setShowList(true);
   };
 
-  // Handle close button click to hide List component
   const handleCloseList = () => {
     setShowList(false);
   };
@@ -155,6 +152,7 @@ const Spots: React.FC = () => {
                 displayedSpots.map((spot) => (
                   <SpotCard
                     key={spot.id}
+                    id={spot.index}
                     image1={`/images/spots_small/${spot.index}_1.webp`}
                     image3={`/images/spots_small/${spot.index}_3.webp`}
                     title={spot.attraction_name}
@@ -187,9 +185,8 @@ const Spots: React.FC = () => {
         )}
       </div>
     
-      {!showList && <Btn_List onClick={handleBtnListClick} />}
+      {<Btn_List onClick={handleBtnListClick} />}
 
-   
       {showList && <List onClose={handleCloseList} />}
     </div>
   );

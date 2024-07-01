@@ -13,12 +13,14 @@ import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme'; 
 import 'antd/dist/antd.css';
+import { ListProvider } from './contexts/ListContext';
 
 
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
+    <ListProvider> 
     <Router>
     <div className="app-container"> 
       <Header />
@@ -32,7 +34,7 @@ const App: React.FC = () => {
         <Route path="/about" element={<About />} />
       </Routes></div>
     </Router>
-    
+    </ListProvider>
     </ThemeProvider>
   );
 };

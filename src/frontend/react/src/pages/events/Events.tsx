@@ -7,7 +7,8 @@ import { Stack } from '@mui/material';
 import Switch from '../../components/events/Switch_Events';
 import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
-
+import Btn_List from '../../components/Btn_List';
+import List from '../../components/list/List';
 
 const Events: React.FC = () => {
   const [events, setEvents] = useState([]);
@@ -15,7 +16,8 @@ const Events: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
 
-const [hoveredEventId, setHoveredEventId] = useState(null);  
+  const [hoveredEventId, setHoveredEventId] = useState(null);  
+  const [showList, setShowList] = useState(false); 
 
   const fetchEvents = () => {
     let url = 'http://localhost:8080/events/all';
@@ -68,6 +70,14 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
     setSearchText(text);
   };
 
+  const handleBtnListClick = () => {
+    setShowList(true);
+  };
+
+  const handleCloseList = () => {
+    setShowList(false);
+  };
+
   return (
     <div className="list" style={{ display: 'flex' }}>
       <div
@@ -81,43 +91,33 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
           flexDirection: 'column',
         }}
       >
-
-        {/* -------------- search bar --------------------*/}
         <Stack direction="row" justifyContent="center">
           <Searchbar onSearch={handleSearch} />
         </Stack>
 
-        {/* -------------- filter & sort -------------------*/}
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{  marginTop: 2 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ marginTop: 2 }}>
           <FilterCheckbox onChange={handleCategoryChange} selectedCategories={selectedCategories} />
           <Switch checked={isFree} onChange={handleSwitchChange} />
-          {/* <Sort_Events /> */}
         </Stack>
 
+        <h2 style={{ marginLeft: 6, marginTop: 5 }}>{events.length} events</h2>
 
-       {/* -------------- total number  -------------------*/}
-
-        <h2 style={{marginLeft:6,marginTop:5}}>{events.length} events</h2>
-
-
-
-        {/* -------------- event cards ---------------------*/}
         <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
           <Stack>
             {events.map(event => (
               <EventCard key={event.id} event={event} onMouseEnter={() => setHoveredEventId(event.id)}
-              onMouseLeave={() => setHoveredEventId(null)}/>
+                onMouseLeave={() => setHoveredEventId(null)} />
             ))}
           </Stack>
         </div>
       </div>
 
-      {/* --------------- map on the right ------------------*/}      
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-        <Map events={events} hoveredEventId={hoveredEventId}/>
+        <Map events={events} hoveredEventId={hoveredEventId} />
       </div>
-
       
+       <Btn_List onClick={handleBtnListClick} />
+      {showList && <List onClose={handleCloseList} />}
     </div>
   );
 };
