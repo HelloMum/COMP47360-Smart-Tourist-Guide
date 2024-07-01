@@ -32,7 +32,7 @@ const Searchbar = ({ onSearch }) => {
           ),
         }}
         sx={{
-          width: '400px',
+          width: '25vw',
           height: '32px',
           '& .MuiOutlinedInput-root': {
             borderRadius: '20px',

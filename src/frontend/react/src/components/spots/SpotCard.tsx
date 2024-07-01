@@ -50,8 +50,9 @@ const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating,categ
       borderRadius: '8px',
       overflow: 'hidden',
       boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
-      width: "47%",
-      marginBottom: 2
+      width: "17.8vw",
+      marginBottom: 2,
+      marginX:1
     }}>
 
 
@@ -116,15 +117,6 @@ const SpotCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating,categ
 </span>
 </Stack>
 
-
-        {/* ---------------------   price  ---------------------- */}
-
-{/* <Box display="flex" alignItems="center" >
-      
-          <Typography variant="body2" color="text.secondary">
-           from   {price } per adult
-          </Typography>
-        </Box> */}
 
         
   {/* ---------------------   two buttons  ---------------------- */}

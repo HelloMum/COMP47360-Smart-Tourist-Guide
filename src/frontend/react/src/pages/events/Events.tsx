@@ -74,7 +74,7 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
         className="left"
         style={{
           width: LEFT_WIDTH,
-          padding: '18px 30px 0px 30px',
+          padding: '18px 20px 0px 20px',
           marginTop: NAVBAR_HEIGHT,
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
           display: 'flex',
@@ -88,7 +88,7 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
         </Stack>
 
         {/* -------------- filter & sort -------------------*/}
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginTop: 2 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{  marginTop: 2 }}>
           <FilterCheckbox onChange={handleCategoryChange} selectedCategories={selectedCategories} />
           <Switch checked={isFree} onChange={handleSwitchChange} />
           {/* <Sort_Events /> */}
@@ -116,6 +116,8 @@ const [hoveredEventId, setHoveredEventId] = useState(null);
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
         <Map events={events} hoveredEventId={hoveredEventId}/>
       </div>
+
+      
     </div>
   );
 };

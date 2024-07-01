@@ -10,6 +10,8 @@ import './spots.css';
 import Sort_Spots from '../../components/spots/Sort_Spots';
 import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';
 import SpotCard_PopUp from '../../components/spots/SpotsCard_PopUp';
+import List from '../../components/List';
+import Btn_List from '../../components/Btn_List';
 
 const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -22,6 +24,7 @@ const Spots: React.FC = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
+  const [showList, setShowList] = useState(false); // State to control visibility of List component
   const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
@@ -32,6 +35,8 @@ const Spots: React.FC = () => {
     setActiveSpot(null);
   }, []);
 
+
+  // fecth data from backend api 
   const fetchSpots = useCallback(() => {
     setLoading(true); 
     let url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
@@ -65,10 +70,12 @@ const Spots: React.FC = () => {
     fetchSpots();
   }, [sortOption, isFree, categories, searchTerm, fetchSpots]);
 
+  // isFree switch
   const handleSwitchChange = useCallback(() => {
     setIsFree(!isFree);
   }, [isFree]);
 
+  // load more spots when scrolling
   const loadMoreSpots = useCallback(() => {
     if (loading) return;
     setLoading(true);
@@ -102,28 +109,38 @@ const Spots: React.FC = () => {
     setPopupSpot(spot);
   }, []);
 
+  // Handle button click to show List component
+  const handleBtnListClick = () => {
+    setShowList(true);
+  };
+
+  // Handle close button click to hide List component
+  const handleCloseList = () => {
+    setShowList(false);
+  };
+
   return (
     <div style={{ display: 'flex' }}>
-      <div className="left" 
+      <div 
       style={{ width: LEFT_WIDTH, 
-        padding: '18px 30px 0px 30px', 
+        padding: '18px 1.2vw 0px 1.2vw', 
         marginTop: NAVBAR_HEIGHT, 
         height: `calc(100vh - ${NAVBAR_HEIGHT})`, 
         display: 'flex', 
         flexDirection: 'column', 
         overflowY: 'hidden' }}>
+
         {!activeSpot && (
           <>
             <Stack direction="row" justifyContent="center">
               <Searchbar onSearch={handleSearch} />
             </Stack>
-            <Stack direction="row" sx={{ paddingX: 2, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+            <Stack direction="row" sx={{ paddingX: 1, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
               <FilterCheckbox onChange={handleCategoryChange} />
               <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
               <Sort_Spots value={sortOption} onChange={handleSortChange} />
             </Stack>
-
-            <h2 style={{marginLeft:15,marginTop:10}}>{spots.length} spots</h2>
+            <h2 style={{marginLeft:10,marginTop:10}}>{spots.length} spots</h2>
           </>
         )}
 
@@ -131,7 +148,7 @@ const Spots: React.FC = () => {
           {activeSpot ? (
             <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
           ) : (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 3, paddingY: 0, paddingX: 2 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap:1.5,  paddingY: 0  }}>
               {loading ? (
                 <div>Loading...</div> 
               ) : (
@@ -153,6 +170,7 @@ const Spots: React.FC = () => {
           )}
         </div>
       </div>
+
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
         <Map events={spots} onMarkerClick={handleMarkerClick} /> 
         {popupSpot && (
@@ -168,6 +186,11 @@ const Spots: React.FC = () => {
           />
         )}
       </div>
+    
+      {!showList && <Btn_List onClick={handleBtnListClick} />}
+
+   
+      {showList && <List onClose={handleCloseList} />}
     </div>
   );
 };

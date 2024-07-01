@@ -44,18 +44,14 @@ const Header: React.FC = () => {
         zIndex: 1000,
         paddingRight: '5%',
         paddingLeft: '2%',
-        // borderTop: `1px solid ${theme.palette.primary.main}`  
+        // borderTop: `1px solid ${theme.palette.primary.light}`, 
       }}
     >
-
       {/* --------------------------logo------------------------ */}
 
       <Link to="/" className="logo" style={{ color: theme.palette.primary.dark }}>
         Hello,World
       </Link>
-
-
-
 
       {/* ---------------3 buttons  & date range picker------------------ */}
 
@@ -90,13 +86,9 @@ const Header: React.FC = () => {
         <DateRangePicker />
       </Stack>
 
-
       {/* -----------------  about & account ------------------ */}
       
       <Stack direction="row" spacing={3} alignItems="center">
-
-      {/* <Button variant="outlined" onClick={() => navigate('/about')} style={{color: theme.palette.primary.dark,borderRadius:20,borderColor: theme.palette.primary.dark, padding: '2px 15px'} } >About</Button> */}
-
         <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
       </Stack>
     </Box>

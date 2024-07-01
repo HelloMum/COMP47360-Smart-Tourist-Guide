@@ -3,10 +3,12 @@ import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 
 const theme = createTheme({
+
+  // -----------------------------------  color -----------------------------------
   palette: {
     primary: {
       main: '#ffc147',  //yellow
-      light:'#fbd589',
+      light:'#ffce65',
       dark:'#faa134',
 
     },
@@ -21,6 +23,9 @@ const theme = createTheme({
       main: '#132956',  //darkblue
     },
   },
+
+  // -----------------------------------  typography  --------------------------------
+
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
     h1: {
@@ -30,8 +35,8 @@ const theme = createTheme({
   
     cardTitle: {
       // fontFamily: 'Arial, sans-serif',
-      fontSize: '1.15rem',
-      fontWeight: 500,
+      fontSize: '1.12rem',
+      fontWeight: 450,
       // color: '#111',
     },
 
@@ -51,6 +56,17 @@ const theme = createTheme({
 
   },
   
+ // -----------------------------------  breakpoints for screens withe different sizes  --------------------------------
+
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
 } as ThemeOptions);
 
 export default theme;

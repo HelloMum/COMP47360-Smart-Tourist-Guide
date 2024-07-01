@@ -59,14 +59,14 @@ const EventCard = ({ event, onMouseEnter, onMouseLeave }) => {
           />
         </Box>
 
-        <Box sx={{ marginLeft: '30px', flexGrow: 1 }}>
+        <Box sx={{ marginLeft: '20px', flexGrow: 1 }}>
           <Typography
             sx={{
               ...theme.typography.cardTitle,
               whiteSpace: isExpanded ? 'normal' : 'nowrap',
               overflow: 'hidden',
               textOverflow: isExpanded ? 'clip' : 'ellipsis',
-              maxWidth: '350px',
+              maxWidth: '22vw',
               display: 'inline-block',
             }}
             component="div"
