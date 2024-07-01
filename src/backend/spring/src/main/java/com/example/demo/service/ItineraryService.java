@@ -18,11 +18,21 @@ import java.util.stream.Collectors;
 @Service
 public class ItineraryService {
 
-    @Autowired AttractionService attractionService;
-
     private List<Event> events = new ArrayList<>();
 
+    private List<TimeSlot> availableTimeSlots; // 可用的时间段列表，每个时间段包含起始时间和结束时间
+    private List<Attraction> attractions; // 景点列表
+
+    @Autowired
+    private AttractionService attractionService;
+
     public ItineraryService() {
+        intializeEvents();
+        this.availableTimeSlots = new ArrayList<>();
+    }
+
+    private void intializeEvents() {
+
         events.add(new Event(UUID.fromString("6eb2c6ad-c018-47b6-9c65-76e0eaa8e1be"), "Watson Adventures' Munch Around the Village Scavenger Hunt",
                 40.7302746144448, -74.0021777051505, "food-and-drink", "Food & Festival",
                 "Join Watson Adventures on a unique food scavenger hunt for adults in Greenwich Village! Discover the gourmet delights of Greenwich Village while...",
@@ -54,12 +64,7 @@ public class ItineraryService {
                 "https://s3-media3.fl.yelpcdn.com/ephoto/bi2qU7DBHsCv7prwTd3UxQ/o.jpg", false,
                 "2024-07-06T17:00:00", "2024-07-06T19:00:00", 1, 0, false, false,
                 LocalDateTime.parse("2024-07-01T10:05:32.447952"), "1000 Fifth Ave", "New York", "NY", "10028"));
-
-        Attraction attraction1 = attractionService.getAttractionByIndex(3);
-        Attraction attraction2 = attractionService.getAttractionByIndex(13);
-        Attraction attraction3 = attractionService.getAttractionByIndex(16);
     }
-
 
     public List<ItineraryItem> createItinerary(LocalDate startDate, LocalDate endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -86,96 +91,208 @@ public class ItineraryService {
                             event.getLatitude(), event.getLongitude(), true);
                     itinerary.add(item);
                 } else {
-                    System.out.println("Time conflict, remove " + event.getName() + " (" + eventStart + " - " + eventEnd + ")");
+                    System.out.println("时间冲突，跳过事件：" + event.getName() + " (" + eventStart + " - " + eventEnd + ")");
                 }
             }
 
             itinerary.sort(Comparator.comparing(ItineraryItem::getStartTime));
         }
 
-        List<TimeSlot> availableTimeSlots = generateAvailableTimeSlots(startDate, endDate);
-
-        System.out.println("Available time slots : ");
-        for (TimeSlot slot : availableTimeSlots) {
-            System.out.println(slot.getStart() + " - " + slot.getEnd());
+        availableTimeSlots = new ArrayList<>();
+        for (LocalDate date : dates) {
+            availableTimeSlots.addAll(generateAvailableTimeSlots(itinerary, date));
         }
 
-        printEvents(itinerary);
+        addAttractionsToItinerary(itinerary);
+
+        printItinerary(itinerary, availableTimeSlots);
+
         return itinerary;
     }
 
-    public void printEvents(List<ItineraryItem> itinerary) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private void addAttractionsToItinerary(List<ItineraryItem> itinerary) {
+        List<Attraction> attractions = new ArrayList<>(Arrays.asList(
+                attractionService.getAttractionByIndex(3),
+                attractionService.getAttractionByIndex(13),
+                attractionService.getAttractionByIndex(16)
+        ));
 
-        Set<LocalDate> printedDates = new HashSet<>();
+        attractions.sort(Comparator.comparingInt(this::calculateWeeklyOpenHours));
 
-        for (ItineraryItem item : itinerary) {
-            LocalDate eventDate = item.getStartTime().toLocalDate();
+        Iterator<TimeSlot> timeSlotIterator = availableTimeSlots.iterator();
+        while (timeSlotIterator.hasNext()) {
+            TimeSlot timeSlot = timeSlotIterator.next();
+            LocalDateTime slotStart = timeSlot.getStart();
+            LocalDateTime slotEnd = timeSlot.getEnd();
+            int dayOfWeek = slotStart.getDayOfWeek().getValue() % 7; // 0代表周一，6代表周日
 
-            if (!printedDates.contains(eventDate)) {
-                System.out.println(dateFormatter.format(eventDate) + ":");
-                printedDates.add(eventDate);
+            Iterator<Attraction> attractionIterator = attractions.iterator();
+            while (attractionIterator.hasNext()) {
+                Attraction attraction = attractionIterator.next();
+
+                if (isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime())) {
+                    ItineraryItem item = new ItineraryItem(attraction.getIndex(), attraction.getAttraction_name(), slotStart, slotEnd,
+                            attraction.getAttraction_latitude(), attraction.getAttraction_longitude(), false);
+                    timeSlot.setOccupied(true);
+                    itinerary.add(item);
+                    attractionIterator.remove();
+                    break;
+                }
             }
-
-            System.out.println("  " + timeFormatter.format(item.getStartTime()) + " - " + timeFormatter.format(item.getEndTime()) +
-                    ": " + item.getName() + " (Event)");
         }
+
+        itinerary.sort(Comparator.comparing(ItineraryItem::getStartTime));
     }
 
 
-    public List<TimeSlot> generateAvailableTimeSlots(LocalDate startDate, LocalDate endDate) {
+    private boolean isAttractionOpenDuring(String formattedHours, int dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        String[] hoursArray = formattedHours.split(", ");
+        for (String hours : hoursArray) {
+            String[] parts = hours.split(": ");
+            if (parts.length != 2) {
+                continue;
+            }
+            int parsedDayOfWeek = Integer.parseInt(parts[0]);
+            String timeRange = parts[1];
+
+            String[] times = timeRange.split(" - ");
+            if (times.length != 2) {
+                continue;
+            }
+            LocalTime openTime = LocalTime.parse(times[0]);
+            LocalTime closeTime = LocalTime.parse(times[1]);
+
+            if (dayOfWeek == parsedDayOfWeek &&
+                    startTime.compareTo(openTime) >= 0 &&
+                    endTime.compareTo(closeTime) <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int calculateWeeklyOpenHours(Attraction attraction) {
+        String formattedHours = attraction.getFormatted_hours();
+        Map<Integer, Integer> dayHours = new HashMap<>();
+
+        String[] days = formattedHours.split(", ");
+        for (String day : days) {
+            String[] parts = day.split(": ");
+            int dayOfWeek = Integer.parseInt(parts[0]);
+            String[] hours = parts[1].split(" - ");
+            LocalTime start = LocalTime.parse(hours[0]);
+            LocalTime end = LocalTime.parse(hours[1]);
+            int openHours = (int) Duration.between(start, end).toHours();
+            dayHours.put(dayOfWeek, openHours);
+        }
+
+        return dayHours.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public List<TimeSlot> generateAvailableTimeSlots(List<ItineraryItem> itinerary, LocalDate date) {
         List<TimeSlot> availableTimeSlots = new ArrayList<>();
-        LocalDate currentDate = startDate;
         LocalTime dayStart = LocalTime.of(9, 0);
-        LocalTime dayEnd = LocalTime.of(19, 0);
+        LocalTime dayEnd = LocalTime.of(19, 0); // 修改为左闭右闭的时间定义
 
-        while (!currentDate.isAfter(endDate)) {
-            List<Event> dayEvents = getEventsForDate(currentDate);
+        LocalDateTime currentStart = LocalDateTime.of(date, dayStart);
+        LocalDateTime dayEndDateTime = LocalDateTime.of(date, dayEnd);
 
-            LocalTime currentStart = dayStart;
+        for (ItineraryItem item : itinerary) {
+            if (item.getStartTime().toLocalDate().equals(date)) {
+                LocalDateTime eventStart = item.getStartTime();
+                LocalDateTime eventEnd = item.getEndTime();
 
-            for (Event event : dayEvents) {
-                LocalDateTime eventStart = LocalDateTime.parse(event.getTime_start());
-                LocalDateTime eventEnd = LocalDateTime.parse(event.getTime_end());
-
-                while (Duration.between(currentStart, eventStart.toLocalTime()).toHours() >= 2) {
-                    LocalTime slotEnd = currentStart.plusHours(2);
-                    if (slotEnd.isAfter(eventStart.toLocalTime())) {
-                        slotEnd = eventStart.toLocalTime();
+                while (Duration.between(currentStart, eventStart).toHours() >= 2) {
+                    LocalDateTime slotEnd = currentStart.plusHours(2);
+                    if (slotEnd.isAfter(eventStart)) {
+                        slotEnd = eventStart;
                     }
-                    availableTimeSlots.add(new TimeSlot(LocalDateTime.of(currentDate, currentStart),
-                            LocalDateTime.of(currentDate, slotEnd)));
+                    availableTimeSlots.add(new TimeSlot(currentStart, slotEnd));
                     currentStart = slotEnd;
                 }
 
-                currentStart = eventEnd.toLocalTime();
+                currentStart = eventEnd;
             }
+        }
 
-            while (Duration.between(currentStart, dayEnd).toHours() >= 2) {
-                LocalTime slotEnd = currentStart.plusHours(2);
-                if (slotEnd.isAfter(dayEnd)) {
-                    slotEnd = dayEnd;
-                }
-                availableTimeSlots.add(new TimeSlot(LocalDateTime.of(currentDate, currentStart),
-                        LocalDateTime.of(currentDate, slotEnd)));
-                currentStart = slotEnd;
+        while (Duration.between(currentStart, dayEndDateTime).toHours() >= 2) {
+            LocalDateTime slotEnd = currentStart.plusHours(2);
+            if (slotEnd.isAfter(dayEndDateTime)) {
+                slotEnd = dayEndDateTime;
             }
-
-            currentDate = currentDate.plusDays(1);
+            availableTimeSlots.add(new TimeSlot(currentStart, slotEnd));
+            currentStart = slotEnd;
         }
 
         return availableTimeSlots;
     }
 
-    private List<Event> getEventsForDate(LocalDate date) {
-        List<Event> dayEvents = new ArrayList<>();
-        for (Event event : events) {
-            LocalDateTime eventStart = LocalDateTime.parse(event.getTime_start());
-            if (eventStart.toLocalDate().isEqual(date)) {
-                dayEvents.add(event);
+    private void printItinerary(List<ItineraryItem> itinerary, List<TimeSlot> availableTimeSlots) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        List<ItineraryOutputItem> outputItems = new ArrayList<>();
+        for (ItineraryItem item : itinerary) {
+            outputItems.add(new ItineraryOutputItem(item.getStartTime(), item.getEndTime(), item.getName(), item.isEvent()));
+        }
+        for (TimeSlot slot : availableTimeSlots) {
+            if (!slot.isOccupied()) {
+                outputItems.add(new ItineraryOutputItem(slot.getStart(), slot.getEnd(), "Available TimeSlot", false));
             }
         }
-        return dayEvents;
+
+        outputItems.sort(Comparator.comparing(ItineraryOutputItem::getStartTime));
+
+        System.out.println("Itinerary: ");
+        LocalDate currentDate = null;
+        for (ItineraryOutputItem item : outputItems) {
+            LocalDate itemDate = item.getStartTime().toLocalDate();
+            if (currentDate == null || !currentDate.equals(itemDate)) {
+                currentDate = itemDate;
+                System.out.println(dateFormatter.format(currentDate) + ":");
+            }
+            if (item.isEvent()) {
+                System.out.println("  " + timeFormatter.format(item.getStartTime()) + " - " + timeFormatter.format(item.getEndTime()) + ": " + item.getName() + " (Event)");
+            } else {
+                System.out.println("  " + timeFormatter.format(item.getStartTime()) + " - " + timeFormatter.format(item.getEndTime()) + ": " + item.getName());
+            }
+        }
+    }
+
+
+    private static class ItineraryOutputItem {
+        private final LocalDateTime startTime;
+        private final LocalDateTime endTime;
+        private final String name;
+        private final boolean isEvent;
+
+        public ItineraryOutputItem(LocalDateTime startTime, LocalDateTime endTime, String name, boolean isEvent) {
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.name = name;
+            this.isEvent = isEvent;
+        }
+
+        public ItineraryOutputItem(LocalDateTime startTime, LocalDateTime endTime) {
+            this(startTime, endTime, null, false);
+        }
+
+        public LocalDateTime getStartTime() {
+            return startTime;
+        }
+
+        public LocalDateTime getEndTime() {
+            return endTime;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isEvent() {
+            return isEvent;
+        }
     }
 }
+
+
