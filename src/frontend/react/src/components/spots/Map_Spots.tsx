@@ -90,17 +90,17 @@ const Map = ({ events, onMarkerClick }) => {
       {
         featureType: 'landscape.natural',
         elementType: 'geometry',
-        stylers: [{ color: '#fdd9c3' }]
+        stylers: [{ color: '#dcf2cd' }]
       },
       {
         featureType: 'landscape.natural.landcover',
         elementType: 'geometry',
-        stylers: [{ color: '#d2e8d4' }]
+        stylers: [{ color: '#dcf2cd' }]
       },
       {
         featureType: 'landscape.natural.terrain',
         elementType: 'geometry',
-        stylers: [{ color: '#000' }]
+        stylers: [{ color: '#dcf2cd' }]
       },
       {
         featureType: 'road',
@@ -114,6 +114,64 @@ const Map = ({ events, onMarkerClick }) => {
           { "visibility": "off" }
         ]
       },
+
+      {
+        featureType: 'poi.government',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.medical',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.school',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.sports_complex',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.business',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#d6ecc7' }  
+        ]
+      },
+      {
+        featureType: 'poi.business',
+        elementType: 'geometry.stroke',
+        stylers: [
+          { "visibility": "off" } 
+        ]
+      },
+      {
+        featureType: 'poi.park',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#dcf2cd' }  
+        ]
+      },
+      {
+        featureType: 'poi.park',
+        elementType: 'geometry.stroke',
+        stylers: [
+          { "visibility": "off" }
+        ]
+      },
+
     ],
     clickableIcons: false, 
   };
@@ -218,9 +276,9 @@ const Map = ({ events, onMarkerClick }) => {
             position: 'absolute',
             transform: 'translate(-50%, -115%)',
             background: 'white',
-            border: '1px solid #ccc',
+            border: '1px solid #ddd',
             borderRadius: '8px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            // boxShadow: '0 2px 2px rgba(0,0,0,0.15)',
             maxWidth: '500px'
           }}>
             <SpotsCard_PopUp
