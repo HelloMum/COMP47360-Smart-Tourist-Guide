@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { Box, Button, IconButton, Typography, Snackbar, Alert } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
@@ -11,6 +11,49 @@ interface ListProps {
 
 const List: React.FC<ListProps> = ({ onClose }) => {
   const { listItems, removeFromList } = useContext(ListContext);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+
+  // print out the list data
+  console.log(listItems);
+
+
+  // click 'generate' btn to post data to backend
+  const handleGeneratePlan = async () => {
+    // get id of data
+    const ids = listItems.map(item => ({ id: item.id }));
+
+    try {
+      const response = await fetch('http://localhost:8080/activity/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ids),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Data received from backend:', data);
+
+      setSnackbarMessage('Data sent successfully!');
+      setSnackbarSeverity('success');
+    } catch (error) {
+      console.error('Error sending data to backend:', error);
+      setSnackbarMessage('Failed to send data.');
+      setSnackbarSeverity('error');
+    } finally {
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
     <Box
@@ -46,31 +89,31 @@ const List: React.FC<ListProps> = ({ onClose }) => {
             marginBottom: '16px',
           }}
         >
-<Button
-  variant="outlined"
-  sx={{
-    borderRadius: '100px',
-    width: '150px',
-    height: '35px',
-    fontSize: '14px',
-    boxShadow: 0,
-    borderColor: '#4CAF50',
-    color: '#4CAF50',
-    borderWidth:'1.5px',
-    '&:hover': {
-      borderColor: '#388E3C', 
-      backgroundColor: 'rgba(76, 175, 80, 0.3)', 
-    },
-    '&:active': {
-      borderColor: '#388E3C', 
-      backgroundColor: 'rgba(76, 175, 80, 0.12)', 
-      color: '#388E3C',
-    },
-  }}
->
-  generate plan
-</Button>
-
+          <Button
+            variant="outlined"
+            sx={{
+              borderRadius: '100px',
+              width: '150px',
+              height: '35px',
+              fontSize: '14px',
+              boxShadow: 0,
+              borderColor: '#4CAF50',
+              color: '#4CAF50',
+              borderWidth:'1.5px',
+              '&:hover': {
+                borderColor: '#388E3C', 
+                backgroundColor: 'rgba(76, 175, 80, 0.3)', 
+              },
+              '&:active': {
+                borderColor: '#388E3C', 
+                backgroundColor: 'rgba(76, 175, 80, 0.12)', 
+                color: '#388E3C',
+              },
+            }}
+            onClick={handleGeneratePlan}
+          >
+            generate plan
+          </Button>
         </Box>
 
         <Typography variant="h6">{listItems.length} items</Typography>
@@ -107,6 +150,16 @@ const List: React.FC<ListProps> = ({ onClose }) => {
           />
         ))}
       </Box>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
