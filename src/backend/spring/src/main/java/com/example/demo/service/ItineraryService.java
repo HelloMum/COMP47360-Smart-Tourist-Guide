@@ -4,6 +4,7 @@ import com.example.demo.model.Attraction;
 import com.example.demo.model.Event;
 import com.example.demo.model.ItineraryItem;
 import com.example.demo.model.TimeSlot;
+import ml.dmlc.xgboost4j.java.XGBoostError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,14 @@ public class ItineraryService {
 
     private List<Event> events = new ArrayList<>();
 
-    private List<TimeSlot> availableTimeSlots; // 可用的时间段列表，每个时间段包含起始时间和结束时间
-    private List<Attraction> attractions; // 景点列表
+    private List<TimeSlot> availableTimeSlots; // List of available time slots, each containing a start and end time
+    private List<Attraction> attractions; // List of attractions
 
     @Autowired
     private AttractionService attractionService;
+
+    @Autowired
+    private PredictionService predictionService;
 
     public ItineraryService() {
         intializeEvents();
@@ -69,6 +73,8 @@ public class ItineraryService {
     public List<ItineraryItem> createItinerary(LocalDate startDate, LocalDate endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         List<ItineraryItem> itinerary = new ArrayList<>();
+        List<Event> unarrangedEvents = new ArrayList<>();
+        List<Attraction> unarrangedAttractions = new ArrayList<>();
 
         List<LocalDate> dates = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
 
@@ -91,7 +97,7 @@ public class ItineraryService {
                             event.getLatitude(), event.getLongitude(), true);
                     itinerary.add(item);
                 } else {
-                    System.out.println("时间冲突，跳过事件：" + event.getName() + " (" + eventStart + " - " + eventEnd + ")");
+                    unarrangedEvents.add(event);
                 }
             }
 
@@ -103,47 +109,99 @@ public class ItineraryService {
             availableTimeSlots.addAll(generateAvailableTimeSlots(itinerary, date));
         }
 
-        addAttractionsToItinerary(itinerary);
+        Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap = new HashMap<>();
+        addAttractionsToItinerary(itinerary, attractionBusynessMap, unarrangedAttractions);
 
-        printItinerary(itinerary, availableTimeSlots);
+        printItinerary(itinerary, availableTimeSlots, attractionBusynessMap, unarrangedEvents, unarrangedAttractions);
 
         return itinerary;
     }
 
-    private void addAttractionsToItinerary(List<ItineraryItem> itinerary) {
+    private void addAttractionsToItinerary(List<ItineraryItem> itinerary, Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap, List<Attraction> unarrangedAttractions) {
         List<Attraction> attractions = new ArrayList<>(Arrays.asList(
                 attractionService.getAttractionByIndex(3),
                 attractionService.getAttractionByIndex(13),
-                attractionService.getAttractionByIndex(16)
+                attractionService.getAttractionByIndex(16),
+                attractionService.getAttractionByIndex(100),
+                attractionService.getAttractionByIndex(19),
+                attractionService.getAttractionByIndex(160)
         ));
 
-        attractions.sort(Comparator.comparingInt(this::calculateWeeklyOpenHours));
+        // Sort by the number of days open per week
+        attractions.sort(Comparator.comparingInt(this::calculateWeeklyOpenDays));
 
-        Iterator<TimeSlot> timeSlotIterator = availableTimeSlots.iterator();
-        while (timeSlotIterator.hasNext()) {
-            TimeSlot timeSlot = timeSlotIterator.next();
+        double[] currentLatLon = {0.0, 0.0};
+        // Initialize the current coordinates to the end point or event location of the first time slot
+        if (!itinerary.isEmpty() && itinerary.get(0).isEvent()) {
+            currentLatLon[0] = itinerary.get(0).getLatitude();
+            currentLatLon[1] = itinerary.get(0).getLongitude();
+        }
+
+        for (TimeSlot timeSlot : availableTimeSlots) {
             LocalDateTime slotStart = timeSlot.getStart();
             LocalDateTime slotEnd = timeSlot.getEnd();
-            int dayOfWeek = slotStart.getDayOfWeek().getValue() % 7; // 0代表周一，6代表周日
+            int dayOfWeek = slotStart.getDayOfWeek().getValue() % 7; // 0 for Monday, 6 for Sunday
 
-            Iterator<Attraction> attractionIterator = attractions.iterator();
-            while (attractionIterator.hasNext()) {
-                Attraction attraction = attractionIterator.next();
+            boolean found = false;
+            double searchRadius = 3.0;
 
-                if (isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime())) {
-                    ItineraryItem item = new ItineraryItem(attraction.getIndex(), attraction.getAttraction_name(), slotStart, slotEnd,
-                            attraction.getAttraction_latitude(), attraction.getAttraction_longitude(), false);
+            while (!found) {
+                final double searchRadiusFinal = searchRadius;
+                List<Attraction> filteredAttractions = attractions.stream()
+                        .filter(attraction -> calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude()) <= searchRadiusFinal)
+                        .filter(attraction -> isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime()))
+                        .collect(Collectors.toList());
+
+                Attraction bestAttraction = null;
+                double minBusyness = Double.MAX_VALUE;
+
+                for (Attraction attraction : filteredAttractions) {
+                    try {
+                        float[] prediction = predictionService.predict(attraction.getIndex(), slotStart);
+                        double busyness = prediction[0];
+
+                        // Store the visit time and busyness level of the attraction in the Map
+                        attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
+
+                        if (busyness < minBusyness) {
+                            minBusyness = busyness;
+                            bestAttraction = attraction;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (bestAttraction != null) {
+                    ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd,
+                            bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false);
                     timeSlot.setOccupied(true);
+                    item.setBusyness(minBusyness); // Set busyness level
                     itinerary.add(item);
-                    attractionIterator.remove();
-                    break;
+                    attractions.remove(bestAttraction);
+
+                    // Update current coordinates
+                    currentLatLon[0] = bestAttraction.getAttraction_latitude();
+                    currentLatLon[1] = bestAttraction.getAttraction_longitude();
+                    found = true;
+                } else {
+                    // If no suitable attraction is found, expand the search radius
+                    searchRadius += 1.0;
+                    if (searchRadius > 20.0) {
+                        // If the search radius exceeds 20 kilometers, give up the time slot
+                        break;
+                    }
                 }
             }
         }
 
         itinerary.sort(Comparator.comparing(ItineraryItem::getStartTime));
-    }
 
+        // Add unscheduled attractions to the list
+        if (!attractions.isEmpty()) {
+            unarrangedAttractions.addAll(attractions);
+        }
+    }
 
     private boolean isAttractionOpenDuring(String formattedHours, int dayOfWeek, LocalTime startTime, LocalTime endTime) {
         String[] hoursArray = formattedHours.split(", ");
@@ -171,28 +229,24 @@ public class ItineraryService {
         return false;
     }
 
-    private int calculateWeeklyOpenHours(Attraction attraction) {
+    private int calculateWeeklyOpenDays(Attraction attraction) {
         String formattedHours = attraction.getFormatted_hours();
-        Map<Integer, Integer> dayHours = new HashMap<>();
+        Set<Integer> openDays = new HashSet<>();
 
         String[] days = formattedHours.split(", ");
         for (String day : days) {
             String[] parts = day.split(": ");
             int dayOfWeek = Integer.parseInt(parts[0]);
-            String[] hours = parts[1].split(" - ");
-            LocalTime start = LocalTime.parse(hours[0]);
-            LocalTime end = LocalTime.parse(hours[1]);
-            int openHours = (int) Duration.between(start, end).toHours();
-            dayHours.put(dayOfWeek, openHours);
+            openDays.add(dayOfWeek);
         }
 
-        return dayHours.values().stream().mapToInt(Integer::intValue).sum();
+        return openDays.size();
     }
 
     public List<TimeSlot> generateAvailableTimeSlots(List<ItineraryItem> itinerary, LocalDate date) {
         List<TimeSlot> availableTimeSlots = new ArrayList<>();
         LocalTime dayStart = LocalTime.of(9, 0);
-        LocalTime dayEnd = LocalTime.of(19, 0); // 修改为左闭右闭的时间定义
+        LocalTime dayEnd = LocalTime.of(19, 0); // Modified to be inclusive of both start and end times
 
         LocalDateTime currentStart = LocalDateTime.of(date, dayStart);
         LocalDateTime dayEndDateTime = LocalDateTime.of(date, dayEnd);
@@ -227,17 +281,17 @@ public class ItineraryService {
         return availableTimeSlots;
     }
 
-    private void printItinerary(List<ItineraryItem> itinerary, List<TimeSlot> availableTimeSlots) {
+    private void printItinerary(List<ItineraryItem> itinerary, List<TimeSlot> availableTimeSlots, Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap, List<Event> unarrangedEvents, List<Attraction> unarrangedAttractions) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         List<ItineraryOutputItem> outputItems = new ArrayList<>();
         for (ItineraryItem item : itinerary) {
-            outputItems.add(new ItineraryOutputItem(item.getStartTime(), item.getEndTime(), item.getName(), item.isEvent()));
+            outputItems.add(new ItineraryOutputItem(item.getStartTime(), item.getEndTime(), item.getName(), item.isEvent(), item.getBusyness()));
         }
         for (TimeSlot slot : availableTimeSlots) {
             if (!slot.isOccupied()) {
-                outputItems.add(new ItineraryOutputItem(slot.getStart(), slot.getEnd(), "Available TimeSlot", false));
+                outputItems.add(new ItineraryOutputItem(slot.getStart(), slot.getEnd(), "Available TimeSlot", false, 0));
             }
         }
 
@@ -254,27 +308,46 @@ public class ItineraryService {
             if (item.isEvent()) {
                 System.out.println("  " + timeFormatter.format(item.getStartTime()) + " - " + timeFormatter.format(item.getEndTime()) + ": " + item.getName() + " (Event)");
             } else {
-                System.out.println("  " + timeFormatter.format(item.getStartTime()) + " - " + timeFormatter.format(item.getEndTime()) + ": " + item.getName());
+                if (item.getBusyness() > 0) {
+                    System.out.printf("  %s - %s: %s Busyness: %.2f\n", timeFormatter.format(item.getStartTime()), timeFormatter.format(item.getEndTime()), item.getName(), item.getBusyness());
+                } else {
+                    System.out.printf("  %s - %s: %s\n", timeFormatter.format(item.getStartTime()), timeFormatter.format(item.getEndTime()), item.getName());
+                }
+            }
+        }
+
+        // Print unscheduled events
+        if (!unarrangedEvents.isEmpty()) {
+            System.out.println("Unscheduled Events:");
+            for (Event event : unarrangedEvents) {
+                LocalDateTime eventStart = LocalDateTime.parse(event.getTime_start(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                LocalDateTime eventEnd = LocalDateTime.parse(event.getTime_end(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                System.out.println("  " + event.getName() + " (" + eventStart.format(dateFormatter) + " " + eventStart.format(timeFormatter) + " - " + eventEnd.format(timeFormatter) + ")");
+            }
+        }
+
+        // Print unscheduled attractions
+        if (!unarrangedAttractions.isEmpty()) {
+            System.out.println("Unscheduled Attractions:");
+            for (Attraction attraction : unarrangedAttractions) {
+                System.out.println("  " + attraction.getAttraction_name());
             }
         }
     }
-
 
     private static class ItineraryOutputItem {
         private final LocalDateTime startTime;
         private final LocalDateTime endTime;
         private final String name;
         private final boolean isEvent;
+        private final double busyness;
 
-        public ItineraryOutputItem(LocalDateTime startTime, LocalDateTime endTime, String name, boolean isEvent) {
+        public ItineraryOutputItem(LocalDateTime startTime, LocalDateTime endTime, String name, boolean isEvent, double busyness) {
             this.startTime = startTime;
             this.endTime = endTime;
             this.name = name;
             this.isEvent = isEvent;
-        }
-
-        public ItineraryOutputItem(LocalDateTime startTime, LocalDateTime endTime) {
-            this(startTime, endTime, null, false);
+            this.busyness = busyness;
         }
 
         public LocalDateTime getStartTime() {
@@ -292,7 +365,20 @@ public class ItineraryService {
         public boolean isEvent() {
             return isEvent;
         }
+
+        public double getBusyness() {
+            return busyness;
+        }
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Radius of the Earth in kilometers
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Returns the distance in kilometers
     }
 }
-
-

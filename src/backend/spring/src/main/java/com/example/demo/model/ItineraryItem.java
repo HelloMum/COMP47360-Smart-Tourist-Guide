@@ -11,6 +11,7 @@ public class ItineraryItem {
     private double latitude;
     private double longitude;
     private boolean isEvent;
+    private double busyness;
 
     public ItineraryItem() {}
 
@@ -89,5 +90,13 @@ public class ItineraryItem {
 
     public void setEvent(boolean event) {
         isEvent = event;
+    }
+
+    public double getBusyness() {
+        return busyness;
+    }
+
+    public void setBusyness(double busyness) {
+        this.busyness = busyness;
     }
 }
