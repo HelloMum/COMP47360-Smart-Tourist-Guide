@@ -18,7 +18,7 @@ const Searchbar = ({ onSearch }) => {
   return (
     <div>
       <TextField
-        placeholder="search the spots you want to visit"
+        placeholder="search the places you want to visit"
         variant="outlined"
         value={searchText}
         onChange={handleInputChange}

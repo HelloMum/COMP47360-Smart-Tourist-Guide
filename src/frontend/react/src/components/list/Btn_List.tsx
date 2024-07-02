@@ -11,9 +11,10 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
       sx={{
         position: 'absolute',
         top: '100px',
-        left: '44vw',
+        right:'7px',
+        // left: '44vw',
         transform: 'translate(-50%, -50%)',
-        zIndex: 10000,
+        zIndex: 10,
         boxShadow: 4, 
         borderRadius: '50px',
         cursor: 'pointer'

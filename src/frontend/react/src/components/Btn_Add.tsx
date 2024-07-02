@@ -1,34 +1,39 @@
-import { AddCircleOutlineRounded, AddCircleRounded, AddRounded, DriveFileRenameOutlineRounded, ModeEditOutlineRounded } from '@mui/icons-material';
+import React, { useState } from 'react';
 import { Button } from '@mui/material';
-import React from 'react';
+import { CheckCircleOutline, CheckRounded } from '@mui/icons-material';
 
 interface Btn_AddProps {
   onClick: () => void;
 }
 
 const Btn_Add: React.FC<Btn_AddProps> = ({ onClick }) => {
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleClick = () => {
+    onClick();
+    setIsAdded(true);
+  };
+
   return (
     <div>
       <Button
- 
         variant="contained"
-        color="primary"
         sx={{
           borderRadius: '25px',
           padding: '1px 1px',
           fontSize: '0.8rem',
           textTransform: 'none',
           boxShadow: 'none',
-          backgroundColor: 'primary.main',
+          backgroundColor: isAdded ? 'lightgray' : 'primary.main',
           color: 'white',
           '&:hover': {
-            backgroundColor: 'primary.dark',
+            backgroundColor: isAdded ? 'gray' : 'primary.dark',
             boxShadow: 'none'
           }
         }}
-        onClick={onClick}
+        onClick={handleClick}
       >
-        add
+        {isAdded ? <CheckRounded /> : 'Add'}
       </Button>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { Box, Stack } from '@mui/material';
 import Map from '../../components/spots/Map_Spots';
 import Searchbar from '../../components/spots/Searchbar';
@@ -11,7 +11,9 @@ import Sort_Spots from '../../components/spots/Sort_Spots';
 import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';
 import SpotCard_PopUp from '../../components/spots/SpotsCard_PopUp';
 import List from '../../components/list/List';
-import Btn_List from '../../components/Btn_List';
+import Btn_List from '../../components/list/Btn_List';
+import { ListContext } from '../../contexts/ListContext';
+import Btn_Close_Left from '../../components/Btn_Close_Left';
 
 const Spots: React.FC = () => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -24,7 +26,7 @@ const Spots: React.FC = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
-  const [showList, setShowList] = useState(false);
+  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
   const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
@@ -35,7 +37,6 @@ const Spots: React.FC = () => {
     setActiveSpot(null);
   }, []);
 
-  // fecth data from backend api 
   const fetchSpots = useCallback(() => {
     setLoading(true);
     let url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
@@ -69,12 +70,10 @@ const Spots: React.FC = () => {
     fetchSpots();
   }, [sortOption, isFree, categories, searchTerm, fetchSpots]);
 
-  // isFree switch
   const handleSwitchChange = useCallback(() => {
     setIsFree(!isFree);
   }, [isFree]);
 
-  // load more spots when scrolling
   const loadMoreSpots = useCallback(() => {
     if (loading) return;
     setLoading(true);
@@ -108,70 +107,64 @@ const Spots: React.FC = () => {
     setPopupSpot(spot);
   }, []);
 
-  const handleBtnListClick = () => {
-    setShowList(true);
-  };
-
-  const handleCloseList = () => {
-    setShowList(false);
-  };
-
   return (
     <div style={{ display: 'flex' }}>
-      <div
-        style={{
-          width: LEFT_WIDTH,
-          padding: '18px 1.2vw 0px 1.2vw',
-          marginTop: NAVBAR_HEIGHT,
-          height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-          display: 'flex',
-          flexDirection: 'column',
-          overflowY: 'hidden'
-        }}>
-
-        {!activeSpot && (
-          <>
-            <Stack direction="row" justifyContent="center">
-              <Searchbar onSearch={handleSearch} />
-            </Stack>
-            <Stack direction="row" sx={{ paddingX: 1, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-              <FilterCheckbox onChange={handleCategoryChange} />
-              <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
-              <Sort_Spots value={sortOption} onChange={handleSortChange} />
-            </Stack>
-            <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
-          </>
-        )}
-
-        <div className="spot-card-container" style={{ flexGrow: 1, overflowY: 'auto' }} onScroll={handleScroll}>
-          {activeSpot ? (
-            <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
-          ) : (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 1.5, paddingY: 0 }}>
-              {loading ? (
-                <div>Loading...</div>
-              ) : (
-                displayedSpots.map((spot) => (
-                  <SpotCard
-                    key={spot.id}
-                    id={spot.index}
-                    image1={`/images/spots_small/${spot.index}_1.webp`}
-                    image3={`/images/spots_small/${spot.index}_3.webp`}
-                    title={spot.attraction_name}
-                    rating={spot.attraction_rating}
-                    price={spot.price}
-                    category={spot.category}
-                    user_ratings_total={spot.user_ratings_total}
-                    onExpand={() => handleExpand(spot)}
-                  />
-                ))
-              )}
-            </Box>
+      {isLeftPanelVisible && (
+        <div
+          style={{
+            width: LEFT_WIDTH,
+            padding: '18px 1.2vw 0px 1.2vw',
+            marginTop: NAVBAR_HEIGHT,
+            height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'hidden'
+          }}
+        >
+          {!activeSpot && (
+            <>
+              <Stack direction="row" justifyContent="center">
+                <Searchbar onSearch={handleSearch} />
+              </Stack>
+              <Stack direction="row" sx={{ paddingX: 1, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+                <FilterCheckbox onChange={handleCategoryChange} />
+                <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
+                <Sort_Spots value={sortOption} onChange={handleSortChange} />
+              </Stack>
+              <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
+            </>
           )}
-        </div>
-      </div>
 
-      <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
+          <div className="spot-card-container hide-scrollbar" style={{ flexGrow: 1, overflowY: 'auto' }} onScroll={handleScroll}>
+            {activeSpot ? (
+              <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
+            ) : (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 1.5, paddingX: '12px' }}>
+                {loading ? (
+                  <div>Loading...</div>
+                ) : (
+                  displayedSpots.map((spot) => (
+                    <SpotCard
+                      key={spot.id}
+                      id={spot.index}
+                      image1={`/images/spots_small/${spot.index}_1.webp`}
+                      image3={`/images/spots_small/${spot.index}_3.webp`}
+                      title={spot.attraction_name}
+                      rating={spot.attraction_rating}
+                      price={spot.price}
+                      category={spot.category}
+                      user_ratings_total={spot.user_ratings_total}
+                      onExpand={() => handleExpand(spot)}
+                    />
+                  ))
+                )}
+              </Box>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="map hide-scrollbar" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
         <Map events={spots} onMarkerClick={handleMarkerClick} />
         {popupSpot && (
           <SpotCard_PopUp
@@ -187,9 +180,10 @@ const Spots: React.FC = () => {
         )}
       </div>
 
-      {<Btn_List onClick={handleBtnListClick} />}
+      <Btn_List onClick={toggleList} />
+      {showList && <List onClose={closeList} />}
 
-      {showList && <List onClose={handleCloseList} />}
+      <Btn_Close_Left onClick={toggleLeftPanel} />
     </div>
   );
 };

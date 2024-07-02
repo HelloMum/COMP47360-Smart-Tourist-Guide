@@ -22,14 +22,23 @@ interface SpotCardProps {
 
 const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, category, user_ratings_total, onExpand }) => {
   const [currentImage, setCurrentImage] = useState(image1);
+  const [imageStyle, setImageStyle] = useState({});
   const { addToList } = useContext(ListContext);
 
   const handleMouseEnter = () => {
     setCurrentImage(image3);
+    setImageStyle({
+      transition: 'transform 7s ease',  
+      transform: 'scale(1.4)' 
+    });
   };
 
   const handleMouseLeave = () => {
     setCurrentImage(image1);
+    setImageStyle({
+      transition: 'transform 7s ease',
+      transform: 'scale(1)' 
+    });
   };
 
   const handleAdd = () => {
@@ -39,9 +48,17 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
   };
 
   return (
-    <Card sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)', width: "17.8vw", marginBottom: 2, marginX:1 }}>
+    <Card sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)', width: "17.5vw", marginBottom: 2, gap:1 }}>
       <Box sx={{ position: 'relative', overflow: 'hidden' }}>
-        <CardMedia component="img" height="170" image={currentImage} alt={title} sx={{ borderRadius: '0px', boxShadow: 0 }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+        <CardMedia 
+          component="img" 
+          height="170" 
+          image={currentImage} 
+          alt={title} 
+          sx={{ borderRadius: '0px', boxShadow: 0, ...imageStyle }} 
+          onMouseEnter={handleMouseEnter} 
+          onMouseLeave={handleMouseLeave} 
+        />
         <Btn_Like/>
       </Box>
       <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }}>
