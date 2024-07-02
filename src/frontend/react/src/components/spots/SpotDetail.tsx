@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { AccessTimeRounded, ConfirmationNumber, DateRangeRounded, ExpandLessRounded, LocationOnRounded, PhoneEnabledRounded, PublicRounded, Close } from '@mui/icons-material';
 import { Box, Card, CardMedia, Rating, Stack, Typography, Modal, IconButton } from '@mui/material';
 import Btn_Add from './../Btn_Add';
 import Tag_Category from './../Tag_Category';
 import Tag_IsFree from './../Tag_IsFree';
+import { ListContext } from '../../contexts/ListContext';
 
 const SpotDetail = ({ spot, onCollapse }) => {
+  const { addToList } = useContext(ListContext); // Get addToList method from ListContext
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -17,6 +19,14 @@ const SpotDetail = ({ spot, onCollapse }) => {
   const handleClose = () => {
     setOpen(false);
     setSelectedImage(null);
+  };
+
+  const handleAdd = () => {
+    addToList({
+      id: spot.id,
+      title: spot.attraction_name,
+      image: `/images/spots_small/${spot.index}_2.webp`,
+    });
   };
 
   return (
@@ -56,13 +66,10 @@ const SpotDetail = ({ spot, onCollapse }) => {
               transition: 'transform 3s ease-in-out',
               '&:hover': {
                 transform: 'scale(1.4)'
-                
               },
-
               '&:not(:hover)': {
                 transition: 'transform 0.01s ease-in-out'
               }
-            
             }}
             onClick={() => handleOpen(`/images/spots/${spot.index}_2.webp`)}
           />
@@ -99,16 +106,10 @@ const SpotDetail = ({ spot, onCollapse }) => {
       </Box>
       {/*------------------ content below pictures -------------------*/}
       <Stack sx={{ p: 3, px: 5 }}>
-
-
-
         {/*--------------- title & two tags -------------------------- */}
-      
-        <h2 style={{ marginBottom:4 }}>{spot.attraction_name}</h2>
-            <Stack marginBottom={1}>
-
-
-              <span  >
+        <h2 style={{ marginBottom: 4 }}>{spot.attraction_name}</h2>
+        <Stack marginBottom={1}>
+          <span>
             <Tag_Category category={spot.category} />
             <Tag_IsFree isFree={true} />
           </span>
@@ -126,7 +127,6 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
         {/*------------------ Address, price, website, phone -------------------- */}
         <Stack gap={1.5} marginTop={2}>
-
           {/* Address */}
           <Box display="flex" alignItems="center">
             <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
@@ -168,11 +168,9 @@ const SpotDetail = ({ spot, onCollapse }) => {
             </Typography>
           </Box>
 
-
-        {/*------------------------------------- two buttons ------------------------- */}
-
+          {/*------------------------------------- two buttons ------------------------- */}
           <Box display="flex" alignItems="center" justifyContent="space-between" marginTop={2}>
-            <Btn_Add />
+            <Btn_Add onClick={handleAdd} /> {/* Update Btn_Add to call handleAdd */}
             <ExpandLessRounded onClick={onCollapse} sx={{ cursor: 'pointer' }} />
           </Box>
         </Stack>

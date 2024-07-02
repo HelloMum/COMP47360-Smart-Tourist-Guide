@@ -18,7 +18,7 @@ const Searchbar = ({ onSearch }) => {
   return (
     <div>
       <TextField
-        placeholder="search the spots you want to visit"
+        placeholder="search the places you want to visit"
         variant="outlined"
         value={searchText}
         onChange={handleInputChange}
@@ -32,7 +32,7 @@ const Searchbar = ({ onSearch }) => {
           ),
         }}
         sx={{
-          width: '400px',
+          width: '25vw',
           height: '32px',
           '& .MuiOutlinedInput-root': {
             borderRadius: '20px',
