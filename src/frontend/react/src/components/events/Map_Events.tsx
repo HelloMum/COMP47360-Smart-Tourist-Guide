@@ -65,30 +65,65 @@ const Map = ({ events: data,hoveredEventId  }) => {
         elementType: 'labels.text.stroke',
         stylers: [{ color: '#ffffff' }]
       },
-      {
-        featureType: 'road.local',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }]
-      },
+    
       {
         featureType: 'transit.station',
         elementType: 'labels',
         stylers: [{ visibility: 'off' }]
       },
+      // {
+      //   featureType: 'road',
+      //   elementType: 'labels',
+      //   stylers: [{ visibility: 'off' }]
+      // },
+
       {
         featureType: 'road',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }]
+        elementType: 'labels.text.fill',
+        stylers: [
+          { color: '#d5baaa' }, 
+          { lightness: 30 }     
+        ]
       },
       {
-        featureType: 'landscape',
+        featureType: 'road',
+        elementType: 'labels.text.stroke',
+        stylers: [
+          { color: '#ffffff' }, 
+          { weight: 2 }         
+        ]
+      },
+      {
+        featureType: 'landscape.man_made',
         elementType: 'geometry',
-        stylers: [{ color: '#f8f4f1' }]
+        stylers: [{ color: '#f8f4f1' }]  //ground color
+      },
+      {
+        featureType: 'landscape.natural',
+        elementType: 'geometry',
+        stylers: [{ color: '#fdd9c3' }]
+      },
+      {
+        featureType: 'landscape.natural.landcover',
+        elementType: 'geometry',
+        stylers: [{ color: '#d2e8d4' }]
+      },
+      {
+        featureType: 'landscape.natural.terrain',
+        elementType: 'geometry',
+        stylers: [{ color: '#000' }]
       },
       {
         featureType: 'road',
         elementType: 'geometry.stroke',
         stylers: [{ color: '#f2efff' }]
+      },
+      {
+        "featureType": "transit.line",
+        "elementType": "geometry",
+        "stylers": [
+          { "visibility": "off" }
+        ]
       },
     ],
     clickableIcons: false, 
