@@ -4,7 +4,7 @@ import Map from '../../components/spots/Map_Spots';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
-import SpotDetail from '../../components/spots/SpotDetail'; 
+import SpotDetail from '../../components/spots/SpotDetail';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import './spots.css';
 import Sort_Spots from '../../components/spots/Sort_Spots';
@@ -24,7 +24,7 @@ const Spots: React.FC = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
-  const [showList, setShowList] = useState(false); 
+  const [showList, setShowList] = useState(false);
   const batchSize = 6;
 
   const handleExpand = useCallback((spot) => {
@@ -37,7 +37,7 @@ const Spots: React.FC = () => {
 
   // fecth data from backend api 
   const fetchSpots = useCallback(() => {
-    setLoading(true); 
+    setLoading(true);
     let url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
     if (isFree) {
       url += '&isFree=true';
@@ -52,8 +52,8 @@ const Spots: React.FC = () => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log("Fetched data:", data); 
-        setSpots(data); 
+        console.log("Fetched data:", data);
+        setSpots(data);
         setDisplayedSpots(data.slice(0, batchSize));
         setCurrentIndex(batchSize);
       })
@@ -87,7 +87,7 @@ const Spots: React.FC = () => {
 
   const handleScroll = useCallback((e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    if (scrollHeight - scrollTop <= clientHeight + 50) { 
+    if (scrollHeight - scrollTop <= clientHeight + 50) {
       loadMoreSpots();
     }
   }, [loadMoreSpots]);
@@ -118,14 +118,16 @@ const Spots: React.FC = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <div 
-      style={{ width: LEFT_WIDTH, 
-        padding: '18px 1.2vw 0px 1.2vw', 
-        marginTop: NAVBAR_HEIGHT, 
-        height: `calc(100vh - ${NAVBAR_HEIGHT})`, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        overflowY: 'hidden' }}>
+      <div
+        style={{
+          width: LEFT_WIDTH,
+          padding: '18px 1.2vw 0px 1.2vw',
+          marginTop: NAVBAR_HEIGHT,
+          height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'hidden'
+        }}>
 
         {!activeSpot && (
           <>
@@ -137,7 +139,7 @@ const Spots: React.FC = () => {
               <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
               <Sort_Spots value={sortOption} onChange={handleSortChange} />
             </Stack>
-            <h2 style={{marginLeft:10,marginTop:10}}>{spots.length} spots</h2>
+            <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
           </>
         )}
 
@@ -145,9 +147,9 @@ const Spots: React.FC = () => {
           {activeSpot ? (
             <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
           ) : (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap:1.5,  paddingY: 0  }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 1.5, paddingY: 0 }}>
               {loading ? (
-                <div>Loading...</div> 
+                <div>Loading...</div>
               ) : (
                 displayedSpots.map((spot) => (
                   <SpotCard
@@ -170,7 +172,7 @@ const Spots: React.FC = () => {
       </div>
 
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
-        <Map events={spots} onMarkerClick={handleMarkerClick} /> 
+        <Map events={spots} onMarkerClick={handleMarkerClick} />
         {popupSpot && (
           <SpotCard_PopUp
             image1={`/images/spots_small/${popupSpot.index}_1.webp`}
@@ -184,7 +186,7 @@ const Spots: React.FC = () => {
           />
         )}
       </div>
-    
+
       {<Btn_List onClick={handleBtnListClick} />}
 
       {showList && <List onClose={handleCloseList} />}

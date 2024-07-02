@@ -13,6 +13,8 @@ const Map = ({ events, onMarkerClick }) => {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const mapRef = useRef(null);
 
+
+  
   const containerStyle = {
     width: '100%',
     height: '100vh',
@@ -80,44 +82,83 @@ const Map = ({ events, onMarkerClick }) => {
     ],
   };
 
-  const getIconUrl = (category) => {
+
+
+
+
+  const getIconUrl = (category, isActive = false) => {
+    const folder = isActive ? 'marker_spots_active' : 'marker_spots';
     switch (category) {
       case 'natural':
-        return '/images/marker_spots/nature.png';
+        return `/images/${folder}/nature.png`;
       case 'cultural':
-        return '/images/marker_spots/culture.png';
+        return `/images/${folder}/culture.png`;
       case 'arts':
-        return '/images/marker_spots/art.png';
+        return `/images/${folder}/art.png`;
       case 'religious':
-        return '/images/marker_spots/religious.png';
+        return `/images/${folder}/religious.png`;
       case 'shopping and dining':
-        return '/images/marker_spots/shopping.png';
+        return `/images/${folder}/shopping.png`;
       case 'entertainment':
-        return '/images/marker_spots/entertainment.png';
+        return `/images/${folder}/entertainment.png`;
       case 'landmark':
-        return '/images/marker_spots/landmark.png';
+        return `/images/${folder}/landmark.png`;
       default:
-        return '/images/marker_spots/other.png';
+        return `/images/${folder}/other.png`;
     }
   };
 
   useEffect(() => {
+
+
+
     if (isLoaded && events) {
-      const newMarkers = events.map(event => (
-        <Marker
-          key={event.id}
-          position={{ lat: event.attraction_latitude, lng: event.attraction_longitude }}
-          title={event.attraction_name}
-          onClick={() => setSelectedMarker(event)}
-          icon={{
+      const newMarkers = events.map(event => {
+        const marker = new window.google.maps.Marker({
+          position: { lat: event.attraction_latitude, lng: event.attraction_longitude },
+          title: event.attraction_name,
+          icon: {
             url: getIconUrl(event.category),
             scaledSize: new window.google.maps.Size(38, 38)
-          }}
-        />
-      ));
+          },
+          map: mapRef.current
+        });
+
+        marker.addListener('mouseover', () => {
+          marker.setIcon({
+            url: getIconUrl(event.category, true),
+            scaledSize: new window.google.maps.Size(48, 48)
+          });
+        });
+
+        marker.addListener('mouseout', () => {
+          marker.setIcon({
+            url: getIconUrl(event.category),
+            scaledSize: new window.google.maps.Size(38, 38)
+          });
+        });
+
+        marker.addListener('click', () => {
+          setSelectedMarker(event);
+          onMarkerClick(event);
+      
+
+
+        });
+
+
+
+        
+        return marker;
+      });
+
       setMarkers(newMarkers);
+
+      return () => {
+        newMarkers.forEach(marker => marker.setMap(null));
+      };
     }
-  }, [isLoaded, events]);
+  }, [isLoaded, events, onMarkerClick]);
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -132,8 +173,6 @@ const Map = ({ events, onMarkerClick }) => {
         mapRef.current = map;
       }}
     >
-      {markers}
-
       {selectedMarker && (
         <OverlayView
           position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }}
@@ -141,7 +180,7 @@ const Map = ({ events, onMarkerClick }) => {
         >
           <div style={{
             position: 'absolute',
-            transform: 'translate(-50%, -115%)',         
+            transform: 'translate(-50%, -115%)',
             background: 'white',
             border: '1px solid #ccc',
             borderRadius: '8px',

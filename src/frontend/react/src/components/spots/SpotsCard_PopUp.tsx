@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { CardMedia, Typography, IconButton, Box, Stack, Rating } from '@mui/material';
 import { CloseRounded } from '@mui/icons-material';
 import Btn_Add from '../Btn_Add';
@@ -6,8 +6,10 @@ import Btn_Like from '../Btn_Like';
 import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
 import theme from '../../theme';
+import { ListContext } from '../../contexts/ListContext';
 
 interface SpotCardPopUpProps {
+  id: string;
   image1: string;  
   image3: string; 
   title: string;
@@ -18,12 +20,14 @@ interface SpotCardPopUpProps {
   onClose: () => void;
 }
 
-const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ image1, image3, title, rating, category, isFree, user_ratings_total, onClose }) => {
+const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, title, rating, category, isFree, user_ratings_total, onClose }) => {
   const [currentImage, setCurrentImage] = useState(image1);
   const [imageStyle, setImageStyle] = useState({
     transition: 'none',  
     transform: 'scale(1)' 
   });
+
+  const { addToList } = useContext(ListContext);
 
   useEffect(() => {
     setCurrentImage(image1);
@@ -43,6 +47,12 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ image1, image3, title, r
       transition: 'none',  
       transform: 'scale(1)'  
     });
+  };
+
+  const handleAdd = () => {
+    const spotData = { id, title, image: image1 };
+    addToList(spotData);
+    console.log('Add:', spotData);
   };
 
   return (
@@ -101,7 +111,7 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ image1, image3, title, r
 
         <Box display="flex" alignItems="center" sx={{ margin: 0 }}></Box>
         <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5, margin: 0 }}>
-          <Btn_Add />
+          <Btn_Add onClick={handleAdd} />
           <IconButton onClick={onClose} sx={{ margin: 0, padding: 0 }}>
             <CloseRounded />
           </IconButton>
