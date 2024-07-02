@@ -27,7 +27,7 @@ const Btn_List: React.FC = () => {
     >
       {!isLeftPanelVisible && 
       
-      (<><Typography sx={{ marginRight: 1 }}>show</Typography><ChevronRightRounded /></>
+      (<><Typography sx={{ marginLeft: 1 }}>show</Typography><ChevronRightRounded /></>
     
     )
       

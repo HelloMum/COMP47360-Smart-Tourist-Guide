@@ -126,6 +126,8 @@ const Spots: React.FC = () => {
               <Stack direction="row" justifyContent="center">
                 <Searchbar onSearch={handleSearch} />
               </Stack>
+
+              
               <Stack direction="row" sx={{ paddingX: 1, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
                 <FilterCheckbox onChange={handleCategoryChange} />
                 <FreeSwitch checked={isFree} onChange={handleSwitchChange} />

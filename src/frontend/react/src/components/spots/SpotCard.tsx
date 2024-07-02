@@ -62,9 +62,20 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
         <Btn_Like/>
       </Box>
       <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }}>
-        <Typography sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '95%' }} component="div">
+      <Typography
+          sx={{ 
+            fontSize: '1.1rem',
+            fontWeight: 400,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            maxWidth: '95%' 
+          }}
+          component="div"
+        >
           {title}
         </Typography>
+     
         <Stack direction={"row"} gap={1}>
           <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly  sx={{ fontSize: '1.2rem' }}  /> 
           {rating}<span style={{ color: '#888' }}>by {user_ratings_total} people</span>

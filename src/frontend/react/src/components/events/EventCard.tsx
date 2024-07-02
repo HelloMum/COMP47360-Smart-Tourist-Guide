@@ -82,6 +82,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
           <Typography
             sx={{
               whiteSpace: isExpanded ? 'normal' : 'nowrap',
+              fontSize: '1.05rem',
+              fontWeight: 400,
               overflow: 'hidden',
               textOverflow: isExpanded ? 'clip' : 'ellipsis',
               maxWidth: '22vw',
