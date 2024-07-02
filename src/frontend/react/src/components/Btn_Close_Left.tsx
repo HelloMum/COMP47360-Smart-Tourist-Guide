@@ -11,7 +11,7 @@ const Btn_List: React.FC = () => {
       sx={{
         position: 'absolute',
         top: '80px',
-        left: isLeftPanelVisible ? '43vw' : '20px',
+        left: isLeftPanelVisible ? '42vw' : '20px',
         zIndex: 10,
         boxShadow: 2,
         borderRadius: '6px',
