@@ -36,7 +36,7 @@ const ListCard: React.FC<ListCardProps> = ({ id, title, image, onRemove }) => {
         </Box>
         <RemoveCircleOutlineRounded sx={{ color: 'orange', cursor: 'pointer' }} onClick={() => onRemove(id)} />
       </Card>
-      <Divider />
+      <Divider sx={{ borderColor: '#dfdfdf' }} />
     </>
   );
 };

@@ -36,8 +36,8 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
   const handleMouseLeave = () => {
     setCurrentImage(image1);
     setImageStyle({
-      transition: 'transform 7s ease',
-      transform: 'scale(1)' 
+      transition: 'none',  
+      transform: 'scale(1)'  
     });
   };
 
