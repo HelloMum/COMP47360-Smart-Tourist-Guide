@@ -42,7 +42,7 @@ const Header: React.FC = () => {
         width: '100%',
         boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.2)',
         zIndex: 1000,
-        paddingRight: '5%',
+        paddingRight: '2%',
         paddingLeft: '2%',
         // borderTop: `1px solid ${theme.palette.primary.light}`, 
       }}
@@ -88,9 +88,9 @@ const Header: React.FC = () => {
 
       {/* -----------------  about & account ------------------ */}
       
-      <Stack direction="row" spacing={3} alignItems="center">
+     
         <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
-      </Stack>
+   
     </Box>
   );
 };
