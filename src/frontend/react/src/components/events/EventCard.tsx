@@ -1,30 +1,49 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, Box, CardMedia, Typography, Stack } from '@mui/material';
 import { AccessTimeRounded, DateRangeRounded, ExpandLessRounded, ExpandMoreRounded, LocationOnRounded, PublicRounded } from '@mui/icons-material';
 import theme from '../../theme';  
 import Btn_Add from '../Btn_Add';
 import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
-import { useTheme } from '@mui/material/styles';
+import { ListContext } from '../../contexts/ListContext';
 
+interface Event {
+  id: string;
+  name: string;
+  time_start: string;
+  image_url: string;
+  combined_category: string;
+  is_free: boolean;
+  event_site_url: string;
+  address?: string;
+  description?: string;
+}
 
-const formatDateTime = (dateTime) => {
-  if (!dateTime) {
-    return { date: 'Invalid Date', time: 'Invalid Time' };
-  }
+interface EventCardProps {
+  event: Event;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}
+
+const formatDateTime = (dateTime: string) => {
   const date = new Date(dateTime);
-  if (isNaN(date.getTime())) {
-    return { date: 'Invalid Date', time: 'Invalid Time' };
-  }
   const formattedDate = date.toISOString().split('T')[0];  // YYYY-MM-DD
   const formattedTime = date.toTimeString().split(' ')[0].slice(0, 5);  // HH:MM
   return { date: formattedDate, time: formattedTime };
 };
 
-const EventCard = ({ event, onMouseEnter, onMouseLeave }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { date, time } = formatDateTime(event.time_start);
   const imageUrl = event.image_url || "images/events/default.jpg";
+  const { addToList } = useContext(ListContext);
+
+  const handleAdd = () => {
+    const eventData = { id: event.id, title: event.name, image: imageUrl };
+    addToList(eventData);
+    console.log('Add:', eventData);
+  };
+
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
   return (
@@ -45,8 +64,8 @@ const EventCard = ({ event, onMouseEnter, onMouseLeave }) => {
           boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)' 
         }
       }}
-      onMouseEnter={() => { onMouseEnter(); }}  
-      onMouseLeave={() => { onMouseLeave(); }}  
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <Stack direction="row">
         <Box sx={{ position: 'relative', width: '180px', height: isExpanded ? '190px' : '128px', boxShadow: 1, borderRadius: '4px', marginTop: '10px' }}>
@@ -59,14 +78,15 @@ const EventCard = ({ event, onMouseEnter, onMouseLeave }) => {
           />
         </Box>
 
-        <Box sx={{ marginLeft: '30px', flexGrow: 1 }}>
+        <Box sx={{ marginLeft: '20px', flexGrow: 1 }}>
           <Typography
             sx={{
-              ...theme.typography.cardTitle,
               whiteSpace: isExpanded ? 'normal' : 'nowrap',
+              fontSize: '1.05rem',
+              fontWeight: 400,
               overflow: 'hidden',
               textOverflow: isExpanded ? 'clip' : 'ellipsis',
-              maxWidth: '350px',
+              maxWidth: '22vw',
               display: 'inline-block',
             }}
             component="div"
@@ -103,14 +123,14 @@ const EventCard = ({ event, onMouseEnter, onMouseLeave }) => {
             )}
 
             {isExpanded && (
-              <Typography variant="body2" color="text.secondary" sx={{ ...theme.typography.smallText, marginLeft: '3px' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ marginLeft: '3px' }}>
                 {event.description}
               </Typography>
             )}
           </Stack>
 
           <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1 }}>
-            <Btn_Add />
+            <Btn_Add onClick={handleAdd} />
             {!isExpanded && <ExpandMoreRounded onClick={toggleExpand} />}
             {isExpanded && <ExpandLessRounded onClick={toggleExpand} />}
           </Stack>
