@@ -80,6 +80,7 @@ const Map = ({ events, onMarkerClick }) => {
         stylers: [{ color: '#f2efff' }]
       },
     ],
+    clickableIcons: false, 
   };
 
 

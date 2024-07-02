@@ -91,6 +91,7 @@ const Map = ({ events: data,hoveredEventId  }) => {
         stylers: [{ color: '#f2efff' }]
       },
     ],
+    clickableIcons: false, 
   };
 
 
