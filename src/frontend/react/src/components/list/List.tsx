@@ -11,9 +11,6 @@ interface ListProps {
 
 const List: React.FC<ListProps> = ({ onClose }) => {
   const { listItems, removeFromList } = useContext(ListContext);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   // Validate the selection format
   const validateSelection = (selection) => {
@@ -32,9 +29,9 @@ const List: React.FC<ListProps> = ({ onClose }) => {
         "141",
         "22",
         "157",
-        "c6711c96-c56b-4b2b-be08-fc9f5e6d184f",
-        "5b1b579b-c033-4758-9249-1ecefedf5a4a",
-        "71bea7e8-18a6-4f8c-8185-f83efc602d57"
+        "2f7f34f6-828c-4fe1-a0a8-6f29984f8dc9",
+        "015a224d-3359-4d4c-9868-3f2f2dba3619",
+        "a2a49914-a6b8-477f-80d0-340e5e293d83"
       ]
     };
   
@@ -63,21 +60,16 @@ const List: React.FC<ListProps> = ({ onClose }) => {
   
       const data = await response.json();
       console.log('Data received from backend:', data);
-  
-      setSnackbarMessage('Data sent successfully!');
-      setSnackbarSeverity('success');
+     
+   
     } catch (error) {
       console.error('Error sending data to backend:', error);
-      setSnackbarMessage(`Failed to send data: ${error.message}`);
-      setSnackbarSeverity('error');
+   
     } finally {
-      setOpenSnackbar(true);
+
     }
   };
   
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
 
   return (
     <>
@@ -164,15 +156,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
           ))}
         </Box>
 
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-        >
-          <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+   
       </Box>
 
       <Btn_Close_List onClose={onClose} />
