@@ -1,11 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.model.*;
 import com.example.demo.model.test.*;
 import com.example.demo.model.test.Event;
 import com.example.demo.model.test.ScheduledEvent;
-
-import java.time.LocalTime;
+import com.example.demo.model.test.TimeSlot;
 import java.util.*;
 
 public class TimeSlotAllocation {
