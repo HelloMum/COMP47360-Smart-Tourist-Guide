@@ -118,7 +118,6 @@ class Event extends Activity {
     }
 }
 
-
 class Attraction extends Activity {
     private String openingHours;
     private Map<Integer, Integer> hourlyBusyness;
@@ -146,7 +145,40 @@ class Attraction extends Activity {
     public void setOpeningHours(String openingHours) {
         this.openingHours = openingHours;
     }
+
+    public boolean isOpenOnDay(int day) {
+        if (openingHours == null) return true;
+        return openingHours.contains(getDayString(day));
+    }
+
+    public boolean isOpenAtHour(int hour) {
+        if (openingHours == null) {
+            return true;
+        }
+        return true;
+    }
+
+    public int getOpenDaysCount() {
+        if (openingHours == null) {
+            return 7;
+        }
+        return 0;
+    }
+
+    private String getDayString(int day) {
+        switch (day) {
+            case 1: return "Mo";
+            case 2: return "Tu";
+            case 3: return "We";
+            case 4: return "Th";
+            case 5: return "Fr";
+            case 6: return "Sa";
+            case 7: return "Su";
+            default: return "";
+        }
+    }
 }
+
 class ScheduledEvent {
     private Activity activity;
     private TimeSlot timeSlot;

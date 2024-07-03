@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -21,8 +22,9 @@ public class EventService {
         return eventRepository.findFilteredEventsWithoutDateRange(isFree, combined_categories, name);
     }
 
-    public List<Event> getSelectedEvents(List<UUID> eventIds) {
-        return eventRepository.findAllById(eventIds);
+    public Event getEventById(UUID id) {
+        Optional<Event> event = eventRepository.findById(id);
+        return event.orElse(null);
     }
 
 }

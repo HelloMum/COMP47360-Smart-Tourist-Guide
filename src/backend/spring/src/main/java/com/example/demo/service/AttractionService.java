@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,10 +32,10 @@ public class AttractionService {
             InputStream inputStream = resource.getInputStream();
             CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
 
-            reader.readNext(); // Skip the header
+            reader.readNext();
 
             String[] line;
-            int lineNumber = 1; // Track line number
+            int lineNumber = 1;
             while ((line = reader.readNext()) != null) {
                 lineNumber++;
                 try {
@@ -133,13 +133,47 @@ public class AttractionService {
     }
 
     public List<Attraction> filterAndSortAttractions(String name, Boolean isFree, List<String> categoryList, String sortBy, String order) {
+        List<String> keywords = name != null ? List.of(name.toLowerCase().split("\\s+")) : List.of();
+
         return attractions.stream()
-                .filter(attraction -> (name == null || attraction.getAttraction_name().toLowerCase().contains(name.toLowerCase())) &&
+                .filter(attraction -> (name == null || keywords.stream()
+                        .allMatch(keyword -> attraction.getAttraction_name().toLowerCase().contains(keyword))) &&
                         (isFree == null || attraction.isFree() == isFree) &&
                         (categoryList == null || categoryList.isEmpty() || categoryList.stream()
                                 .anyMatch(category -> category.equalsIgnoreCase(attraction.getCategory()))))
                 .sorted(getComparator(sortBy, order))
                 .collect(Collectors.toList());
+    }
+
+
+    public List<Attraction> filterAndSortAttractionsWithDate(String name, Boolean isFree, List<String> categoryList, String sortBy, String order, LocalDate startDate, LocalDate endDate) {
+        List<Integer> daysOfWeek = startDate.datesUntil(endDate.plusDays(1))
+                .map(LocalDate::getDayOfWeek)
+                .map(day -> day.getValue() - 1)
+                .collect(Collectors.toList());
+
+        List<String> keywords = name != null ? List.of(name.toLowerCase().split("\\s+")) : List.of();
+
+        return attractions.stream()
+                .filter(attraction -> (name == null || keywords.stream()
+                        .allMatch(keyword -> attraction.getAttraction_name().toLowerCase().contains(keyword))) &&
+                        (isOpenOnDays(attraction.getFormatted_hours(), daysOfWeek)) &&
+                        (isFree == null || attraction.isFree() == isFree) &&
+                        (categoryList == null || categoryList.isEmpty() || categoryList.stream()
+                                .anyMatch(category -> category.equalsIgnoreCase(attraction.getCategory()))))
+                .sorted(getComparator(sortBy, order))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isOpenOnDays(String formattedHours, List<Integer> daysOfWeek) {
+        for (String entry : formattedHours.split(",")) {
+            String[] parts = entry.trim().split(":");
+            int day = Integer.parseInt(parts[0].trim());
+            if (daysOfWeek.contains(day)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Comparator<Attraction> getComparator(String sortBy, String order) {
