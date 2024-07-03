@@ -36,8 +36,8 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
   const handleMouseLeave = () => {
     setCurrentImage(image1);
     setImageStyle({
-      transition: 'transform 7s ease',
-      transform: 'scale(1)' 
+      transition: 'none',  
+      transform: 'scale(1)'  
     });
   };
 
@@ -48,7 +48,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
   };
 
   return (
-    <Card sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)', width: "17.5vw", marginBottom: 2, gap:1 }}>
+    <Card sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 2px rgba(0, 0, 0, 0.15)', width: "17.5vw", marginBottom: 2, gap:1 }}>
       <Box sx={{ position: 'relative', overflow: 'hidden' }}>
         <CardMedia 
           component="img" 
