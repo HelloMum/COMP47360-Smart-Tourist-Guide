@@ -39,7 +39,7 @@ const Spots: React.FC = () => {
 
   const fetchSpots = useCallback(() => {
     setLoading(true);
-    let url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
+    let url = `/api/attractions/filter?sortBy=${encodeURIComponent(sortOption)}`;
     if (isFree) {
       url += '&isFree=true';
     }
