@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: smart-tourist-guide
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HelloMum/COMP47360-Smart-Tourist-Guide
+    targetRevision: maintenance-jenkins_K8s_setup-Jorge
+    path: src/deployment/kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: maintenance-jenkins_K8s_setup-Jorge
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - SkipSchemaValidation=true
+      - CreateNamespace=true
+      - PruneLast=true
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  prunePropagationPolicy: foreground

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: postgres:latest
+          env:
+            - name: POSTGRES_USER
+              value: "${POSTGRES_USER}"
+            - name: POSTGRES_PASSWORD
+              value: "${POSTGRES_PASSWORD}"
+            - name: POSTGRES_DB
+              value: "${POSTGRES_DB}"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - "${POSTGRES_USER}"
+                - -d
+                - "${POSTGRES_DB}"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      restartPolicy: Always
