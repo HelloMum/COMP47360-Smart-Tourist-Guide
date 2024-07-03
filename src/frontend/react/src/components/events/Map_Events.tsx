@@ -65,32 +65,126 @@ const Map = ({ events: data,hoveredEventId  }) => {
         elementType: 'labels.text.stroke',
         stylers: [{ color: '#ffffff' }]
       },
-      {
-        featureType: 'road.local',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }]
-      },
+    
       {
         featureType: 'transit.station',
         elementType: 'labels',
         stylers: [{ visibility: 'off' }]
       },
+      // {
+      //   featureType: 'road',
+      //   elementType: 'labels',
+      //   stylers: [{ visibility: 'off' }]
+      // },
+
       {
         featureType: 'road',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }]
+        elementType: 'labels.text.fill',
+        stylers: [
+          { color: '#d5baaa' }, 
+          { lightness: 30 }     
+        ]
       },
       {
-        featureType: 'landscape',
+        featureType: 'road',
+        elementType: 'labels.text.stroke',
+        stylers: [
+          { color: '#ffffff' }, 
+          { weight: 2 }         
+        ]
+      },
+      {
+        featureType: 'landscape.man_made',
         elementType: 'geometry',
-        stylers: [{ color: '#f8f4f1' }]
+        stylers: [{ color: '#f8f4f1' }]  //ground color
+      },
+      {
+        featureType: 'landscape.natural',
+        elementType: 'geometry',
+        stylers: [{ color: '#dcf2cd' }]
+      },
+      {
+        featureType: 'landscape.natural.landcover',
+        elementType: 'geometry',
+        stylers: [{ color: '#dcf2cd' }]
+      },
+      {
+        featureType: 'landscape.natural.terrain',
+        elementType: 'geometry',
+        stylers: [{ color: '#dcf2cd' }]
       },
       {
         featureType: 'road',
         elementType: 'geometry.stroke',
         stylers: [{ color: '#f2efff' }]
       },
+      {
+        "featureType": "transit.line",
+        "elementType": "geometry",
+        "stylers": [
+          { "visibility": "off" }
+        ]
+      },
+
+      {
+        featureType: 'poi.government',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.medical',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.school',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.sports_complex',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#fae6db' }  
+        ]
+      },
+      {
+        featureType: 'poi.business',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#d6ecc7' }  
+        ]
+      },
+      {
+        featureType: 'poi.business',
+        elementType: 'geometry.stroke',
+        stylers: [
+          { "visibility": "off" } 
+        ]
+      },
+      {
+        featureType: 'poi.park',
+        elementType: 'geometry.fill',
+        stylers: [
+          { color: '#dcf2cd' }  
+        ]
+      },
+      {
+        featureType: 'poi.park',
+        elementType: 'geometry.stroke',
+        stylers: [
+          { "visibility": "off" }
+        ]
+      },
+
     ],
+    clickableIcons: false, 
   };
 
 
@@ -190,9 +284,9 @@ const getHoverIconUrl = (category) => {
             transform: 'translate(-50%, -115%)',  //the position of card
             padding: '10px',
             background: 'white',
-            border: '1px solid #ccc',
+            border: '1px solid #ddd',
             borderRadius: '8px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            // boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
             maxWidth: '500px'
           }}>
             <EventCard_PopUp event={selectedMarker} onClose={() => setSelectedMarker(null)} />

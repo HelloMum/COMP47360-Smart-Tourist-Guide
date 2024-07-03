@@ -24,10 +24,10 @@ const Btn_Add: React.FC<Btn_AddProps> = ({ onClick }) => {
           fontSize: '0.8rem',
           textTransform: 'none',
           boxShadow: 'none',
-          backgroundColor: isAdded ? 'lightgray' : 'primary.main',
+          backgroundColor:  'primary.main',
           color: 'white',
           '&:hover': {
-            backgroundColor: isAdded ? 'gray' : 'primary.dark',
+            backgroundColor:  'primary.dark',
             boxShadow: 'none'
           }
         }}
