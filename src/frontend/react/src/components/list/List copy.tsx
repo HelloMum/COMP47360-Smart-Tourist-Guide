@@ -31,7 +31,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       ids: listItems.map(item => item.id),
     };
   
-    const startDate = '2024-07-01';  // Example start date
+    const startDate = '2024-07-05';  // Example start date
     const endDate = '2024-07-07';    // Example end date
   
     try {
