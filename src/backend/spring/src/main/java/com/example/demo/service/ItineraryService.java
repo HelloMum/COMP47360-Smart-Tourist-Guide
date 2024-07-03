@@ -4,7 +4,6 @@ import com.example.demo.model.Attraction;
 import com.example.demo.model.Event;
 import com.example.demo.model.ItineraryItem;
 import com.example.demo.model.TimeSlot;
-import ml.dmlc.xgboost4j.java.XGBoostError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,57 +27,51 @@ public class ItineraryService {
     private AttractionService attractionService;
 
     @Autowired
+    private EventService eventService;
+
+    @Autowired
     private PredictionService predictionService;
 
     public ItineraryService() {
-        intializeEvents();
         this.availableTimeSlots = new ArrayList<>();
     }
 
-    private void intializeEvents() {
+    public List<ItineraryItem> createItineraryFromSelection(List<String> ids, LocalDate startDate, LocalDate endDate) {
+        List<Attraction> selectedAttractions = new ArrayList<>();
+        List<Event> selectedEvents = new ArrayList<>();
 
-        events.add(new Event(UUID.fromString("6eb2c6ad-c018-47b6-9c65-76e0eaa8e1be"), "Watson Adventures' Munch Around the Village Scavenger Hunt",
-                40.7302746144448, -74.0021777051505, "food-and-drink", "Food & Festival",
-                "Join Watson Adventures on a unique food scavenger hunt for adults in Greenwich Village! Discover the gourmet delights of Greenwich Village while...",
-                "https://www.yelp.com/events/new-york-watson-adventures-munch-around-the-village-scavenger-hunt-46?adjust_creative=L_ZMOhSyovpnXCXbbl1pCw&utm_campaign=yelp_api_v3&utm_medium=api_v3_event_search&utm_source=L_ZMOhSyovpnXCXbbl1pCw",
-                "https://s3-media4.fl.yelpcdn.com/ephoto/_LpB87rx_Ee5s4rhTCTEqg/o.jpg", false,
-                "2024-07-06T12:00:00", "2024-07-06T14:00:00", 1, 0, false, false,
-                LocalDateTime.parse("2024-07-01T10:05:32.453645"), "Bleecker St & 6th Ave", "New York", "NY", "10012"));
+        for (String id : ids) {
+            try {
+                int attractionId = Integer.parseInt(id);
+                Attraction attraction = attractionService.getAttractionByIndex(attractionId);
+                if (attraction != null) {
+                    selectedAttractions.add(attraction);
+                }
+            } catch (NumberFormatException e) {
+                try {
+                    UUID eventId = UUID.fromString(id);
+                    Event event = eventService.getEventById(eventId);
+                    if (event != null) {
+                        selectedEvents.add(event);
+                    }
+                } catch (IllegalArgumentException ex) {
+                }
+            }
+        }
 
-        events.add(new Event(UUID.fromString("40f2ffa3-9ba9-4c2e-ad47-206d9bc55217"), "Poster House First Friday",
-                40.7433885071265, -73.9935075903394, "visual-arts", "Art & Fashion",
-                "Poster House, the first museum in the United States dedicated to the global history of posters, will host its monthly \"First Friday\" event July 5, 2024 from...",
-                "https://www.yelp.com/events/new-york-poster-house-first-friday-11?adjust_creative=L_ZMOhSyovpnXCXbbl1pCw&utm_campaign=yelp_api_v3&utm_medium=api_v3_event_search&utm_source=L_ZMOhSyovpnXCXbbl1pCw",
-                "https://s3-media1.fl.yelpcdn.com/ephoto/1OY0oqe3u4_T9QXeKSIsYQ/o.jpg", true,
-                "2024-07-05T10:00:00", "2024-07-05T12:00:00", 1, 0, false, false,
-                LocalDateTime.parse("2024-07-01T10:05:32.450916"), "119 W 23rd St", "New York", "NY", "10011"));
-
-        events.add(new Event(UUID.fromString("bdec29fe-6b73-49af-a16c-3c2485cbea5a"), "South Street Seaport Museum Announces Beach Fest",
-                40.705466, -74.001579, "kids-family", "Kids & Family",
-                "The South Street Seaport Museum announces Beach Fest at the Seaport Museum on Saturday, July 6, from 11am to 2pm at Pier 16 (Fulton and South Streets). Each...",
-                "https://www.yelp.com/events/new-york-south-street-seaport-museum-announces-beach-fest?adjust_creative=L_ZMOhSyovpnXCXbbl1pCw&utm_campaign=yelp_api_v3&utm_medium=api_v3_event_search&utm_source=L_ZMOhSyovpnXCXbbl1pCw",
-                "https://s3-media1.fl.yelpcdn.com/ephoto/slzowiJPg1UFsajmmPCqzg/o.jpg", true,
-                "2024-07-06T11:00:00", "2024-07-06T14:00:00", 1, 0, false, false,
-                LocalDateTime.parse("2024-07-01T10:05:32.469712"), "89 S St", "New York", "NY", "10038"));
-
-        events.add(new Event(UUID.fromString("9b3e3169-0988-4b63-9663-2eafe5335a53"), "Watson Adventures' Murder at the Met Scavenger Hunt",
-                40.779449, -73.963245, "visual-arts", "Art & Fashion",
-                "Join Watson Adventures on a murder mystery scavenger hunt for adults at the Metropolitan Museum! A murdered curator has left behind a cryptic trail of clues...",
-                "https://www.yelp.com/events/new-york-watson-adventures-murder-at-the-met-scavenger-hunt-330?adjust_creative=L_ZMOhSyovpnXCXbbl1pCw&utm_campaign=yelp_api_v3&utm_medium=api_v3_event_search&utm_source=L_ZMOhSyovpnXCXbbl1pCw",
-                "https://s3-media3.fl.yelpcdn.com/ephoto/bi2qU7DBHsCv7prwTd3UxQ/o.jpg", false,
-                "2024-07-06T17:00:00", "2024-07-06T19:00:00", 1, 0, false, false,
-                LocalDateTime.parse("2024-07-01T10:05:32.447952"), "1000 Fifth Ave", "New York", "NY", "10028"));
+        return createItinerary(selectedEvents, selectedAttractions, startDate, endDate);
     }
 
-    public List<ItineraryItem> createItinerary(LocalDate startDate, LocalDate endDate) {
+    public List<ItineraryItem> createItinerary(List<Event> events, List<Attraction> attractions, LocalDate startDate, LocalDate endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         List<ItineraryItem> itinerary = new ArrayList<>();
         List<Event> unarrangedEvents = new ArrayList<>();
         List<Attraction> unarrangedAttractions = new ArrayList<>();
-
         List<LocalDate> dates = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
+        System.out.println("Dates to process: " + dates);
 
         for (LocalDate date : dates) {
+            System.out.println("Processing date: " + date);
             List<Event> dailyEvents = events.stream()
                     .filter(event -> LocalDateTime.parse(event.getTime_start(), formatter).toLocalDate().isEqual(date))
                     .collect(Collectors.toList());
@@ -110,28 +103,17 @@ public class ItineraryService {
         }
 
         Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap = new HashMap<>();
-        addAttractionsToItinerary(itinerary, attractionBusynessMap, unarrangedAttractions);
+        addAttractionsToItinerary(itinerary, attractionBusynessMap, attractions, unarrangedAttractions);
 
         printItinerary(itinerary, availableTimeSlots, attractionBusynessMap, unarrangedEvents, unarrangedAttractions);
 
         return itinerary;
     }
 
-    private void addAttractionsToItinerary(List<ItineraryItem> itinerary, Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap, List<Attraction> unarrangedAttractions) {
-        List<Attraction> attractions = new ArrayList<>(Arrays.asList(
-                attractionService.getAttractionByIndex(3),
-                attractionService.getAttractionByIndex(13),
-                attractionService.getAttractionByIndex(16),
-                attractionService.getAttractionByIndex(100),
-                attractionService.getAttractionByIndex(19),
-                attractionService.getAttractionByIndex(160)
-        ));
-
-        // Sort by the number of days open per week
+    private void addAttractionsToItinerary(List<ItineraryItem> itinerary, Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap, List<Attraction> attractions, List<Attraction> unarrangedAttractions) {
         attractions.sort(Comparator.comparingInt(this::calculateWeeklyOpenDays));
 
         double[] currentLatLon = {0.0, 0.0};
-        // Initialize the current coordinates to the end point or event location of the first time slot
         if (!itinerary.isEmpty() && itinerary.get(0).isEvent()) {
             currentLatLon[0] = itinerary.get(0).getLatitude();
             currentLatLon[1] = itinerary.get(0).getLongitude();
@@ -140,7 +122,9 @@ public class ItineraryService {
         for (TimeSlot timeSlot : availableTimeSlots) {
             LocalDateTime slotStart = timeSlot.getStart();
             LocalDateTime slotEnd = timeSlot.getEnd();
-            int dayOfWeek = slotStart.getDayOfWeek().getValue() % 7; // 0 for Monday, 6 for Sunday
+            int dayOfWeek = slotStart.getDayOfWeek().getValue();
+
+            System.out.println("Checking time slot from " + slotStart + " to " + slotEnd + " on day " + dayOfWeek);
 
             boolean found = false;
             double searchRadius = 3.0;
@@ -148,9 +132,20 @@ public class ItineraryService {
             while (!found) {
                 final double searchRadiusFinal = searchRadius;
                 List<Attraction> filteredAttractions = attractions.stream()
-                        .filter(attraction -> calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude()) <= searchRadiusFinal)
-                        .filter(attraction -> isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime()))
+                        .filter(attraction -> {
+                            double distance = calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude());
+                            boolean withinRadius = distance <= searchRadiusFinal;
+                            System.out.println("Checking distance for attraction " + attraction.getAttraction_name() + ": " + distance + " km (within radius: " + withinRadius + ")");
+                            return withinRadius;
+                        })
+                        .filter(attraction -> {
+                            boolean openDuring = isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime());
+                            System.out.println("Checking opening hours for attraction " + attraction.getAttraction_name() + ": " + (openDuring ? "Open" : "Closed"));
+                            return openDuring;
+                        })
                         .collect(Collectors.toList());
+
+                System.out.println("Filtered attractions count: " + filteredAttractions.size());
 
                 Attraction bestAttraction = null;
                 double minBusyness = Double.MAX_VALUE;
@@ -160,8 +155,9 @@ public class ItineraryService {
                         float[] prediction = predictionService.predict(attraction.getIndex(), slotStart);
                         double busyness = prediction[0];
 
-                        // Store the visit time and busyness level of the attraction in the Map
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
+
+                        System.out.println("Attraction " + attraction.getAttraction_name() + " busyness prediction: " + busyness);
 
                         if (busyness < minBusyness) {
                             minBusyness = busyness;
@@ -173,22 +169,23 @@ public class ItineraryService {
                 }
 
                 if (bestAttraction != null) {
+                    System.out.println("Adding attraction: " + bestAttraction.getAttraction_name() + " with busyness: " + minBusyness);
                     ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd,
                             bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false);
                     timeSlot.setOccupied(true);
-                    item.setBusyness(minBusyness); // Set busyness level
+                    item.setBusyness(minBusyness); // 设置繁忙程度
                     itinerary.add(item);
                     attractions.remove(bestAttraction);
 
-                    // Update current coordinates
                     currentLatLon[0] = bestAttraction.getAttraction_latitude();
                     currentLatLon[1] = bestAttraction.getAttraction_longitude();
                     found = true;
                 } else {
-                    // If no suitable attraction is found, expand the search radius
                     searchRadius += 1.0;
-                    if (searchRadius > 20.0) {
-                        // If the search radius exceeds 20 kilometers, give up the time slot
+                    System.out.println("Increasing search radius to " + searchRadius);
+                    // Avoid infinite loops
+                    if (filteredAttractions.isEmpty() && searchRadius > 100.0) {
+                        System.out.println("No suitable attraction found within a reasonable distance. Skipping time slot: " + slotStart + " - " + slotEnd);
                         break;
                     }
                 }
@@ -197,13 +194,17 @@ public class ItineraryService {
 
         itinerary.sort(Comparator.comparing(ItineraryItem::getStartTime));
 
-        // Add unscheduled attractions to the list
         if (!attractions.isEmpty()) {
             unarrangedAttractions.addAll(attractions);
         }
     }
 
     private boolean isAttractionOpenDuring(String formattedHours, int dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        // Convert dayOfWeek to 0-6
+        // 0-Sunday 1-Monday ... 6-Saturday
+        dayOfWeek = (dayOfWeek + 6) % 7;
+
+        System.out.println("Checking opening hours for day " + dayOfWeek + " between " + startTime + " and " + endTime);
         String[] hoursArray = formattedHours.split(", ");
         for (String hours : hoursArray) {
             String[] parts = hours.split(": ");
@@ -220,9 +221,16 @@ public class ItineraryService {
             LocalTime openTime = LocalTime.parse(times[0]);
             LocalTime closeTime = LocalTime.parse(times[1]);
 
+            // If the end time is 00:00, treat it as 23:59
+            if (closeTime.equals(LocalTime.MIDNIGHT)) {
+                closeTime = LocalTime.of(23, 59);
+            }
+
+            System.out.println("Parsed day: " + parsedDayOfWeek + ", Open time: " + openTime + ", Close time: " + closeTime);
+
             if (dayOfWeek == parsedDayOfWeek &&
-                    startTime.compareTo(openTime) >= 0 &&
-                    endTime.compareTo(closeTime) <= 0) {
+                    !startTime.isBefore(openTime) &&
+                    !endTime.isAfter(closeTime)) {
                 return true;
             }
         }
@@ -246,7 +254,7 @@ public class ItineraryService {
     public List<TimeSlot> generateAvailableTimeSlots(List<ItineraryItem> itinerary, LocalDate date) {
         List<TimeSlot> availableTimeSlots = new ArrayList<>();
         LocalTime dayStart = LocalTime.of(9, 0);
-        LocalTime dayEnd = LocalTime.of(19, 0); // Modified to be inclusive of both start and end times
+        LocalTime dayEnd = LocalTime.of(19, 0);
 
         LocalDateTime currentStart = LocalDateTime.of(date, dayStart);
         LocalDateTime dayEndDateTime = LocalDateTime.of(date, dayEnd);
@@ -331,6 +339,15 @@ public class ItineraryService {
             System.out.println("Unscheduled Attractions:");
             for (Attraction attraction : unarrangedAttractions) {
                 System.out.println("  " + attraction.getAttraction_name());
+                System.out.println("    Opening hours: " + attraction.getFormatted_hours());
+            }
+        }
+
+        // Print available time slots
+        System.out.println("Available Time Slots:");
+        for (TimeSlot slot : availableTimeSlots) {
+            if (!slot.isOccupied()) {
+                System.out.printf("  %s - %s\n", slot.getStart().format(timeFormatter), slot.getEnd().format(timeFormatter));
             }
         }
     }

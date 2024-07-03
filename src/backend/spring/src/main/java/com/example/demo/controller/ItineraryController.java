@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.ItineraryItem;
+import com.example.demo.model.UserSelection;
 import com.example.demo.service.ItineraryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,10 @@ public class ItineraryController {
     @Autowired
     private ItineraryService itineraryService;
 
-    @GetMapping("/create")
-    public List<ItineraryItem> createItinerary(@RequestParam("startDate") String startDateStr,
-                                               @RequestParam("endDate") String endDateStr) {
-        LocalDate startDate = LocalDate.parse(startDateStr);
-        LocalDate endDate = LocalDate.parse(endDateStr);
-        return itineraryService.createItinerary(startDate, endDate);
+    @PostMapping("/create")
+    public List<ItineraryItem> createItinerary(@RequestBody UserSelection selection, @RequestParam String startDate, @RequestParam String endDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+        return itineraryService.createItineraryFromSelection(selection.getIds(), start, end);
     }
 }
