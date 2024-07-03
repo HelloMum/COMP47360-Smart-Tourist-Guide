@@ -21,7 +21,7 @@ const Events: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
 
   const fetchEvents = () => {
-    let url = 'http://localhost:8080/events/all';
+    let url = 'http://localhost:8080/events/filter';
     const params = new URLSearchParams();
 
     if (isFree) {

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Box, Button, IconButton, Typography, Snackbar, Alert } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
 import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
 import { NAVBAR_HEIGHT } from '../../constants';
@@ -16,41 +15,66 @@ const List: React.FC<ListProps> = ({ onClose }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
-  // print out the list data
-  console.log(listItems);
+  // Validate the selection format
+  const validateSelection = (selection) => {
+    if (!Array.isArray(selection.ids)) {
+      throw new Error('Invalid selection format: ids should be an array');
+    }
+    if (selection.ids.length === 0) {
+      throw new Error('Selection cannot be empty');
+    }
+  };
 
   // click 'generate' btn to post data to backend
   const handleGeneratePlan = async () => {
-    // get id of data
-    const ids = listItems.map(item => ({ id: item.id }));
-
+    const selection = {
+      ids: [
+        "141",
+        "22",
+        "157",
+        "c6711c96-c56b-4b2b-be08-fc9f5e6d184f",
+        "5b1b579b-c033-4758-9249-1ecefedf5a4a",
+        "71bea7e8-18a6-4f8c-8185-f83efc602d57"
+      ]
+    };
+  
+    const startDate = '2024-07-01';  // Example start date
+    const endDate = '2024-07-07';    // Example end date
+  
     try {
-      const response = await fetch('http://localhost:8080/activity/add', {
+      // Validate data format
+      validateSelection(selection);
+  
+      // Log the data to be sent
+      console.log('Data to be sent to backend:', { selection, startDate, endDate });
+  
+      const response = await fetch(`http://localhost:8080/itinerary/create?startDate=${startDate}&endDate=${endDate}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(ids),
+        body: JSON.stringify(selection),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorText = await response.text();
+        throw new Error(errorText);
       }
-
+  
       const data = await response.json();
       console.log('Data received from backend:', data);
-
+  
       setSnackbarMessage('Data sent successfully!');
       setSnackbarSeverity('success');
     } catch (error) {
       console.error('Error sending data to backend:', error);
-      setSnackbarMessage('Failed to send data.');
+      setSnackbarMessage(`Failed to send data: ${error.message}`);
       setSnackbarSeverity('error');
     } finally {
       setOpenSnackbar(true);
     }
   };
-
+  
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
@@ -70,18 +94,6 @@ const List: React.FC<ListProps> = ({ onClose }) => {
         }}
       >
         <Box sx={{ padding: '16px', position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1001 }}>
-          {/* <IconButton
-            sx={{
-              position: 'absolute',
-              top: '5px',
-              right: '5px',
-              zIndex: 1001,
-            }}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </IconButton> */}
-
           <Box 
             sx={{
               display: 'flex',
@@ -113,7 +125,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               }}
               onClick={handleGeneratePlan}
             >
-              generate plan
+              Generate Plan
             </Button>
           </Box>
 
