@@ -29,9 +29,8 @@ const List: React.FC<ListProps> = ({ onClose }) => {
         "141",
         "22",
         "157",
-        "2f7f34f6-828c-4fe1-a0a8-6f29984f8dc9",
-        "015a224d-3359-4d4c-9868-3f2f2dba3619",
-        "a2a49914-a6b8-477f-80d0-340e5e293d83"
+        "ffd91413-eab1-410a-88e3-79801b563a7c",
+        "e8715e38-0330-445b-ab70-11bb4bddffa1",     
       ]
     };
   
@@ -43,7 +42,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       validateSelection(selection);
   
       // Log the data to be sent
-      console.log('Data to be sent to backend:', { selection, startDate, endDate });
+      console.log('Data to be sent to backend:',  selection );
   
       const response = await fetch(`http://localhost:8080/itinerary/create?startDate=${startDate}&endDate=${endDate}`, {
         method: 'POST',
