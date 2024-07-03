@@ -9,8 +9,10 @@ const Tag = ({ isFree }) => {
       padding: '0px 9px',
       borderRadius: '4px',
       fontSize: '12px',
-      // fontWeight: 'bold',
-      // display: 'inline-block'
+  
+      display: 'inline-block' ,
+      boxSizing: 'border-box',
+
     }}>
       free
     </span>

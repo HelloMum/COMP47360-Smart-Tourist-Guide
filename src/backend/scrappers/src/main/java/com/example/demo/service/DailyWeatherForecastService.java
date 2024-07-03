@@ -28,36 +28,26 @@ public class DailyWeatherForecastService {
     }
 
     @Scheduled(fixedRate = 3600000)
-    public DailyWeatherForecastData getDailyWeather() {
+    public void updateDailyWeather() {
         WeatherDataRaw weatherDataRaw = dailyWeatherForecastScraper.fetchWeatherData();
 
         if (weatherDataRaw != null && weatherDataRaw.getList() != null && !weatherDataRaw.getList().isEmpty()) {
-            DailyWeatherForecastData weatherData = new DailyWeatherForecastData();
-            weatherData.setId(UUID.randomUUID());
-            weatherData.setCode(weatherDataRaw.getCode());
-            weatherData.setMessage(weatherDataRaw.getMessage());
-            weatherData.setCnt(weatherDataRaw.getCnt());
-            weatherData.setCity(weatherDataRaw.getCity());
-            weatherData.setFetchTime(LocalDateTime.now());
+            // Delete old data
+            dailyWeatherForecastRepository.deleteAll();
 
-            List<DailyWeatherForecastData.DailyForecastData> dailyForecasts = weatherDataRaw.getList().stream()
+            // Save latest weather forecast
+            List<DailyWeatherForecastData> dailyForecasts = weatherDataRaw.getList().stream()
                     .map(this::convertToDailyForecastData)
                     .collect(Collectors.toList());
 
-            for (DailyWeatherForecastData.DailyForecastData dailyForecast : dailyForecasts) {
-                dailyForecast.setDailyWeatherForecastData(weatherData);
-            }
-            weatherData.setList(dailyForecasts);
-
-            dailyWeatherForecastRepository.save(weatherData);
-            return weatherData;
+            dailyWeatherForecastRepository.saveAll(dailyForecasts);
         }
-        return null;
     }
 
-    private DailyWeatherForecastData.DailyForecastData convertToDailyForecastData(DailyForecastDataRaw raw) {
-        DailyWeatherForecastData.DailyForecastData data = new DailyWeatherForecastData.DailyForecastData();
+    private DailyWeatherForecastData convertToDailyForecastData(DailyForecastDataRaw raw) {
+        DailyWeatherForecastData data = new DailyWeatherForecastData();
         data.setId(UUID.randomUUID());
+        data.setFetchTime(LocalDateTime.now());
         data.setDt(raw.getDt());
         data.setSunrise(raw.getSunrise());
         data.setSunset(raw.getSunset());
@@ -75,5 +65,9 @@ public class DailyWeatherForecastService {
             data.setWeather(weather);
         }
         return data;
+    }
+
+    public List<DailyWeatherForecastData> getDailyForecasts() {
+        return dailyWeatherForecastRepository.findAll();
     }
 }

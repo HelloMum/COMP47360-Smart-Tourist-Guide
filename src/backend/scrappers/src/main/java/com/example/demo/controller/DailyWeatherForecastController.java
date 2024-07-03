@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/daily_weather_forecast")
 public class DailyWeatherForecastController {
@@ -14,7 +16,7 @@ public class DailyWeatherForecastController {
     private DailyWeatherForecastService dailyWeatherForecastService;
 
     @GetMapping("/30_day")
-    public DailyWeatherForecastData getWeather() {
-        return dailyWeatherForecastService.getDailyWeather();
+    public List<DailyWeatherForecastData> getWeather() {
+        return dailyWeatherForecastService.getDailyForecasts();
     }
 }

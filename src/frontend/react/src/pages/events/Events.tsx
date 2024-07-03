@@ -1,69 +1,120 @@
-import React, { useEffect, useState } from 'react';
-import Map from '../../components/Map';
+import React, { useEffect, useState, useContext } from 'react';
+import Map from '../../components/events/Map_Events';
 import './events.css';
-import EventCard from '../../components/EventCard';
-import Searchbar from '../../components/Searchbar';
+import EventCard from '../../components/events/EventCard';
+import Searchbar from '../../components/events/Searchbar';
 import { Stack } from '@mui/material';
-import Switch from '../../components/Switch';
-import FilterCheckbox from '../../components/FilterCheckbox';
-import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
-
-
-import eventsData from '../../data/events.json';
-
-import Sort_Events from '../../components/Sort_Events';
+import Switch from '../../components/events/Switch_Events';
+import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
+import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
+import Btn_List from '../../components/list/Btn_List';
+import List from '../../components/list/List';
+import { ListContext } from '../../contexts/ListContext';
+import Btn_Close_Left from '../../components/Btn_Close_Left';
 
 const Events: React.FC = () => {
+  const [events, setEvents] = useState([]);
+  const [isFree, setIsFree] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [hoveredEventId, setHoveredEventId] = useState(null);
+  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
 
-  const [events,setEvents] = useState(eventsData);
-  
-  useEffect(() => {
-  
-    fetch('http://localhost:8080/events/all')
+  const fetchEvents = () => {
+    let url = 'http://localhost:8080/events/all';
+    const params = new URLSearchParams();
+
+    if (isFree) {
+      params.append('isFree', 'true');
+    }
+
+    if (selectedCategories.length > 0) {
+      params.append('combined_categories', selectedCategories.join(','));
+    }
+
+    if (searchText) {
+      params.append('name', searchText);
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data); 
-        setEvents(data); 
+        console.log('Fetched data:', data);
+        setEvents(data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  };
 
+  useEffect(() => {
+    fetchEvents();
+  }, [isFree, selectedCategories, searchText]);
 
+  const handleSwitchChange = () => {
+    setIsFree(!isFree);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(item => item !== category)
+        : [...prev, category]
+    );
+  };
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+  };
 
   return (
     <div className="list" style={{ display: 'flex' }}>
-      <div
-        className="left"
-        style={{
-          width: LEFT_WIDTH,
-          padding: '30px',
-          marginTop: NAVBAR_HEIGHT,
-          height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-          overflowY: 'auto',
-        }}
-      >
-        <Stack direction="row" justifyContent="center">
-          <Searchbar />
-        </Stack>
+      {isLeftPanelVisible && (
+        <div
+          className="left"
+          style={{
+            width: LEFT_WIDTH,
+            padding: '18px 20px 0px 20px',
+            marginTop: NAVBAR_HEIGHT,
+            height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Stack direction="row" justifyContent="center">
+            <Searchbar onSearch={handleSearch} />
+          </Stack>
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%', marginY: 2 }}>
-          <FilterCheckbox />
-          <Switch />
-          <Sort_Events />
-        </Stack>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ marginTop: 2 }}>
+            <FilterCheckbox onChange={handleCategoryChange} selectedCategories={selectedCategories} />
+            <Switch checked={isFree} onChange={handleSwitchChange} />
+          </Stack>
 
-        <Stack>
-          {events.map(event => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </Stack>
+          <h2 style={{ marginLeft: 6, marginTop: 5 }}>{events.length} events</h2>
+
+          <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
+            <Stack>
+              {events.map(event => (
+                <EventCard key={event.id} event={event} onMouseEnter={() => setHoveredEventId(event.id)}
+                  onMouseLeave={() => setHoveredEventId(null)} />
+              ))}
+            </Stack>
+          </div>
+        </div>
+      )}
+
+      <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
+        <Map events={events} hoveredEventId={hoveredEventId} />
       </div>
 
-      <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: `calc(100% - ${LEFT_WIDTH})`, height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-        <Map />
-      </div>
+      <Btn_List onClick={toggleList} />
+      {showList && <List onClose={closeList} />}
+
+      <Btn_Close_Left onClick={toggleLeftPanel} />
     </div>
   );
 };
