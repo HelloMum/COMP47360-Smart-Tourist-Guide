@@ -105,7 +105,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               sx={{
                 borderRadius: '100px',
                 width: '150px',
-                height: '35px',
+                height: '32px',
                 fontSize: '14px',
                 boxShadow: 0,
                 borderColor: '#4CAF50',
@@ -148,7 +148,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
                 boxShadow: 0,
                 borderColor: 'orange',
                 color: 'orange',
-                borderWidth: '1.5px',
+                borderWidth: '1px',
                 '&:hover': {
                   borderColor: 'orange',
                   backgroundColor: 'rgba(250, 161, 54, 0.3)',
