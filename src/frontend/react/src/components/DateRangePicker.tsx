@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { DatePicker } from 'antd';
-import moment, { Moment } from 'moment';
-import './DateRangePicker.css';  // 导入自定义 CSS
+import moment from 'moment';
+import './DateRangePicker.css';
 
 const { RangePicker } = DatePicker;
 
-// Disabled 7 days from the selected date
-const disabled7DaysDate = (fromDate: moment.Moment | null) => (current: moment.Moment) => {
+const disabled7DaysDate = (fromDate) => (current) => {
   if (!fromDate) return false;
   return Math.abs(current.diff(fromDate, 'days')) >= 7;
 };
 
-const DateRangePicker: React.FC = () => {
-  const [fromDate, setFromDate] = useState<moment.Moment | null>(null);
+const DateRangePicker = ({ onDateChange }) => {
+  const [fromDate, setFromDate] = useState(null);
+  const [dates, setDates] = useState([null, null]);
 
-  const handleCalendarChange = (dates: [moment.Moment | null, moment.Moment | null] | null) => {
+  const handleCalendarChange = (dates) => {
     setFromDate(dates ? dates[0] : null);
+    setDates(dates);
+  };
+
+  const handleChange = (dates) => {
+    setDates(dates);
+    if (dates && dates[0] && dates[1]) {
+      onDateChange(dates);
+    } else {
+      onDateChange(null);
+    }
   };
 
   return (
@@ -23,6 +33,8 @@ const DateRangePicker: React.FC = () => {
       <RangePicker
         disabledDate={disabled7DaysDate(fromDate)}
         onCalendarChange={handleCalendarChange}
+        onChange={handleChange}
+        value={dates}
       />
     </div>
   );

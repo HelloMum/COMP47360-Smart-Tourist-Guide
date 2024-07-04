@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
+import React, { useContext } from 'react';
+import { Box, Button, Typography } from '@mui/material';
 import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
 import { NAVBAR_HEIGHT } from '../../constants';
@@ -7,9 +7,10 @@ import Btn_Close_List from './Btn_Close_List';
 
 interface ListProps {
   onClose: () => void;
+  selectedDates: [moment.Moment | null, moment.Moment | null] | null;
 }
 
-const List: React.FC<ListProps> = ({ onClose }) => {
+const List: React.FC<ListProps> = ({ onClose, selectedDates }) => {
   const { listItems, removeFromList } = useContext(ListContext);
 
   // Validate the selection format
@@ -25,24 +26,23 @@ const List: React.FC<ListProps> = ({ onClose }) => {
   // click 'generate' btn to post data to backend
   const handleGeneratePlan = async () => {
     const selection = {
-      ids: [
-        "141",
-        "22",
-        "157",
-        "243eeb69-7b45-41cc-b65d-ae422f70aa23",
-         "4c57d62e-a8d3-432b-a8e6-d63c5a2bce9c"
-      ]
+      ids: listItems.map(item => item.id)
     };
-  
-    const startDate = '2024-07-05';  // Example start date
-    const endDate = '2024-07-07';    // Example end date
+    
+    if (!selectedDates || !selectedDates[0] || !selectedDates[1]) {
+      console.error('Error: Start date and end date must be selected.');
+      return;
+    }
+    
+    const startDate = selectedDates[0].format('YYYY-MM-DD');
+    const endDate = selectedDates[1].format('YYYY-MM-DD');
   
     try {
       // Validate data format
       validateSelection(selection);
   
       // Log the data to be sent
-      console.log('Data to be sent to backend:',  selection );
+      console.log('Data to be sent to backend:', selection, startDate, endDate);
   
       const response = await fetch(`http://localhost:8080/itinerary/create?startDate=${startDate}&endDate=${endDate}`, {
         method: 'POST',
@@ -59,16 +59,10 @@ const List: React.FC<ListProps> = ({ onClose }) => {
   
       const data = await response.json();
       console.log('Data received from backend:', data);
-     
-   
     } catch (error) {
       console.error('Error sending data to backend:', error);
-   
-    } finally {
-
     }
   };
-  
 
   return (
     <>
@@ -154,8 +148,6 @@ const List: React.FC<ListProps> = ({ onClose }) => {
             />
           ))}
         </Box>
-
-   
       </Box>
 
       <Btn_Close_List onClose={onClose} />

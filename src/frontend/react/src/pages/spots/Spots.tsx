@@ -15,7 +15,7 @@ import Btn_List from '../../components/list/Btn_List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 
-const Spots: React.FC = () => {
+const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
   const [spots, setSpots] = useState([]);
   const [isFree, setIsFree] = useState(false);
@@ -39,7 +39,15 @@ const Spots: React.FC = () => {
 
   const fetchSpots = useCallback(() => {
     setLoading(true);
-    let url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
+    let url;
+    if (selectedDates && selectedDates[0] && selectedDates[1]) {
+      const startDate = selectedDates[0].format('YYYY-MM-DD');
+      const endDate = selectedDates[1].format('YYYY-MM-DD');
+      url = `http://localhost:8080/attractions/filterWithDate?startDate=${startDate}&endDate=${endDate}&sortBy=${sortOption}`;
+    } else {
+      url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
+    }
+
     if (isFree) {
       url += '&isFree=true';
     }
@@ -64,11 +72,11 @@ const Spots: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [sortOption, isFree, categories, searchTerm]);
+  }, [sortOption, isFree, categories, searchTerm, selectedDates]);
 
   useEffect(() => {
     fetchSpots();
-  }, [sortOption, isFree, categories, searchTerm, fetchSpots]);
+  }, [sortOption, isFree, categories, searchTerm, selectedDates, fetchSpots]);
 
   const handleSwitchChange = useCallback(() => {
     setIsFree(!isFree);

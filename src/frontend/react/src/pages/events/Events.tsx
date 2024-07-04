@@ -12,7 +12,7 @@ import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 
-const Events: React.FC = () => {
+const Events = ({ selectedDates }) => {
   const [events, setEvents] = useState([]);
   const [isFree, setIsFree] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -21,7 +21,10 @@ const Events: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
 
   const fetchEvents = () => {
-    let url = 'http://localhost:8080/events/filter';
+    let url = selectedDates
+      ? 'http://localhost:8080/events/filterWithDate'
+      : 'http://localhost:8080/events/filter';
+
     const params = new URLSearchParams();
 
     if (isFree) {
@@ -36,6 +39,11 @@ const Events: React.FC = () => {
       params.append('name', searchText);
     }
 
+    if (selectedDates && selectedDates[0] && selectedDates[1]) {
+      params.append('startDate', selectedDates[0].format('YYYY-MM-DD'));
+      params.append('endDate', selectedDates[1].format('YYYY-MM-DD'));
+    }
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
@@ -44,16 +52,17 @@ const Events: React.FC = () => {
       .then(response => response.json())
       .then(data => {
         console.log('Fetched data:', data);
-        setEvents(data);
+        setEvents(Array.isArray(data) ? data : []);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        setEvents([]);
       });
   };
 
   useEffect(() => {
     fetchEvents();
-  }, [isFree, selectedCategories, searchText]);
+  }, [isFree, selectedCategories, searchText, selectedDates]);
 
   const handleSwitchChange = () => {
     setIsFree(!isFree);
@@ -98,7 +107,7 @@ const Events: React.FC = () => {
 
           <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
             <Stack>
-              {events.map(event => (
+              {Array.isArray(events) && events.map(event => (
                 <EventCard key={event.id} event={event} onMouseEnter={() => setHoveredEventId(event.id)}
                   onMouseLeave={() => setHoveredEventId(null)} />
               ))}

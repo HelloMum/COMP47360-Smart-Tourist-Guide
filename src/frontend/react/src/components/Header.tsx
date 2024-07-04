@@ -11,14 +11,14 @@ import { useNavigate } from 'react-router-dom';
 import { NAVBAR_HEIGHT } from '../constants';
 import DateRangePicker from './DateRangePicker';
 
-const Header: React.FC = () => {
+const Header = ({ onDateChange }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path) => location.pathname === path;
 
-  const buttonStyle = (path: string) => ({
+  const buttonStyle = (path) => ({
     color: theme.palette.primary.dark,
     borderColor: isActive(path) ? theme.palette.primary.main : 'transparent',
     borderRadius: 20,
@@ -44,16 +44,11 @@ const Header: React.FC = () => {
         zIndex: 1000,
         paddingRight: '2%',
         paddingLeft: '2%',
-        // borderTop: `1px solid ${theme.palette.primary.light}`, 
       }}
     >
-      {/* --------------------------logo------------------------ */}
-
       <Link to="/" className="logo" style={{ color: theme.palette.primary.dark }}>
         Hello,World
       </Link>
-
-      {/* ---------------3 buttons  & date range picker------------------ */}
 
       <Stack direction="row" spacing={3} alignItems="center">
         <Button
@@ -83,14 +78,10 @@ const Header: React.FC = () => {
           Plan
         </Button>
 
-        <DateRangePicker />
+        <DateRangePicker onDateChange={onDateChange} />
       </Stack>
 
-      {/* -----------------  about & account ------------------ */}
-      
-     
-        <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
-   
+      <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
     </Box>
   );
 };
