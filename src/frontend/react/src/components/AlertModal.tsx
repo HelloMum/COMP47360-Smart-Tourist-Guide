@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Alert, AlertTitle } from '@mui/material';
+import { Box, Alert } from '@mui/material';
+import { amber } from '@mui/material/colors'; 
+import { InfoRounded } from '@mui/icons-material';
 
 const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; message: string }> = ({ open, onClose, title, message }) => {
   if (!open) return null;
@@ -21,16 +23,23 @@ const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; 
       onClick={onClose}
     >
       <Alert
-        severity="warning"
-        onClose={onClose}
+        severity="info"
         sx={{
-          width: '300px',
+          width: '350px',
           backgroundColor: 'white',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
+          color: 'gray', 
         }}
+        icon={
+          <InfoRounded
+            sx={{
+              fontSize: 20,
+              color: amber[700],
+            }}
+          />
+        }
       >
-        {/* <AlertTitle>{title}</AlertTitle> */}
-        {message}
+        <span style={{ color: 'gray' }}>{message}</span> 
       </Alert>
     </Box>
   );

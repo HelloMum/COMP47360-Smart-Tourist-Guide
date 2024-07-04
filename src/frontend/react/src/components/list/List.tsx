@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Divider, Typography } from '@mui/material';
 import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
 import { NAVBAR_HEIGHT } from '../../constants';
@@ -60,7 +60,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       const data = await response.json();
       // Log the data received from the backend
       console.log('Data received from backend:', data);
-      setPlanData(data);  // 将后端返回的数据存储到状态中
+      setPlanData(data);  
     } catch (error) {
       console.error('Error sending data to backend:', error);
     }
@@ -123,7 +123,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
           sx={{
             padding: '16px',
             overflowY: 'auto',
-            height: 'calc(100% - 64px)',
+            height: 'calc(100% - 120px)',
             '&::-webkit-scrollbar': {
               width: '8px',
             },
@@ -140,6 +140,8 @@ const List: React.FC<ListProps> = ({ onClose }) => {
             },
           }}
         >
+
+
           {listItems.map((item) => (
             <ListCard
               key={item.id}
@@ -149,6 +151,10 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               onRemove={removeFromList}
             />
           ))}
+
+      {/* {listItems &&<Typography variant='body'> no more </Typography>} */}
+
+
         </Box>
       </Box>
 
