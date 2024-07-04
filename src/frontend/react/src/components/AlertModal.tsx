@@ -12,7 +12,7 @@ const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; 
         left: 0,
         width: '100vw',
         height: '100vh',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -26,10 +26,10 @@ const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; 
         sx={{
           width: '300px',
           backgroundColor: 'white',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <AlertTitle>{title}</AlertTitle>
+        {/* <AlertTitle>{title}</AlertTitle> */}
         {message}
       </Alert>
     </Box>

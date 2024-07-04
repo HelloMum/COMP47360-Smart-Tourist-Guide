@@ -57,7 +57,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         }}>
           <CardMedia
             component="img"
-            image={`/images/spots_small/${spot.index}_2.webp`}
+            image={`/images/spots/${spot.index}_2.webp`}
             alt={spot.attraction_name}
             sx={{
               objectFit: 'cover',
@@ -86,7 +86,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         }}>
           <CardMedia
             component="img"
-            image={`/images/spots_small/${spot.index}_3.webp`}
+            image={`/images/spots/${spot.index}_3.webp`}
             alt={spot.attraction_name}
             sx={{
               objectFit: 'cover',
@@ -186,30 +186,49 @@ const SpotDetail = ({ spot, onCollapse }) => {
           style: { backgroundColor: 'transparent' }
         }}
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '50%',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 0,
-          outline: 0
-        }}>
-          <IconButton
-            sx={{ position: 'absolute', top: 8, right: 8 }}
-            onClick={handleClose}
-          >
-            <Close />
-          </IconButton>
-          <CardMedia
-            component="img"
-            image={selectedImage}
-            alt="Selected image"
-            sx={{ width: '100%', height: 'auto' }}
-          />
-        </Box>
+<Box
+  sx={{
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    boxShadow: 0,
+    textAlign: 'center', 
+  }}
+>
+  <IconButton
+    sx={{
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      borderRadius: '50%', 
+      padding: '6px', 
+      '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+      },
+      '&:active': {
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+      },
+    }}
+    onClick={handleClose}
+  >
+    <Close sx={{ fontSize: '18px' }} />
+  </IconButton>
+  
+  <CardMedia
+    component="img"
+    image={selectedImage}
+    alt="Selected image"
+    sx={{ 
+      maxHeight: '70vh', 
+      // height: '60%', 
+      objectFit: 'cover', 
+    }}
+  />
+</Box>
+
       </Modal>
     </Card>
   );
