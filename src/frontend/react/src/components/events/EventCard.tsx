@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { Card, Box, CardMedia, Typography, Stack } from '@mui/material';
+import { Card, Box, CardMedia, Typography, Stack, IconButton } from '@mui/material';
 import { AccessTimeRounded, DateRangeRounded, ExpandLessRounded, ExpandMoreRounded, LocationOnRounded, PublicRounded } from '@mui/icons-material';
-import theme from '../../theme';  
 import Btn_Add from '../Btn_Add';
 import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
@@ -37,13 +36,16 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
   const [isExpanded, setIsExpanded] = useState(false);
   const { date, time } = formatDateTime(event.time_start);
   const imageUrl = event.image_url || "images/events/default.jpg";
+  const { listItems, addItemWithDateCheck, isItemInList } = useContext(ListContext);
 
   const handleAdd = () => {
     const eventData = { id: event.id, title: event.name, image: imageUrl };
-    onAdd(eventData);
+    addItemWithDateCheck(eventData, () => alert('Please set the start and end dates before adding items to the list.'));
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
+
+  const isAdded = isItemInList(event.id);
 
   return (
     <Card
@@ -129,9 +131,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
           </Stack>
 
           <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1 }}>
-            <Btn_Add onClick={handleAdd} />
-            {!isExpanded && <ExpandMoreRounded onClick={toggleExpand} />}
-            {isExpanded && <ExpandLessRounded onClick={toggleExpand} />}
+            <Btn_Add onClick={handleAdd} isAdded={isAdded} />
+            {!isExpanded && <IconButton onClick={toggleExpand}><ExpandMoreRounded /></IconButton>}
+            {isExpanded && <IconButton onClick={toggleExpand}><ExpandLessRounded /></IconButton>}
           </Stack>
         </Box>
       </Stack>

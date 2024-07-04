@@ -6,7 +6,7 @@ import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
-import ScheduleCard from '../../components/ScheduleCard'; // 导入 ScheduleCard 组件
+import ScheduleCard from '../../components/schedule/ScheduleCard'; // 导入 ScheduleCard 组件
 
 const Schedule: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
@@ -24,7 +24,7 @@ const Schedule: React.FC = () => {
             overflowY: 'auto',
           }}
         >
-          <h2>Plan</h2>
+          {/* <h2>Plan</h2> */}
           {planData && planData.map((item) => (
             <ScheduleCard
               key={item.id}

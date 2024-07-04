@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Alert } from '@mui/material';
+import { Box, Alert, Button } from '@mui/material';
 import { amber } from '@mui/material/colors'; 
 import { InfoRounded } from '@mui/icons-material';
 
@@ -20,26 +20,50 @@ const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; 
         alignItems: 'center',
         zIndex: 1300,
       }}
-      onClick={onClose}
     >
       <Alert
         severity="info"
         sx={{
           width: '350px',
           backgroundColor: 'white',
-          boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
-          color: 'gray', 
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+          color: 'gray',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
-        icon={
-          <InfoRounded
+        icon={false} 
+      >
+        <div style={{ display: 'flex', alignItems: 'center', color: 'black' }}>
+          {/* <InfoRounded
             sx={{
               fontSize: 20,
               color: amber[700],
+              marginRight: 2,
             }}
-          />
-        }
-      >
-        <span style={{ color: 'gray' }}>{message}</span> 
+          /> */}
+          <span style={{padding:'5px'}}>{message}</span>
+        </div>
+        <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <Button 
+            variant="contained" 
+            sx={{ 
+              borderRadius: 20, 
+              color:'white',
+              padding: '0px 5px',
+              boxShadow: 0,
+              '&:hover': {
+                boxShadow: 0,
+              },
+              '&:active': {
+                boxShadow: 0,
+              },
+            }} 
+            onClick={onClose}
+          >
+            OK
+          </Button>
+        </Box>
       </Alert>
     </Box>
   );

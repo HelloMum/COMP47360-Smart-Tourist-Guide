@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import './Header.css';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
@@ -7,14 +7,17 @@ import { Box, Button, Stack } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
 import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
-import { useNavigate } from 'react-router-dom';
 import { NAVBAR_HEIGHT } from '../constants';
 import DateRangePicker from './DateRangePicker';
+import { ListContext } from '../contexts/ListContext';
+import AlertModal from './AlertModal';
 
 const Header = ({ onDateChange }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const { planData } = useContext(ListContext);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -29,6 +32,14 @@ const Header = ({ onDateChange }) => {
     borderStyle: 'solid',
     transition: 'border-color 0.2s ease-in-out',
   });
+
+  const handlePlanClick = () => {
+    if (!planData) {
+      setAlertOpen(true);
+    } else {
+      navigate('/schedule');
+    }
+  };
 
   return (
     <Box
@@ -71,7 +82,7 @@ const Header = ({ onDateChange }) => {
 
         <Button
           variant="text"
-          onClick={() => navigate('/schedule')}
+          onClick={handlePlanClick}
           style={buttonStyle('/schedule')}
           startIcon={<CalendarMonthRoundedIcon />}
         >
@@ -82,6 +93,13 @@ const Header = ({ onDateChange }) => {
       </Stack>
 
       <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
+
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title="Warning"
+        message="Please generate a schedule first."
+      />
     </Box>
   );
 };

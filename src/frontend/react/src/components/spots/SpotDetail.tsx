@@ -170,8 +170,10 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
           {/*------------------------------------- two buttons ------------------------- */}
           <Box display="flex" alignItems="center" justifyContent="space-between" marginTop={2}>
-            <Btn_Add onClick={handleAdd} /> {/* Update Btn_Add to call handleAdd */}
-            <ExpandLessRounded onClick={onCollapse} sx={{ cursor: 'pointer' }} />
+            <Btn_Add onClick={handleAdd} /> 
+
+            <IconButton onClick={onCollapse}><ExpandLessRounded /></IconButton>
+
           </Box>
         </Stack>
       </Stack>

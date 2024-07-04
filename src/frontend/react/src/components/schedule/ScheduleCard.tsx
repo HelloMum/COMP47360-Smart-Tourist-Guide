@@ -23,8 +23,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   busyness,
   event,
 }) => {
-  const formattedStartTime = moment(startTime).format('LT'); // Format start time
-  const formattedEndTime = moment(endTime).format('LT');     // Format end time
+  const formattedStartTime = moment(startTime).format('LT'); 
+  const formattedEndTime = moment(endTime).format('LT');    
 
   return (
     <Card variant="outlined" style={{ marginBottom: '16px' }}>

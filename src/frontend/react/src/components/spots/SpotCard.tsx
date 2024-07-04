@@ -24,7 +24,7 @@ interface SpotCardProps {
 const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, category, user_ratings_total, onExpand }) => {
   const [currentImage, setCurrentImage] = useState(image1);
   const [imageStyle, setImageStyle] = useState({});
-  const { addItemWithDateCheck } = useContext(ListContext);
+  const { addItemWithDateCheck, isItemInList } = useContext(ListContext);
   const [alertOpen, setAlertOpen] = useState(false);
 
   const handleMouseEnter = () => {
@@ -47,6 +47,8 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
     const spotData = { id, title, image: image1 };
     addItemWithDateCheck(spotData, () => setAlertOpen(true));
   };
+
+  const isAdded = isItemInList(id);
 
   return (
     <>
@@ -87,11 +89,12 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
             <Tag_IsFree isFree={true} />
           </Stack>
           <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5 }}>
-            <Btn_Add onClick={handleAdd} />
+            <Btn_Add onClick={handleAdd} isAdded={isAdded} />
             <IconButton onClick={onExpand}><ExpandMoreRounded /></IconButton>
           </Stack>
         </Stack>
       </Card>
+
       <AlertModal
         open={alertOpen}
         onClose={() => setAlertOpen(false)}

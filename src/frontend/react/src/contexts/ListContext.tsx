@@ -11,6 +11,7 @@ interface ListContextProps {
   listItems: ListItem[];
   addToList: (item: ListItem) => void;
   removeFromList: (id: string) => void;
+  clearList: () => void; // 新增 clearList 方法
   showList: boolean;
   toggleList: () => void;
   closeList: () => void;
@@ -21,6 +22,7 @@ interface ListContextProps {
   addItemWithDateCheck: (item: ListItem, onMissingDates: () => void) => void;
   planData: any;
   setPlanData: (data: any) => void;
+  isItemInList: (id: string) => boolean;
 }
 
 export const ListContext = createContext<ListContextProps | undefined>(undefined);
@@ -34,7 +36,7 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
   const [showList, setShowList] = useState(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(true);
   const [selectedDates, setSelectedDates] = useState<[moment.Moment | null, moment.Moment | null] | null>(null);
-  const [planData, setPlanData] = useState<any>(null);  // 新增状态
+  const [planData, setPlanData] = useState<any>(null);
 
   const addToList = (item: ListItem) => {
     setListItems((prevItems) => [...prevItems, item]);
@@ -44,12 +46,24 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
     setListItems((prevItems) => prevItems.filter(item => item.id !== id));
   };
 
+  const clearList = () => {
+    setListItems([]);
+  };
+
   const addItemWithDateCheck = (item: ListItem, onMissingDates: () => void) => {
     if (!selectedDates || !selectedDates[0] || !selectedDates[1]) {
       onMissingDates();
     } else {
-      addToList(item);
+      if (listItems.some(listItem => listItem.id === item.id)) {
+        removeFromList(item.id);
+      } else {
+        addToList(item);
+      }
     }
+  };
+
+  const isItemInList = (id: string) => {
+    return listItems.some(item => item.id === id);
   };
 
   const toggleList = useCallback(() => {
@@ -69,6 +83,7 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
       listItems,
       addToList,
       removeFromList,
+      clearList, 
       showList,
       toggleList,
       closeList,
@@ -78,7 +93,8 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
       setSelectedDates,
       addItemWithDateCheck,
       planData,
-      setPlanData,  // 新增方法
+      setPlanData,
+      isItemInList,
     }}>
       {children}
     </ListContext.Provider>
