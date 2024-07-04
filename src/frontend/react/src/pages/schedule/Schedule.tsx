@@ -8,7 +8,7 @@ import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 
 const Schedule: React.FC = () => {
-  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
+  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
 
   return (
     <div className="schedule" style={{ display: 'flex' }}>
@@ -24,6 +24,7 @@ const Schedule: React.FC = () => {
           }}
         >
           <h2>Plan</h2>
+          {planData && <pre>{JSON.stringify(planData, null, 2)}</pre>}  {/* 显示从后端返回的数据 */}
         </div>
       )}
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>

@@ -2,8 +2,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import Map from '../../components/events/Map_Events';
 import './events.css';
 import EventCard from '../../components/events/EventCard';
+import EventCard_PopUp from '../../components/events/EventCard_PopUp';
 import Searchbar from '../../components/events/Searchbar';
-import { Stack } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import Switch from '../../components/events/Switch_Events';
 import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
@@ -11,6 +12,7 @@ import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
+import AlertModal from '../../components/AlertModal';
 
 const Events = ({ selectedDates }) => {
   const [events, setEvents] = useState([]);
@@ -18,7 +20,8 @@ const Events = ({ selectedDates }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [hoveredEventId, setHoveredEventId] = useState(null);
-  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, addItemWithDateCheck } = useContext(ListContext);
 
   const fetchEvents = () => {
     let url = selectedDates
@@ -80,6 +83,10 @@ const Events = ({ selectedDates }) => {
     setSearchText(text);
   };
 
+  const handleAdd = (eventData) => {
+    addItemWithDateCheck(eventData, () => setAlertOpen(true));
+  };
+
   return (
     <div className="list" style={{ display: 'flex' }}>
       {isLeftPanelVisible && (
@@ -108,8 +115,13 @@ const Events = ({ selectedDates }) => {
           <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
             <Stack>
               {Array.isArray(events) && events.map(event => (
-                <EventCard key={event.id} event={event} onMouseEnter={() => setHoveredEventId(event.id)}
-                  onMouseLeave={() => setHoveredEventId(null)} />
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onMouseEnter={() => setHoveredEventId(event.id)}
+                  onMouseLeave={() => setHoveredEventId(null)}
+                  onAdd={handleAdd}
+                />
               ))}
             </Stack>
           </div>
@@ -124,6 +136,13 @@ const Events = ({ selectedDates }) => {
       {showList && <List onClose={closeList} />}
 
       <Btn_Close_Left onClick={toggleLeftPanel} />
+
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title="Warning"
+        message="Please set the start and end dates before adding items to the list."
+      />
     </div>
   );
 };

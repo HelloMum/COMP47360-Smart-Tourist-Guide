@@ -14,6 +14,7 @@ import List from '../../components/list/List';
 import Btn_List from '../../components/list/Btn_List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
+import AlertModal from '../../components/AlertModal';
 
 const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -216,18 +217,12 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
           }}
           onClick={() => setAlertOpen(false)}
         >
-          <Alert
-            severity="warning"
-            onClose={() => setAlertOpen(false)}
-            sx={{
-              width: '300px',
-              backgroundColor: 'white',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
-            }}
-          >
-            <AlertTitle>Warning</AlertTitle>
-            Please set the start and end dates before adding items to the list.
-          </Alert>
+   <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title="Warning"
+        message="Please set the start and end dates before adding items to the list."
+      />
         </Box>
       )}
     </div>

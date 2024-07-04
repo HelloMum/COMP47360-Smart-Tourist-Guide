@@ -23,6 +23,7 @@ interface EventCardProps {
   event: Event;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  onAdd: (eventData: { id: string | number, title: string, image: string }) => void;
 }
 
 const formatDateTime = (dateTime: string) => {
@@ -32,19 +33,14 @@ const formatDateTime = (dateTime: string) => {
   return { date: formattedDate, time: formattedTime };
 };
 
-const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave, onAdd }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { date, time } = formatDateTime(event.time_start);
   const imageUrl = event.image_url || "images/events/default.jpg";
-  const { addToList } = useContext(ListContext);
 
   const handleAdd = () => {
     const eventData = { id: event.id, title: event.name, image: imageUrl };
-    addToList(eventData);
-
-    // Manually format the eventData for logging without quotes
-    const formattedEventData = `{ id: ${event.id}, title: ${event.name}, image: ${imageUrl} }`;
-    console.log('Add:', formattedEventData);
+    onAdd(eventData);
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);

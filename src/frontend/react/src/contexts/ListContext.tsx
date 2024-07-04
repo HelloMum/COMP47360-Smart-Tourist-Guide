@@ -19,6 +19,8 @@ interface ListContextProps {
   selectedDates: [moment.Moment | null, moment.Moment | null] | null;
   setSelectedDates: (dates: [moment.Moment | null, moment.Moment | null] | null) => void;
   addItemWithDateCheck: (item: ListItem, onMissingDates: () => void) => void;
+  planData: any;
+  setPlanData: (data: any) => void;
 }
 
 export const ListContext = createContext<ListContextProps | undefined>(undefined);
@@ -32,6 +34,7 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
   const [showList, setShowList] = useState(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(true);
   const [selectedDates, setSelectedDates] = useState<[moment.Moment | null, moment.Moment | null] | null>(null);
+  const [planData, setPlanData] = useState<any>(null);  // 新增状态
 
   const addToList = (item: ListItem) => {
     setListItems((prevItems) => [...prevItems, item]);
@@ -62,7 +65,21 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <ListContext.Provider value={{ listItems, addToList, removeFromList, showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, selectedDates, setSelectedDates, addItemWithDateCheck }}>
+    <ListContext.Provider value={{
+      listItems,
+      addToList,
+      removeFromList,
+      showList,
+      toggleList,
+      closeList,
+      isLeftPanelVisible,
+      toggleLeftPanel,
+      selectedDates,
+      setSelectedDates,
+      addItemWithDateCheck,
+      planData,
+      setPlanData,  // 新增方法
+    }}>
       {children}
     </ListContext.Provider>
   );

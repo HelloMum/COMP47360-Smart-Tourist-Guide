@@ -11,7 +11,7 @@ interface ListProps {
 }
 
 const List: React.FC<ListProps> = ({ onClose }) => {
-  const { listItems, removeFromList, selectedDates } = useContext(ListContext);
+  const { listItems, removeFromList, selectedDates, setPlanData } = useContext(ListContext);
 
   // Validate the selection format
   const validateSelection = (selection) => {
@@ -60,6 +60,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       const data = await response.json();
       // Log the data received from the backend
       console.log('Data received from backend:', data);
+      setPlanData(data);  // 将后端返回的数据存储到状态中
     } catch (error) {
       console.error('Error sending data to backend:', error);
     }
