@@ -6,6 +6,7 @@ import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
+import ScheduleCard from '../../components/ScheduleCard'; // 导入 ScheduleCard 组件
 
 const Schedule: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
@@ -24,7 +25,19 @@ const Schedule: React.FC = () => {
           }}
         >
           <h2>Plan</h2>
-          {planData && <pre>{JSON.stringify(planData, null, 2)}</pre>}  {/* 显示从后端返回的数据 */}
+          {planData && planData.map((item) => (
+            <ScheduleCard
+              key={item.id}
+              id={item.id}
+              name={item.name}
+              startTime={item.startTime}
+              endTime={item.endTime}
+              latitude={item.latitude}
+              longitude={item.longitude}
+              busyness={item.busyness}
+              event={item.event}
+            />
+          ))}
         </div>
       )}
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
