@@ -5,11 +5,13 @@ import Btn_Add from './../Btn_Add';
 import Tag_Category from './../Tag_Category';
 import Tag_IsFree from './../Tag_IsFree';
 import { ListContext } from '../../contexts/ListContext';
+import AlertModal from '../AlertModal';
 
 const SpotDetail = ({ spot, onCollapse }) => {
-  const { addToList } = useContext(ListContext); // Get addToList method from ListContext
+  const { listItems, addItemWithDateCheck, isItemInList } = useContext(ListContext); // Get necessary methods from ListContext
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const handleOpen = (image) => {
     setSelectedImage(image);
@@ -22,12 +24,15 @@ const SpotDetail = ({ spot, onCollapse }) => {
   };
 
   const handleAdd = () => {
-    addToList({
+    const spotData = {
       id: spot.id,
       title: spot.attraction_name,
       image: `/images/spots_small/${spot.index}_2.webp`,
-    });
+    };
+    addItemWithDateCheck(spotData, () => setAlertOpen(true));
   };
+
+  const isAdded = isItemInList(spot.id);
 
   return (
     <Card sx={{
@@ -170,10 +175,9 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
           {/*------------------------------------- two buttons ------------------------- */}
           <Box display="flex" alignItems="center" justifyContent="space-between" marginTop={2}>
-            <Btn_Add onClick={handleAdd} /> 
+            <Btn_Add onClick={handleAdd} isAdded={isAdded} />
 
             <IconButton onClick={onCollapse}><ExpandLessRounded /></IconButton>
-
           </Box>
         </Stack>
       </Stack>
@@ -188,50 +192,56 @@ const SpotDetail = ({ spot, onCollapse }) => {
           style: { backgroundColor: 'transparent' }
         }}
       >
-<Box
-  sx={{
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 0,
-    textAlign: 'center', 
-  }}
->
-  <IconButton
-    sx={{
-      position: 'absolute',
-      top: 8,
-      right: 8,
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-      borderRadius: '50%', 
-      padding: '6px', 
-      '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)', 
-      },
-      '&:active': {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)', 
-      },
-    }}
-    onClick={handleClose}
-  >
-    <Close sx={{ fontSize: '18px' }} />
-  </IconButton>
-  
-  <CardMedia
-    component="img"
-    image={selectedImage}
-    alt="Selected image"
-    sx={{ 
-      maxHeight: '70vh', 
-      // height: '60%', 
-      objectFit: 'cover', 
-    }}
-  />
-</Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'background.paper',
+            boxShadow: 0,
+            textAlign: 'center',
+          }}
+        >
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              borderRadius: '50%',
+              padding: '6px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+              },
+              '&:active': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+              },
+            }}
+            onClick={handleClose}
+          >
+            <Close sx={{ fontSize: '18px' }} />
+          </IconButton>
 
+          <CardMedia
+            component="img"
+            image={selectedImage}
+            alt="Selected image"
+            sx={{
+              maxHeight: '70vh',
+              // height: '60%',
+              objectFit: 'cover',
+            }}
+          />
+        </Box>
       </Modal>
+
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title="Warning"
+        message="Please set the start and end dates before adding items to the list."
+      />
     </Card>
   );
 };
