@@ -8,7 +8,7 @@ import Tag_IsFree from '../Tag_IsFree';
 import { ListContext } from '../../contexts/ListContext';
 
 interface Event {
-  id: string;
+  id: string | number;
   name: string;
   time_start: string;
   image_url: string;
@@ -41,7 +41,10 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
   const handleAdd = () => {
     const eventData = { id: event.id, title: event.name, image: imageUrl };
     addToList(eventData);
-    console.log('Add:', eventData);
+
+    // Manually format the eventData for logging without quotes
+    const formattedEventData = `{ id: ${event.id}, title: ${event.name}, image: ${imageUrl} }`;
+    console.log('Add:', formattedEventData);
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);

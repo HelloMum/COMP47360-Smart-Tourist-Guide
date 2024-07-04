@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/itinerary")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ItineraryController {
 
     @Autowired
@@ -18,6 +19,10 @@ public class ItineraryController {
 
     @PostMapping("/create")
     public List<ItineraryItem> createItinerary(@RequestBody UserSelection selection, @RequestParam String startDate, @RequestParam String endDate) {
+        System.out.println("Received user selection: " + selection);
+        System.out.println("Start date: " + startDate);
+        System.out.println("End date: " + endDate);
+
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
         return itineraryService.createItineraryFromSelection(selection.getIds(), start, end);
