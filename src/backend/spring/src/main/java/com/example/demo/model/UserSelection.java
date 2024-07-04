@@ -12,4 +12,12 @@ public class UserSelection {
     public void setIds(List<String> ids) {
         this.ids = ids;
     }
+
+    @Override
+    public String toString() {
+        return "UserSelection{" +
+                "ids=" + ids +
+                '}';
+    }
+
 }

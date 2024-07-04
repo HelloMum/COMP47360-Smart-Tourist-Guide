@@ -124,7 +124,7 @@ public class ItineraryService {
             LocalDateTime slotEnd = timeSlot.getEnd();
             int dayOfWeek = slotStart.getDayOfWeek().getValue();
 
-            System.out.println("Checking time slot from " + slotStart + " to " + slotEnd + " on day " + dayOfWeek);
+            //System.out.println("Checking time slot from " + slotStart + " to " + slotEnd + " on day " + dayOfWeek);
 
             boolean found = false;
             double searchRadius = 3.0;
@@ -135,17 +135,17 @@ public class ItineraryService {
                         .filter(attraction -> {
                             double distance = calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude());
                             boolean withinRadius = distance <= searchRadiusFinal;
-                            System.out.println("Checking distance for attraction " + attraction.getAttraction_name() + ": " + distance + " km (within radius: " + withinRadius + ")");
+                            //System.out.println("Checking distance for attraction " + attraction.getAttraction_name() + ": " + distance + " km (within radius: " + withinRadius + ")");
                             return withinRadius;
                         })
                         .filter(attraction -> {
                             boolean openDuring = isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime());
-                            System.out.println("Checking opening hours for attraction " + attraction.getAttraction_name() + ": " + (openDuring ? "Open" : "Closed"));
+                            //System.out.println("Checking opening hours for attraction " + attraction.getAttraction_name() + ": " + (openDuring ? "Open" : "Closed"));
                             return openDuring;
                         })
                         .collect(Collectors.toList());
 
-                System.out.println("Filtered attractions count: " + filteredAttractions.size());
+                //System.out.println("Filtered attractions count: " + filteredAttractions.size());
 
                 Attraction bestAttraction = null;
                 double minBusyness = Double.MAX_VALUE;
@@ -182,7 +182,7 @@ public class ItineraryService {
                     found = true;
                 } else {
                     searchRadius += 1.0;
-                    System.out.println("Increasing search radius to " + searchRadius);
+                    //System.out.println("Increasing search radius to " + searchRadius);
                     // Avoid infinite loops
                     if (filteredAttractions.isEmpty() && searchRadius > 100.0) {
                         System.out.println("No suitable attraction found within a reasonable distance. Skipping time slot: " + slotStart + " - " + slotEnd);
@@ -204,7 +204,7 @@ public class ItineraryService {
         // 0-Sunday 1-Monday ... 6-Saturday
         dayOfWeek = (dayOfWeek + 6) % 7;
 
-        System.out.println("Checking opening hours for day " + dayOfWeek + " between " + startTime + " and " + endTime);
+        //System.out.println("Checking opening hours for day " + dayOfWeek + " between " + startTime + " and " + endTime);
         String[] hoursArray = formattedHours.split(", ");
         for (String hours : hoursArray) {
             String[] parts = hours.split(": ");
@@ -226,7 +226,7 @@ public class ItineraryService {
                 closeTime = LocalTime.of(23, 59);
             }
 
-            System.out.println("Parsed day: " + parsedDayOfWeek + ", Open time: " + openTime + ", Close time: " + closeTime);
+            //System.out.println("Parsed day: " + parsedDayOfWeek + ", Open time: " + openTime + ", Close time: " + closeTime);
 
             if (dayOfWeek == parsedDayOfWeek &&
                     !startTime.isBefore(openTime) &&
