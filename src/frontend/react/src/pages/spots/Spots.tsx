@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Alert, AlertTitle } from '@mui/material';
 import Map from '../../components/spots/Map_Spots';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
@@ -26,8 +26,10 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
-  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
+  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, selectedDates: contextSelectedDates } = useContext(ListContext);
   const batchSize = 6;
+
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const handleExpand = useCallback((spot) => {
     setActiveSpot(spot);
@@ -115,6 +117,10 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
     setPopupSpot(spot);
   }, []);
 
+  const handleMissingDates = () => {
+    setAlertOpen(true);
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       {isLeftPanelVisible && (
@@ -135,7 +141,6 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                 <Searchbar onSearch={handleSearch} />
               </Stack>
 
-              
               <Stack direction="row" sx={{ paddingX: 1, paddingTop: 2, justifyContent: 'space-between', alignItems: 'center' }}>
                 <FilterCheckbox onChange={handleCategoryChange} />
                 <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
@@ -191,9 +196,40 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
       </div>
 
       <Btn_List onClick={toggleList} />
-      {showList && <List onClose={closeList} />}
+      {showList && <List onClose={closeList} selectedDates={selectedDates} />}
 
       <Btn_Close_Left onClick={toggleLeftPanel} />
+
+      {alertOpen && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1300
+          }}
+          onClick={() => setAlertOpen(false)}
+        >
+          <Alert
+            severity="warning"
+            onClose={() => setAlertOpen(false)}
+            sx={{
+              width: '300px',
+              backgroundColor: 'white',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
+            }}
+          >
+            <AlertTitle>Warning</AlertTitle>
+            Please set the start and end dates before adding items to the list.
+          </Alert>
+        </Box>
+      )}
     </div>
   );
 };

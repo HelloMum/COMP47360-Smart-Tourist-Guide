@@ -1,4 +1,5 @@
 import React, { createContext, useState, ReactNode, useCallback } from 'react';
+import moment from 'moment';
 
 interface ListItem {
   id: string;
@@ -15,6 +16,9 @@ interface ListContextProps {
   closeList: () => void;
   isLeftPanelVisible: boolean;
   toggleLeftPanel: () => void;
+  selectedDates: [moment.Moment | null, moment.Moment | null] | null;
+  setSelectedDates: (dates: [moment.Moment | null, moment.Moment | null] | null) => void;
+  addItemWithDateCheck: (item: ListItem, onMissingDates: () => void) => void;
 }
 
 export const ListContext = createContext<ListContextProps | undefined>(undefined);
@@ -27,6 +31,7 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
   const [listItems, setListItems] = useState<ListItem[]>([]);
   const [showList, setShowList] = useState(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(true);
+  const [selectedDates, setSelectedDates] = useState<[moment.Moment | null, moment.Moment | null] | null>(null);
 
   const addToList = (item: ListItem) => {
     setListItems((prevItems) => [...prevItems, item]);
@@ -34,6 +39,14 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
 
   const removeFromList = (id: string) => {
     setListItems((prevItems) => prevItems.filter(item => item.id !== id));
+  };
+
+  const addItemWithDateCheck = (item: ListItem, onMissingDates: () => void) => {
+    if (!selectedDates || !selectedDates[0] || !selectedDates[1]) {
+      onMissingDates();
+    } else {
+      addToList(item);
+    }
   };
 
   const toggleList = useCallback(() => {
@@ -49,7 +62,7 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <ListContext.Provider value={{ listItems, addToList, removeFromList, showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel }}>
+    <ListContext.Provider value={{ listItems, addToList, removeFromList, showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, selectedDates, setSelectedDates, addItemWithDateCheck }}>
       {children}
     </ListContext.Provider>
   );

@@ -4,14 +4,14 @@ import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
 import { NAVBAR_HEIGHT } from '../../constants';
 import Btn_Close_List from './Btn_Close_List';
+import moment from 'moment';
 
 interface ListProps {
   onClose: () => void;
-  selectedDates: [moment.Moment | null, moment.Moment | null] | null;
 }
 
-const List: React.FC<ListProps> = ({ onClose, selectedDates }) => {
-  const { listItems, removeFromList } = useContext(ListContext);
+const List: React.FC<ListProps> = ({ onClose }) => {
+  const { listItems, removeFromList, selectedDates } = useContext(ListContext);
 
   // Validate the selection format
   const validateSelection = (selection) => {
@@ -28,22 +28,22 @@ const List: React.FC<ListProps> = ({ onClose, selectedDates }) => {
     const selection = {
       ids: listItems.map(item => item.id)
     };
-    
+
     if (!selectedDates || !selectedDates[0] || !selectedDates[1]) {
       console.error('Error: Start date and end date must be selected.');
       return;
     }
-    
+
     const startDate = selectedDates[0].format('YYYY-MM-DD');
     const endDate = selectedDates[1].format('YYYY-MM-DD');
-  
+
     try {
       // Validate data format
       validateSelection(selection);
-  
+
       // Log the data to be sent
       console.log('Data to be sent to backend:', selection, startDate, endDate);
-  
+
       const response = await fetch(`http://localhost:8080/itinerary/create?startDate=${startDate}&endDate=${endDate}`, {
         method: 'POST',
         headers: {
@@ -51,13 +51,14 @@ const List: React.FC<ListProps> = ({ onClose, selectedDates }) => {
         },
         body: JSON.stringify(selection),
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
-  
+
       const data = await response.json();
+      // Log the data received from the backend
       console.log('Data received from backend:', data);
     } catch (error) {
       console.error('Error sending data to backend:', error);
@@ -79,7 +80,7 @@ const List: React.FC<ListProps> = ({ onClose, selectedDates }) => {
         }}
       >
         <Box sx={{ padding: '16px', position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1001 }}>
-          <Box 
+          <Box
             sx={{
               display: 'flex',
               justifyContent: 'center',
@@ -97,14 +98,14 @@ const List: React.FC<ListProps> = ({ onClose, selectedDates }) => {
                 boxShadow: 0,
                 borderColor: '#4CAF50',
                 color: '#4CAF50',
-                borderWidth:'1.5px',
+                borderWidth: '1.5px',
                 '&:hover': {
-                  borderColor: '#388E3C', 
-                  backgroundColor: 'rgba(76, 175, 80, 0.3)', 
+                  borderColor: '#388E3C',
+                  backgroundColor: 'rgba(76, 175, 80, 0.3)',
                 },
                 '&:active': {
-                  borderColor: '#388E3C', 
-                  backgroundColor: 'rgba(76, 175, 80, 0.12)', 
+                  borderColor: '#388E3C',
+                  backgroundColor: 'rgba(76, 175, 80, 0.12)',
                   color: '#388E3C',
                 },
               }}
