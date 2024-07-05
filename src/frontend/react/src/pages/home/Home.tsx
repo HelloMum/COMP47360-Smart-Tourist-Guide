@@ -6,32 +6,15 @@ import { grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DateRangePicker from '../../components/DateRangePicker';
 import { NAVBAR_HEIGHT } from '../../constants';
-import { Carousel } from 'antd';
+import { Carousel, Typography } from 'antd';
+import HomeCard from '../../components/HomeCard';
 
 const Home: React.FC<{ onDateChange: (dates: [moment.Moment | null, moment.Moment | null] | null) => void }> = ({ onDateChange }) => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const contentStyle: React.CSSProperties = {
-    height: '80vh',
-    width: '60vw',
-    color: '#fff',
-    textAlign: 'center',
-    background: theme.palette.primary.light,
-    borderRadius: '20px',
-    overflow: 'hidden',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-   
-  };
 
-  const imageStyle: React.CSSProperties = {
-    height: '100%',
-    width: '100%',
-    objectFit: 'cover',
-    borderRadius: '20px',
-  };
+
 
   return (
     <Box
@@ -57,6 +40,16 @@ const Home: React.FC<{ onDateChange: (dates: [moment.Moment | null, moment.Momen
           alignItems: 'flex-start',
         }}
       >
+    <Typography variant='h1' sx={{ mt: 20 }}>
+          <span style={{color:theme.palette.darkBlue.main }}>Smart<br/>
+          Tourist Guide 
+          <br /> 
+          
+          in </span><span style={{color:theme.palette.secondary.main }}>New York</span></Typography>
+
+   
+
+
 
       <DateRangePicker onDateChange={onDateChange} />
 
@@ -92,23 +85,14 @@ const Home: React.FC<{ onDateChange: (dates: [moment.Moment | null, moment.Momen
         </Stack> 
       </Box>
 
-      <Carousel autoplay autoplaySpeed={3000} style={{ width: '60vw', paddingTop: '5vh',left:'10vw' }} effect="fade">
-        <div>
-          <Box style={contentStyle}>
-            <img src="images\homepage\1.png" alt="Image 1" style={imageStyle} />
-          </Box>
-        </div>
-        <div>
-          <Box style={contentStyle}>
-            <img src="images\homepage\2.png" alt="Image 2" style={imageStyle} />
-          </Box>
-        </div>
-        <div>
-          <Box style={contentStyle}>
-            <img src="images\homepage\3.png" alt="Image 3" style={imageStyle} />
-          </Box>
-        </div>
-      </Carousel>
+
+      <Box>
+          <HomeCard title='Central Park' rating={4.8} image1={'images/homepage/1.png'}  image3={'images/central_park3.jpg'} user_ratings_total={273613}   />
+
+
+        </Box>
+
+
     </Box>
   );
 };
