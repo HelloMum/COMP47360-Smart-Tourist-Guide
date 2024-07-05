@@ -88,8 +88,19 @@ public class ItineraryService {
                         item.getStartTime().isBefore(eventEnd) && eventStart.isBefore(item.getEndTime()));
 
                 if (!isConflict) {
+                    int taxiZone = predictionService.getTaxiZoneIdForEvent(event.getLatitude(), event.getLongitude());
+                    double busyness = 0;
+                    if (taxiZone != -1) {
+                        try {
+                            float[] prediction = predictionService.predictForTaxiZone(taxiZone, eventStart);
+                            busyness = prediction[0];
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     ItineraryItem item = new ItineraryItem(event.getId(), event.getName(), eventStart, eventEnd,
                             event.getLatitude(), event.getLongitude(), true);
+                    item.setBusyness(busyness);
                     itinerary.add(item);
                     dailyEventCount.put(date, dailyEventCount.getOrDefault(date, 0L) + 1);
                 } else {
@@ -149,22 +160,9 @@ public class ItineraryService {
                     Attraction bestAttraction = openAttractions.get(0);
                     double minBusyness = Double.MAX_VALUE;
 
-//                    for (Attraction attraction : openAttractions) {
-//                        try {
-//                            float[] prediction = predictionService.predict(attraction.getIndex(), slotStart);
-//                            double busyness = prediction[0];
-//                            if (busyness < minBusyness) {
-//                                minBusyness = busyness;
-//                                bestAttraction = attraction;
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-
                     for (Attraction attraction : openAttractions) {
                         try {
-                            int taxiZone = attraction.getIndex();
+                            int taxiZone = attraction.getTaxi_zone();
                             float[] prediction = predictionService.predictForTaxiZone(taxiZone, slotStart);
                             double busyness = prediction[0];
                             if (busyness < minBusyness) {
@@ -236,26 +234,9 @@ public class ItineraryService {
                 Attraction bestAttraction = null;
                 double minBusyness = Double.MAX_VALUE;
 
-//                for (Attraction attraction : filteredAttractions) {
-//                    try {
-//                        float[] prediction = predictionService.predict(attraction.getIndex(), slotStart);
-//                        double busyness = prediction[0];
-//
-//                        attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
-//
-//                        System.out.println("Attraction " + attraction.getAttraction_name() + " busyness prediction: " + busyness);
-//
-//                        if (busyness < minBusyness) {
-//                            minBusyness = busyness;
-//                            bestAttraction = attraction;
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
                 for (Attraction attraction : filteredAttractions) {
                     try {
-                        int taxiZone = attraction.getIndex();
+                        int taxiZone = attraction.getTaxi_zone();
                         float[] prediction = predictionService.predictForTaxiZone(taxiZone, slotStart);
                         double busyness = prediction[0];
 

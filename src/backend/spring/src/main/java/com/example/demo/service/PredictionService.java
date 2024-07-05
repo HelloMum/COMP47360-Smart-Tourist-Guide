@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.model.Attraction;
 import com.example.demo.model.DailyForecastData;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
@@ -38,6 +40,126 @@ public class PredictionService {
     private static final Map<LocalDate, String> usHolidays = new HashMap<>();
 
     private List<Integer> taxiZoneIds = new ArrayList<>();
+
+    private List<GeoFeature> geoFeatures;
+
+    private void loadGeoFeatures() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = new ClassPathResource("manhattan_taxi_zones.geojson").getInputStream();
+            GeoFeatureCollection featureCollection = objectMapper.readValue(inputStream, GeoFeatureCollection.class);
+            geoFeatures = featureCollection.getFeatures();
+        } catch (IOException e) {
+            e.printStackTrace();
+            geoFeatures = new ArrayList<>();
+        }
+    }
+
+    public int getTaxiZoneIdForEvent(double latitude, double longitude) {
+        for (GeoFeature feature : geoFeatures) {
+            if (feature.contains(latitude, longitude)) {
+                return Integer.parseInt(feature.getProperties().getLocation_id());
+            }
+        }
+        return -1; // Return -1 if no matching zone is found
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class GeoFeatureCollection {
+        private List<GeoFeature> features;
+
+        public List<GeoFeature> getFeatures() {
+            return features;
+        }
+
+        public void setFeatures(List<GeoFeature> features) {
+            this.features = features;
+        }
+    }
+
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class GeoFeature {
+        private Geometry geometry;
+        private Properties properties;
+
+        public Geometry getGeometry() {
+            return geometry;
+        }
+
+        public void setGeometry(Geometry geometry) {
+            this.geometry = geometry;
+        }
+
+        public Properties getProperties() {
+            return properties;
+        }
+
+        public void setProperties(Properties properties) {
+            this.properties = properties;
+        }
+
+        public boolean contains(double latitude, double longitude) {
+            // Implement point-in-polygon check for MultiPolygon geometry type
+            for (List<List<Double[]>> polygon : geometry.getCoordinates()) {
+                for (List<Double[]> ring : polygon) {
+                    if (isPointInPolygon(ring, latitude, longitude)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private boolean isPointInPolygon(List<Double[]> polygon, double latitude, double longitude) {
+            boolean result = false;
+            int j = polygon.size() - 1;
+            for (int i = 0; i < polygon.size(); i++) {
+                if (polygon.get(i)[1] > latitude != polygon.get(j)[1] > latitude &&
+                        longitude < (polygon.get(j)[0] - polygon.get(i)[0]) * (latitude - polygon.get(i)[1]) / (polygon.get(j)[1] - polygon.get(i)[1]) + polygon.get(i)[0]) {
+                    result = !result;
+                }
+                j = i;
+            }
+            return result;
+        }
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        private static class Geometry {
+            private String type;
+            private List<List<List<Double[]>>> coordinates;
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public List<List<List<Double[]>>> getCoordinates() {
+                return coordinates;
+            }
+
+            public void setCoordinates(List<List<List<Double[]>>> coordinates) {
+                this.coordinates = coordinates;
+            }
+        }
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        private static class Properties {
+            @JsonProperty("location_id")
+            private String locationId;
+
+            public String getLocation_id() {
+                return locationId;
+            }
+
+            public void setLocation_id(String locationId) {
+                this.locationId = locationId;
+            }
+        }
+    }
 
     static {
         try {
@@ -149,6 +271,7 @@ public class PredictionService {
             }
             reader.close();
             logger.info("Loaded taxi zone IDs successfully.");
+            loadGeoFeatures();
         } catch (IOException | XGBoostError e) {
             logger.error("Failed to initialize PredictionService.", e);
         }

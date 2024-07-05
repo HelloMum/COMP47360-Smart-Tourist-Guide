@@ -42,7 +42,7 @@ public class PredictionController {
         }
     }
 
-    @PostMapping("/predict")
+    @PostMapping("/predictByAttractionId")
     public float[] predict(@RequestParam int attractionIndex, @RequestParam String dateTime) {
         try {
             // Attraction Data
@@ -70,7 +70,7 @@ public class PredictionController {
         }
     }
 
-    @GetMapping("/predictTaxiZone")
+    @GetMapping("/predictAll")
     public Map<LocalDateTime, Map<Integer, Float>> predictAll(@RequestParam String startDate, @RequestParam String endDate) {
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
