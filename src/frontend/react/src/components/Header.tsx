@@ -13,11 +13,11 @@ import { ListContext } from '../contexts/ListContext';
 import AlertModal from './AlertModal';
 import Logo from './Logo';
 
-const Header = ({ onDateChange }) => {
+const Header = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { planData } = useContext(ListContext);
+  const { planData, selectedDates, setSelectedDates } = useContext(ListContext);
   const [alertOpen, setAlertOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
@@ -42,6 +42,10 @@ const Header = ({ onDateChange }) => {
     }
   };
 
+  const handleDateChange = (dates: [moment.Moment | null, moment.Moment | null] | null) => {
+    setSelectedDates(dates);
+  };
+
   return (
     <Box
       className="header"
@@ -58,8 +62,7 @@ const Header = ({ onDateChange }) => {
         paddingLeft: '2%',
       }}
     >
-   
-<Logo/>
+      <Logo />
 
       <Stack direction="row" spacing={3} alignItems="center">
         <Button
@@ -89,7 +92,10 @@ const Header = ({ onDateChange }) => {
           Plan
         </Button>
 
-        <DateRangePicker onDateChange={onDateChange} />
+        <DateRangePicker
+          onDateChange={handleDateChange}
+          value={selectedDates} 
+        />
       </Stack>
 
       <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />

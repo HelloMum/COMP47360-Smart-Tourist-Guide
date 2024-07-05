@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import './DateRangePicker.css';
+import './DateRangePicker.css'; 
 import { ListContext } from '../contexts/ListContext';
 
 const { RangePicker } = DatePicker;
@@ -20,33 +20,26 @@ const disabled7DaysDate = (fromDate) => (current) => {
   return isOutsideThirtyDaysRange || isOutsideSevenDaysRange;
 };
 
-const DateRangePicker = ({ onDateChange }) => {
-  const [fromDate, setFromDate] = useState(null);
-  const [dates, setDates] = useState([null, null]);
+const DateRangePicker = ({ onDateChange, className, value }) => {
+  const [fromDate, setFromDate] = useState(value ? value[0] : null);
   const { setSelectedDates } = useContext(ListContext);
 
   const handleCalendarChange = (dates) => {
     setFromDate(dates ? dates[0] : null);
-    setDates(dates);
   };
 
   const handleChange = (dates) => {
-    setDates(dates);
     setSelectedDates(dates); // Update context with selected dates
-    if (dates && dates[0] && dates[1]) {
-      onDateChange(dates);
-    } else {
-      onDateChange(null);
-    }
+    onDateChange(dates);
   };
 
   return (
-    <div className="custom-range-picker">
+    <div className={`custom-range-picker ${className}`}>
       <RangePicker
         disabledDate={disabled7DaysDate(fromDate)}
         onCalendarChange={handleCalendarChange}
         onChange={handleChange}
-        value={dates}
+        value={value}
       />
     </div>
   );

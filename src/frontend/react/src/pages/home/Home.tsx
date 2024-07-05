@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -6,94 +6,131 @@ import { grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DateRangePicker from '../../components/DateRangePicker';
 import { NAVBAR_HEIGHT } from '../../constants';
-import { Carousel, Typography } from 'antd';
 import HomeCard from '../../components/HomeCard';
+import { ListContext } from '../../contexts/ListContext';
 
-const Home: React.FC<{ onDateChange: (dates: [moment.Moment | null, moment.Moment | null] | null) => void }> = ({ onDateChange }) => {
+const Home: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { selectedDates, setSelectedDates } = useContext(ListContext);
 
-
-
+  const handleDateChange = (dates: [moment.Moment | null, moment.Moment | null] | null) => {
+    setSelectedDates(dates);
+  };
 
   return (
-    <Box
+    <Stack direction='row' paddingX='8vw' gap='1vw'
       style={{
         marginTop: NAVBAR_HEIGHT,
         height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        position: 'relative',
+        paddingTop: '10vh',
       }}
     >
+      {/* ----------------------- left ----------------------------------- */}
+      <Stack 
+        direction='column' 
+        gap='2vh' 
+        width='22vw' 
+        paddingTop='8vh'      
+        height='65vh'  
+      >
+        <p
+          style={{
+            fontFamily: '"Lexend", sans-serif',
+            fontSize: '2.5vw', 
+            fontWeight: '600',
+            letterSpacing: '-1px',
+            color: theme.palette.primary.dark,
+            lineHeight: '3.5vw',
+            marginBottom: '8vh'
+          }}
+        >
+          Smart<br />
+          Tourist Guide
+          <br />
+          in New York
+        </p>
 
-      {/*------------------------- left---------------------------------- */}
-      <Box
-        style={{
-          position: 'absolute',
-          top: '10%',
-          left: '8vw',
-          zIndex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
+
+<Stack direction='row' gap={1} >
+        {/* <p
+          style={{
+            fontFamily: '"Lexend", sans-serif',
+            fontSize: '16px', 
+            color:'#868686',
+            marginBottom:'0', 
+            marginLeft:'4px',
+            padding:'0'                    
+ }}
+        >
+          set your travel dates 
+        </p> */}
+
+        <DateRangePicker
+          onDateChange={handleDateChange}
+          className="home-date-picker" 
+          value={selectedDates}     
+                       
+
+        />
+<div
+            onClick={() => navigate('/spots')}
+            style={{
+              backgroundColor: theme.palette.primary.dark,
+              color: 'white',
+              borderRadius: '50%',
+              boxShadow: 'none',
+              marginBottom: 20,
+              height: '40px',
+              width: '40px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+              fontWeight: '600',
+            }}
+          >
+            GO
+          </div>
+
+</Stack>
+
+        {/*--------------------- two buttons-----------------------------*/}
+ 
+     
+
+        </Stack>
+   
+      {/*------------------------------ right part----------------------------- */}
+      <Stack direction='row' gap={4}
+        sx={{
+          width: '65vw',
+          height:'85vh'
         }}
       >
-    <Typography variant='h1' sx={{ mt: 20 }}>
-          <span style={{color:theme.palette.darkBlue.main }}>Smart<br/>
-          Tourist Guide 
-          <br /> 
-          
-          in </span><span style={{color:theme.palette.secondary.main }}>New York</span></Typography>
-
-   
-
-
-
-      <DateRangePicker onDateChange={onDateChange} />
-
-      <Stack direction='row'>
-        <Button
-          onClick={() => navigate('/spots')}
-          variant="contained"
-          endIcon={<ArrowForwardRoundedIcon />}
-          style={{
-            backgroundColor: theme.palette.primary.main,
-            borderRadius: 20,
-            boxShadow: 'none',
-            marginBottom: 20,
-          }}
-        >
-          Start Now
-        </Button>
-
-        <Button
-          onClick={() => navigate('/about')}
-          variant="contained"
-          color="success"
-          style={{
-            backgroundColor: grey['300'],
-            boxShadow: 'none',
-            borderRadius: 20,
-            marginBottom: 20,
-          }}
-        >
-          About
-        </Button>
-
-        </Stack> 
-      </Box>
-
-
-      <Box>
-          <HomeCard title='Central Park' rating={4.8} image1={'images/homepage/1.png'}  image3={'images/central_park3.jpg'} user_ratings_total={273613}   />
-
-
-        </Box>
-
-
-    </Box>
+        <HomeCard
+          title='Central Park'
+          rating={4.8}
+          image1={'images/spots/22_3.webp'}
+          image3={'images/spots/22_1.webp'}
+          user_ratings_total={273613}
+        />
+        <HomeCard
+          title='Statue of Liberty'
+          rating={4.7}
+          image1={'images/spots/54_1.webp'}
+          image3={'images/spots/54_3.webp'}
+          user_ratings_total={101828}
+        />
+        <HomeCard
+          title='Times Square'
+          rating={4.7}
+          image1={'images/spots/141_1.webp'}
+          image3={'images/spots/141_3.webp'}
+          user_ratings_total={213463}
+        />
+      </Stack>
+    </Stack>
   );
 };
 

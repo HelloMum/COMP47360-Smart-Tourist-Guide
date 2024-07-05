@@ -15,6 +15,7 @@ const Logo: React.FC = () => {
         textDecoration: 'none',
         color: theme.palette.primary.dark,
         fontFamily: '"Lexend", sans-serif',
+        // fontFamily: '"Oleo Script", system-ui',
         fontWeight: 600,
         fontStyle: 'normal',
         marginLeft: '20px',
