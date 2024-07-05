@@ -137,7 +137,9 @@ const List: React.FC<ListProps> = ({ onClose }) => {
           >
             <Typography variant="h6">{listItems.length} items</Typography>
 
-            <Button
+
+
+{  listItems.length >0   &&      (<Button
               variant="outlined"
               startIcon={<ClearRounded sx={{ fontSize: '16px', marginRight: '-6px' }} />} 
               sx={{
@@ -162,7 +164,11 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               onClick={clearList}
             >
               Clear All
-            </Button>  
+            </Button>  )}
+
+
+
+
           </Box>
         </Box>
 

@@ -11,6 +11,7 @@ import { NAVBAR_HEIGHT } from '../constants';
 import DateRangePicker from './DateRangePicker';
 import { ListContext } from '../contexts/ListContext';
 import AlertModal from './AlertModal';
+import Logo from './Logo';
 
 const Header = ({ onDateChange }) => {
   const theme = useTheme();
@@ -57,9 +58,8 @@ const Header = ({ onDateChange }) => {
         paddingLeft: '2%',
       }}
     >
-      <Link to="/" className="logo" style={{ color: theme.palette.primary.dark }}>
-        Hello,World
-      </Link>
+   
+<Logo/>
 
       <Stack direction="row" spacing={3} alignItems="center">
         <Button
