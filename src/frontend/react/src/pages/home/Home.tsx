@@ -112,21 +112,21 @@ const Home: React.FC = () => {
           title='Central Park'
           rating={4.8}
           image1={'images/spots/22_3.webp'}
-          image3={'images/spots/22_1.webp'}
+          image3={'images/homepage/1.png'}
           user_ratings_total={273613}
         />
         <HomeCard
           title='Statue of Liberty'
           rating={4.7}
           image1={'images/spots/54_1.webp'}
-          image3={'images/spots/54_3.webp'}
+          image3={'images/homepage/3.jpg'}
           user_ratings_total={101828}
         />
         <HomeCard
           title='Times Square'
           rating={4.7}
           image1={'images/spots/141_1.webp'}
-          image3={'images/spots/141_3.webp'}
+          image3={'images/spots/141_2.webp'}
           user_ratings_total={213463}
         />
       </Stack>
