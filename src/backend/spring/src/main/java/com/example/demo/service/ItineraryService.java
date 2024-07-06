@@ -88,11 +88,11 @@ public class ItineraryService {
                         item.getStartTime().isBefore(eventEnd) && eventStart.isBefore(item.getEndTime()));
 
                 if (!isConflict) {
-                    int taxiZone = predictionService.getTaxiZoneIdForEvent(event.getLatitude(), event.getLongitude());
+                    int taxiZone = eventService.getTaxiZoneIdByPosition(event.getLatitude(), event.getLongitude());
                     double busyness = 0;
                     if (taxiZone != -1) {
                         try {
-                            float[] prediction = predictionService.predictForTaxiZone(taxiZone, eventStart);
+                            float[] prediction = predictionService.predictByTaxiZone(taxiZone, eventStart);
                             busyness = prediction[0];
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -136,21 +136,17 @@ public class ItineraryService {
     }
 
     private void addAttractionsToItinerary(List<ItineraryItem> itinerary, Map<LocalDateTime, Map<Attraction, Double>> attractionBusynessMap, List<Attraction> attractions, List<Attraction> unarrangedAttractions, LocalDate startDate, LocalDate endDate, int averageDailyActivities, Map<LocalDate, Long> dailyEventCount) {
-        // Sort by number of open days within a given date range
         attractions.sort(Comparator.comparingInt(attraction -> calculateOpenDaysInRange(attraction, startDate, endDate)));
 
         double[] currentLatLon = {0.0, 0.0};
 
-        // Initialize currentLatLon coordinates
         if (itinerary.isEmpty()) {
-            // If there is no event, select the least crowded attraction in the first timeslot
             if (!availableTimeSlots.isEmpty()) {
                 TimeSlot firstSlot = availableTimeSlots.get(0);
                 LocalDateTime slotStart = firstSlot.getStart();
                 LocalDateTime slotEnd = firstSlot.getEnd();
                 int dayOfWeek = (slotStart.getDayOfWeek().getValue() + 6) % 7;
 
-                // Select an attraction that is open during the timeslot
                 List<Attraction> openAttractions = attractions.stream()
                         .filter(attraction -> isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime()))
                         .sorted(Comparator.comparingInt(attraction -> calculateOpenDaysInRange(attraction, startDate, endDate)))
@@ -162,8 +158,7 @@ public class ItineraryService {
 
                     for (Attraction attraction : openAttractions) {
                         try {
-                            int taxiZone = attraction.getTaxi_zone();
-                            float[] prediction = predictionService.predictForTaxiZone(taxiZone, slotStart);
+                            float[] prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
                             double busyness = prediction[0];
                             if (busyness < minBusyness) {
                                 minBusyness = busyness;
@@ -174,20 +169,17 @@ public class ItineraryService {
                         }
                     }
 
-                    // Arrange the best attraction to the first timeslot
                     ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false);
                     item.setBusyness(minBusyness);
                     itinerary.add(item);
                     attractions.remove(bestAttraction);
 
-                    // Update currentLatLon coordinates
                     currentLatLon[0] = bestAttraction.getAttraction_latitude();
                     currentLatLon[1] = bestAttraction.getAttraction_longitude();
                     availableTimeSlots.get(0).setOccupied(true);
                 }
             }
         } else {
-            // Initialize currentLatLon to the coordinates of the first itinerary item
             currentLatLon[0] = itinerary.get(0).getLatitude();
             currentLatLon[1] = itinerary.get(0).getLongitude();
         }
@@ -210,10 +202,10 @@ public class ItineraryService {
             }
 
             boolean found = false;
-            double searchRadius = 3.0;
+            double searchRadius = 0.0;
 
             while (!found) {
-                final double searchRadiusFinal = searchRadius;
+                final double searchRadiusFinal = searchRadius == 0.0 ? Double.MAX_VALUE : searchRadius;
                 List<Attraction> filteredAttractions = attractions.stream()
                         .filter(attraction -> {
                             double distance = calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude());
@@ -236,8 +228,7 @@ public class ItineraryService {
 
                 for (Attraction attraction : filteredAttractions) {
                     try {
-                        int taxiZone = attraction.getTaxi_zone();
-                        float[] prediction = predictionService.predictForTaxiZone(taxiZone, slotStart);
+                        float[] prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
                         double busyness = prediction[0];
 
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
