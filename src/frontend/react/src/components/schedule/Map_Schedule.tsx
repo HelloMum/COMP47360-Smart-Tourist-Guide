@@ -143,8 +143,8 @@ const Map_Schedule = ({ events }) => {
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={{ lat: 40.725, lng: -73.99 }}
-      zoom={14}
+      center={{ lat: 40.732, lng: -73.99 }}
+      zoom={12.5}
       options={mapOptions}
       onLoad={(map) => {
         mapRef.current = map;

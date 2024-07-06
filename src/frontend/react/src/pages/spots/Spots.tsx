@@ -33,6 +33,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const [alertOpen, setAlertOpen] = useState(false);
 
   const handleExpand = useCallback((spot) => {
+    console.log("expand active spot:", spot);
     setActiveSpot(spot);
   }, []);
 
@@ -116,6 +117,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   };
 
   const handleMarkerClick = useCallback((spot) => {
+    console.log("marker clicked and popup card:", spot);
     setPopupSpot(spot);
   }, []);
 
@@ -185,6 +187,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
         <Map_Spots events={spots} onMarkerClick={handleMarkerClick} />
         {popupSpot && (
           <SpotCard_PopUp
+            id={popupSpot.index}
             image1={`/images/spots_small/${popupSpot.index}_1.webp`}
             image3={`/images/spots_small/${popupSpot.index}_3.webp`}
             title={popupSpot.attraction_name}

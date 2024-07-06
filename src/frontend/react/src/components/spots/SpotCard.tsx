@@ -45,10 +45,10 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
 
   const handleAdd = () => {
     const spotData = { id, title, image: image1 };
-    addItemWithDateCheck(spotData, () => setAlertOpen(true));
+    addItemWithDateCheck(spotData, () => setAlertOpen(true), 'SpotCard');
   };
 
-  const isAdded = isItemInList(id);
+  const isAdded = isItemInList(title);
 
   return (
     <>
@@ -56,7 +56,6 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
         borderRadius: '8px', 
         overflow: 'hidden', 
         boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.2)', 
-        // borderWidth:'1px',
         width: "17.5vw", 
         marginBottom: 2, 
         gap: 1 }}>

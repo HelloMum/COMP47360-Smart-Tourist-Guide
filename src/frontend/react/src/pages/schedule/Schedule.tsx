@@ -12,12 +12,14 @@ import Map_Schedule from '../../components/schedule/Map_Schedule';
 
 const Schedule = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
-  const [currentDate, setCurrentDate] = useState(Object.keys(planData)[0]);
-  const [events, setEvents] = useState([]);
+  const initialDate = planData ? Object.keys(planData)[0] : null;
+  const [currentDate, setCurrentDate] = useState(initialDate);
+  const [events, setEvents] = useState(initialDate ? planData[initialDate] : []);
 
   useEffect(() => {
-    // Set the initial events to the first day's events
-    setEvents(planData[currentDate] || []);
+    if (currentDate) {
+      setEvents(planData[currentDate] || []);
+    }
   }, [planData, currentDate]);
 
   const handleDateChange = (date) => {
@@ -28,6 +30,10 @@ const Schedule = () => {
   const formatDate = (date) => {
     return moment(date).format('MM-DD');
   };
+
+  if (!planData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="schedule" style={{ display: 'flex' }}>
@@ -53,10 +59,11 @@ const Schedule = () => {
                 key={date}
                 onClick={() => handleDateChange(date)}
                 style={{
-                  backgroundColor: date === currentDate ? '#1976d2' : '#eee',
-                  color: date === currentDate ? '#ffffff' : '#1976d2',
-                  borderRadius: '20px',
-                  padding: '10px 20px',
+                  backgroundColor: date === currentDate ? '#ffc147' : '#eee',
+                  color: date === currentDate ? '#000' : '#888',
+                  borderRadius: '4px',
+                  
+                  padding: '6px 8px',
                   margin: '5px',
                 }}
               >

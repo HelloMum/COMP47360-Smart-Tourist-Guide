@@ -10,8 +10,8 @@ import { ListContext } from '../../contexts/ListContext';
 
 interface SpotCardPopUpProps {
   id: string;
-  image1: string;  
-  image3: string; 
+  image1: string;
+  image3: string;
   title: string;
   rating: number;
   isFree: boolean;
@@ -23,11 +23,12 @@ interface SpotCardPopUpProps {
 const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, title, rating, category, isFree, user_ratings_total, onClose }) => {
   const [currentImage, setCurrentImage] = useState(image1);
   const [imageStyle, setImageStyle] = useState({
-    transition: 'none',  
-    transform: 'scale(1)' 
+    transition: 'none',
+    transform: 'scale(1)'
   });
 
-  const { addToList } = useContext(ListContext);
+  const { addItemWithDateCheck, isItemInList } = useContext(ListContext);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     setCurrentImage(image1);
@@ -36,24 +37,27 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
   const handleMouseEnter = () => {
     setCurrentImage(image3);
     setImageStyle({
-      transition: 'transform 7s ease',  
-      transform: 'scale(1.4)' 
+      transition: 'transform 7s ease',
+      transform: 'scale(1.4)'
     });
   };
 
   const handleMouseLeave = () => {
     setCurrentImage(image1);
     setImageStyle({
-      transition: 'none',  
-      transform: 'scale(1)'  
+      transition: 'none',
+      transform: 'scale(1)'
     });
   };
 
   const handleAdd = () => {
+    console.log('pop up add button clicked  with id:', id);
+    
     const spotData = { id, title, image: image1 };
-    addToList(spotData);
-    console.log('Add:', spotData);
+    addItemWithDateCheck(spotData, () => setAlertOpen(true), 'SpotCard_PopUp');
   };
+
+  const isAdded = isItemInList(title);
 
   return (
     <div style={{
@@ -61,8 +65,8 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
       overflow: 'hidden',
       width: '270px',
       background: 'white',
-      marginBottom: 15,      
-      padding: 0       
+      marginBottom: 15,
+      padding: 0
     }}>
       <Box sx={{ position: 'relative', overflow: 'hidden', margin: 0, padding: 0 }}>
         <CardMedia
@@ -74,9 +78,9 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
             borderRadius: '0px',
             boxShadow: 0,
             ...imageStyle,
-            height:'170px',
-            margin: 0,       
-            padding: 0    
+            height: '170px',
+            margin: 0,
+            padding: 0
           }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -92,7 +96,7 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
             maxWidth: '95%',
-            margin: 0 
+            margin: 0
           }}
           component="div"
         >
@@ -111,7 +115,7 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
 
         <Box display="flex" alignItems="center" sx={{ margin: 0 }}></Box>
         <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5, margin: 0 }}>
-          <Btn_Add onClick={handleAdd} />
+          <Btn_Add onClick={handleAdd} isAdded={isAdded} />
           <IconButton onClick={onClose} sx={{ margin: 0, padding: 0 }}>
             <CloseRounded />
           </IconButton>
