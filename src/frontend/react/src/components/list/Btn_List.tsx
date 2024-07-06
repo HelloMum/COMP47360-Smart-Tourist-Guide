@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Button } from '@mui/material';
+import { FormatListBulletedRounded } from '@mui/icons-material';
 
 interface BtnListProps {
   onClick: () => void;
@@ -7,22 +8,33 @@ interface BtnListProps {
 
 const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
   return (
-    <Box
+    <Button
       sx={{
         position: 'absolute',
         top: '100px',
-        right:'7px',
-        // left: '44vw',
+        right: '7px',
         transform: 'translate(-50%, -50%)',
         zIndex: 10,
-        boxShadow: 4, 
-        borderRadius: '50px',
-        cursor: 'pointer'
+        borderRadius: '20px',
+        cursor: 'pointer',
+        backgroundColor: '#ffc147',
+        width: '90px',
+        paddingX: '10px',
+        color: 'white',
+        '&:hover': {
+          boxShadow: '1',  
+        },
+        '&:active': {
+          boxShadow: 'none',  
+        },
+        boxShadow: '1',  
       }}
+      variant="contained"
+      startIcon={<FormatListBulletedRounded />}  
       onClick={onClick}
     >
-      <img src="images/note3.png" width="50px" height="50px" alt="list icon" />
-    </Box>
+      List
+    </Button>
   );
 };
 
