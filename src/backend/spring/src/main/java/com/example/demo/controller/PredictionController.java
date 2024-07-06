@@ -7,16 +7,17 @@ import com.example.demo.service.DailyWeatherDataService;
 import com.example.demo.service.PredictionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 
 @RestController
 @RequestMapping("/busyness")
@@ -44,14 +45,12 @@ public class PredictionController {
         }
     }
 
-    @PostMapping("/predict")
+    @PostMapping("/predict_by_attraction_id")
     public float[] predict(@RequestParam int attractionIndex, @RequestParam String dateTime) {
         try {
-            // Attraction Data
             Attraction attraction = attractionService.getAttractionByIndex(attractionIndex);
             LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
 
-            // Weather Data
             List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(localDateTime.toLocalDate());
 
             if (attraction == null || dailyForecastDataList.isEmpty()) {
@@ -60,10 +59,7 @@ public class PredictionController {
 
             DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
 
-            double[] features = createFeatures(attraction, dailyForecastData, localDateTime);
-
-            // Print all the features
-            printFeatures(features);
+            double[] features = predictionService.createFeatures(attraction, dailyForecastData, localDateTime);
 
             return predictionService.predict(features);
         } catch (Exception e) {
@@ -72,70 +68,94 @@ public class PredictionController {
         }
     }
 
-    private double[] createFeatures(Attraction attraction, DailyForecastData dailyForecastData, LocalDateTime dateTime) {
-        // Prepare features array
-        double[] features = new double[predictionService.getExpectedFeaturesSize()];
+    @PostMapping("/predict_by_taxi_zone")
+    public float[] predictByTaxiZone(@RequestParam int taxiZone, @RequestParam String dateTime) {
+        try {
+            LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
+            System.out.println("Predict by taxi zone called with taxiZone: " + taxiZone + " and dateTime: " + dateTime);
 
-        // Map attraction and weather data to features
-        features[predictionService.getFeatureIndex("taxi_zone")] = attraction.getTaxi_zone();
-        features[predictionService.getFeatureIndex("temperature_2m (°C)")] = dailyForecastData.getTempDay();
-        features[predictionService.getFeatureIndex("rain (mm)")] = dailyForecastData.getRain();
-        features[predictionService.getFeatureIndex("snow_depth (m)")] = 0;  // Assuming no snow depth data
-        features[predictionService.getFeatureIndex("snowfall (cm)")] = dailyForecastData.getSnow();
-        features[predictionService.getFeatureIndex("wind_speed_10m (km/h)")] = dailyForecastData.getSpeed();
+            // Weather Data
+            List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(localDateTime.toLocalDate());
 
-        // Date-based features
-        features[predictionService.getFeatureIndex("day")] = dateTime.getDayOfMonth();
-        features[predictionService.getFeatureIndex("day_of_week")] = dateTime.getDayOfWeek().getValue();
-        features[predictionService.getFeatureIndex("is_weekend")] = (dateTime.getDayOfWeek().getValue() == 6 || dateTime.getDayOfWeek().getValue() == 7) ? 1 : 0;
-        features[predictionService.getFeatureIndex("quarter")] = (dateTime.getMonthValue() - 1) / 3 + 1;
+            if (dailyForecastDataList.isEmpty()) {
+                throw new IllegalArgumentException("Weather data not found for the given date.");
+            }
 
-        // Day of the week features
-        for (String day : new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}) {
-            features[predictionService.getFeatureIndex("week_" + day)] = (dateTime.getDayOfWeek().toString().equalsIgnoreCase(day)) ? 1 : 0;
+            DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
+            System.out.println("Weather data for " + dateTime + ": " + dailyForecastData);
+
+            double[] features = predictionService.createFeaturesByTaxiZone(taxiZone, dailyForecastData, localDateTime);
+            System.out.println("Features for taxiZone " + taxiZone + ": " + Arrays.toString(features));
+
+            float[] prediction = predictionService.predict(features);
+            System.out.println("Prediction for taxiZone " + taxiZone + ": " + Arrays.toString(prediction));
+
+            return prediction;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new float[]{};
         }
-
-        // Holidays features
-        LocalDate date = dateTime.toLocalDate();
-        String holiday = usHolidays.getOrDefault(date, "No");
-
-        // Initialize all holiday features to 0
-        for (String holidayFeature : new String[]{
-                "holiday_Christmas Day", "holiday_Christmas Day (observed)", "holiday_Columbus Day",
-                "holiday_Independence Day", "holiday_Juneteenth National Independence Day",
-                "holiday_Juneteenth National Independence Day (observed)", "holiday_Labor Day",
-                "holiday_Martin Luther King Jr. Day", "holiday_Memorial Day", "holiday_New Year's Day",
-                "holiday_New Year's Day (observed)", "holiday_No", "holiday_Thanksgiving",
-                "holiday_Veterans Day", "holiday_Veterans Day (observed)", "holiday_Washington's Birthday"
-        }) {
-            features[predictionService.getFeatureIndex(holidayFeature)] = 0;
-        }
-
-        // Set the corresponding holiday feature to 1
-        if (!holiday.equals("No")) {
-            features[predictionService.getFeatureIndex("holiday_" + holiday)] = 1;
-        } else {
-            features[predictionService.getFeatureIndex("holiday_No")] = 1;
-        }
-
-        // Month features
-        for (int i = 1; i <= 12; i++) {
-            features[predictionService.getFeatureIndex("month_" + i)] = (dateTime.getMonthValue() == i) ? 1 : 0;
-        }
-
-        // Hour features
-        for (int i = 0; i < 24; i++) {
-            features[predictionService.getFeatureIndex("hour_" + i)] = (dateTime.getHour() == i) ? 1 : 0;
-        }
-
-        return features;
     }
 
-    private void printFeatures(double[] features) {
-        List<String> featureNames = predictionService.getExpectedFeatures();
-        System.out.println("Features:");
-        for (int i = 0; i < features.length; i++) {
-            System.out.println(featureNames.get(i) + ": " + features[i]);
+
+    @PostMapping("/predict_by_date_range")
+    public Map<String, Map<Integer, float[]>> predictByDateRange(@RequestParam String startDate, @RequestParam String endDate) {
+        Map<String, Map<Integer, float[]>> result = new TreeMap<>();
+        try {
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+
+            // Read taxi zones from CSV
+            List<Integer> taxiZones = readTaxiZonesFromCSV();
+
+            // Loop through each day in the date range
+            for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+                // Get weather data for the day
+                List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
+
+                if (dailyForecastDataList.isEmpty()) {
+                    continue;
+                }
+
+                DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
+
+                // Loop through each hour of the day
+                for (int hour = 0; hour < 24; hour++) {
+                    LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.of(hour, 0));
+                    String dateTimeKey = dateTime.toString();
+                    Map<Integer, float[]> hourlyPredictions = new TreeMap<>();
+
+                    // Loop through each taxi zone
+                    for (int taxiZone : taxiZones) {
+                        System.out.println("Predicting for dateTime: " + dateTimeKey + " taxiZone: " + taxiZone);
+                        System.out.println("Weather data: " + dailyForecastData);
+
+                        double[] features = predictionService.createFeaturesByTaxiZone(taxiZone, dailyForecastData, dateTime);
+                        System.out.println("Features for taxiZone " + taxiZone + ": " + Arrays.toString(features));
+
+                        float[] prediction = predictionService.predict(features);
+                        System.out.println("Prediction for taxiZone " + taxiZone + ": " + Arrays.toString(prediction));
+
+                        hourlyPredictions.put(taxiZone, prediction);
+                    }
+                    result.put(dateTimeKey, hourlyPredictions);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return result;
+    }
+
+    private List<Integer> readTaxiZonesFromCSV() throws IOException {
+        List<Integer> taxiZones = new ArrayList<>();
+        ClassPathResource resource = new ClassPathResource("manhattan_taxi_zones_id.csv");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+            String line = reader.readLine(); // Skip header
+            while ((line = reader.readLine()) != null) {
+                taxiZones.add(Integer.parseInt(line.trim()));
+            }
+        }
+        return taxiZones;
     }
 }

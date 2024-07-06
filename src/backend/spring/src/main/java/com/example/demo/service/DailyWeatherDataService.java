@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,21 @@ public class DailyWeatherDataService {
                 .collect(Collectors.toList());
     }
 
+    public List<DailyForecastData> getForecastByDateRange(LocalDate startDate, LocalDate endDate) {
+        // Ensure that endDate is exclusive by adding one day at the beginning of the day
+        ZonedDateTime startOfDayET = startDate.atStartOfDay(ZoneId.of("America/New_York")).plusHours(12);
+        ZonedDateTime endOfDayET = endDate.atStartOfDay(ZoneId.of("America/New_York")).plusHours(12);
+
+        long startEpochSecond = startOfDayET.toEpochSecond();
+        long endEpochSecond = endOfDayET.toEpochSecond();
+
+        List<DailyForecastData> forecasts = repository.findForecastsByDateRange(startEpochSecond, endEpochSecond);
+        return forecasts.stream()
+                .map(this::convertUnits)
+                .sorted(Comparator.comparing(DailyForecastData::getDt))
+                .collect(Collectors.toList());
+    }
+
     private DailyForecastData convertUnits(DailyForecastData data) {
         // Convert temperature from Kelvin to Celsius and format to 4 decimal places
         data.setTempDay(formatToFourDecimalPlaces(data.getTempDay() - 273.15));
@@ -40,6 +57,7 @@ public class DailyWeatherDataService {
         data.setSnow(formatToFourDecimalPlaces(data.getSnow() / 10));
         // Convert speed from meters/second to kilometers/hour and format to 4 decimal places
         data.setSpeed(formatToFourDecimalPlaces(data.getSpeed() * 3.6));
+        data.convertDtToDate();
         return data;
     }
 
