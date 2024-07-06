@@ -47,7 +47,7 @@ public class AttractionController {
 
     // Filter logic (isFree, category)
     // Sort by rating DESC (default), price ASC
-    @GetMapping("/filterWithDate")
+    @GetMapping("/filter_within_date")
     public List<Attraction> filterAttractions(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,

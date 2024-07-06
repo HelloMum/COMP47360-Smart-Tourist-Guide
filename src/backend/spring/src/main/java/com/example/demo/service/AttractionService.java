@@ -65,7 +65,6 @@ public class AttractionService {
                     attraction.setFormatted_hours(parseString(line[22], lineNumber, "formatted_hours"));
                     attraction.setPopular_times(parseString(line[23], lineNumber, "popular_times"));
                     attraction.setTime_spent(parseList(line[24], lineNumber, "time_spent"));
-                    attraction.setCurrent_popularity(parseDouble(line[25], lineNumber, "current_popularity"));
 
                     attractions.add(attraction);
                 } catch (Exception e) {
