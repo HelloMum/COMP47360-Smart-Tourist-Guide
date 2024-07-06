@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { Box, Stack, Alert, AlertTitle } from '@mui/material';
-import Map from '../../components/spots/Map_Spots';
+import Map from '../../components/schedule/Map_Schedule';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
@@ -15,6 +15,7 @@ import Btn_List from '../../components/list/Btn_List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import AlertModal from '../../components/AlertModal';
+import Map_Spots from '../../components/spots/Map_Spots';
 
 const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -181,7 +182,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
       )}
 
       <div className="map hide-scrollbar" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
-        <Map events={spots} onMarkerClick={handleMarkerClick} />
+        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} />
         {popupSpot && (
           <SpotCard_PopUp
             image1={`/images/spots_small/${popupSpot.index}_1.webp`}

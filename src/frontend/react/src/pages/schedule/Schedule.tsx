@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import Map from '../../components/events/Map_Events';
+import React, { useContext, useState, useEffect } from 'react';
 import './schedule.css';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import Btn_List from '../../components/list/Btn_List';
@@ -9,16 +8,24 @@ import Btn_Close_Left from '../../components/Btn_Close_Left';
 import ScheduleCard from '../../components/schedule/ScheduleCard';
 import { Typography, Button, ButtonGroup } from '@mui/material';
 import moment from 'moment';
+import Map_Schedule from '../../components/schedule/Map_Schedule';
 
-const Schedule: React.FC = () => {
+const Schedule = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
   const [currentDate, setCurrentDate] = useState(Object.keys(planData)[0]);
+  const [events, setEvents] = useState([]);
 
-  const handleDateChange = (date: string) => {
+  useEffect(() => {
+    // Set the initial events to the first day's events
+    setEvents(planData[currentDate] || []);
+  }, [planData, currentDate]);
+
+  const handleDateChange = (date) => {
     setCurrentDate(date);
+    setEvents(planData[date] || []);
   };
 
-  const formatDate = (date: string) => {
+  const formatDate = (date) => {
     return moment(date).format('MM-DD');
   };
 
@@ -58,7 +65,7 @@ const Schedule: React.FC = () => {
             ))}
           </ButtonGroup>
 
-          {planData[currentDate] && planData[currentDate].map((item) => (
+          {events.map((item) => (
             <ScheduleCard
               key={item.id}
               id={item.id}
@@ -93,7 +100,7 @@ const Schedule: React.FC = () => {
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
-        <Map events={[]} />
+        <Map_Schedule events={events} />
       </div>
 
       <Btn_List onClick={toggleList} />
