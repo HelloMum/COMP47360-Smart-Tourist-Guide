@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Grid, Box, CardMedia, Rating, Stack } from '@mui/material';
+import { Card, CardContent, Typography, Box, CardMedia, Stack } from '@mui/material';
+import { LocationOnRounded, PhoneEnabledRounded, PublicRounded } from '@mui/icons-material';
 import moment from 'moment';
-
+import Tag_IsFree from '../Tag_IsFree';
+import Tag_Category from '../Tag_Category';
 
 interface ScheduleCardProps {
   id: string | number;
@@ -12,8 +14,8 @@ interface ScheduleCardProps {
   longitude: number;
   busyness: number;
   category: string;
-  address: string;
-  website: string;
+  address: string | null;
+  website: string | null;
   description: string;
   rating: number;
   attraction_phone_number: string | null;
@@ -55,7 +57,12 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const [imageStyle, setImageStyle] = useState({});
 
   const handleMouseEnter = () => {
-    if (!event) {
+    if (event) {
+      setImageStyle({
+        transition: 'transform 7s ease',
+        transform: 'scale(1.4)',
+      });
+    } else {
       setCurrentImage(secondImage);
       setImageStyle({
         transition: 'transform 7s ease',
@@ -65,7 +72,12 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   };
 
   const handleMouseLeave = () => {
-    if (!event) {
+    if (event) {
+      setImageStyle({
+        transition: 'none',
+        transform: 'scale(1)',
+      });
+    } else {
       setCurrentImage(defaultImage);
       setImageStyle({
         transition: 'none',
@@ -75,68 +87,91 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   };
 
   return (
-    <Card variant="outlined" style={{ marginBottom: '16px' }}>
+    <Card variant="outlined" sx={{ 
+      borderRadius: '8px', 
+      overflow: 'hidden', 
+      boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.2)', 
+      marginBottom: 3, 
+      gap: 1 
+    }}>
       <CardContent>
-        <Grid container spacing={1}>
-          <Grid item xs={2}>
+        <Stack spacing={3}>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box>
-              <Typography variant="h5">{formattedStartTime}</Typography>
-              <Typography variant="h5">-</Typography>
-              <Typography variant="h5">{formattedEndTime}</Typography>
+              <Typography variant="h5">{formattedStartTime} - {formattedEndTime}</Typography>
+           
             </Box>
-          </Grid>
-          <Grid item xs={4}>
-            {currentImage && (
-              <CardMedia
-                component="img"
-                image={currentImage}
-                alt={name}
-                style={{ height: 140, objectFit: 'cover', marginTop: '16px', ...imageStyle }}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              />
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400 }}>{name}</Typography>
-            <Stack direction="row" spacing={1} alignItems="center" marginBottom="8px">
-              <Rating name="read-only" value={rating} precision={0.1} readOnly size="small" />
-              <Typography variant="body2">{rating}</Typography>
-              <Typography variant="body2" color="textSecondary">by {userRatings_total} people</Typography>
-            </Stack>
-            <Box display="flex" alignItems="center" marginBottom="8px">
-              {/* <Tag_Free isFree={free} />
-              <Tag_Category category={category} /> */}
-            </Box>
-            <Typography variant="body1">
-              <strong>Location:</strong> {latitude}, {longitude}
-            </Typography>
             <Typography variant="body1">
               <strong>Busyness:</strong> {busyness.toFixed(2)}
             </Typography>
-            <Typography variant="body1">
-              <strong>Address:</strong> {address}
-            </Typography>
-            <Typography variant="body1">
-              <strong>Website:</strong> <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
-            </Typography>
-            <Typography variant="body1">
-              <strong>Description:</strong> {description}
-            </Typography>
-            <Typography variant="body1">
-              <strong>Contact Phone:</strong> {attraction_phone_number || 'N/A'}
-            </Typography>
-            <Typography variant="body1">
-              <strong>International Phone:</strong> {international_phone_number || 'N/A'}
-            </Typography>
-            <Typography variant="body1">
-              <strong>Event:</strong> {event ? 'Yes' : 'No'}
-            </Typography>
-            <Typography variant="body1">
-              <strong>Free:</strong> {free ? 'Yes' : 'No'}
-            </Typography>
-          </Grid>
-        </Grid>
+          </Box>
+          <Stack direction='row' gap={1}>
+            <Box
+              sx={{ 
+                height: 200,
+                width: 200,
+                overflow: 'hidden',
+                position: 'relative',
+                borderRadius:'6px',
+                boxShadow:2
+
+              
+            
+              }}
+            >
+              {currentImage && (
+                <CardMedia
+                  component="img"
+                  image={currentImage}
+                  alt={name}
+                  style={{ 
+                    height: '100%',
+                    width: '100%', 
+                    objectFit: 'cover', 
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    ...imageStyle 
+                  }}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                />
+              )}
+            </Box>
+            <Box marginLeft={2} flex={1}>
+              <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400 }}>{name}</Typography>
+              <Box display="flex" alignItems="center" marginBottom="8px">
+                <Tag_IsFree isFree={free} />
+                <Tag_Category category={category} />
+                {website && (
+                  <a href={website} target="_blank" rel="noopener noreferrer" style={{ marginLeft: '8px' }}>
+                    <PublicRounded sx={{ fontSize: 'large' }} />
+                  </a>
+                )}
+              </Box>
+              <Stack gap={1.5} marginTop={2}>
+                {address && (
+                  <Box display="flex" alignItems="center">
+                    <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
+                    <Typography variant="body2" color="text.secondary">{address}</Typography>
+                  </Box>
+                )}
+                {(attraction_phone_number || international_phone_number) && (
+                  <Box display="flex" alignItems="center">
+                    <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
+                    <Typography variant="body2" color="text.secondary">
+                      {attraction_phone_number || 'No local phone provided'} <br />
+                      {international_phone_number || 'No international phone provided'}
+                    </Typography>
+                  </Box>
+                )}
+              </Stack>
+              <Typography variant="body2">
+                {description}
+              </Typography>
+            </Box>
+          </Stack>
+        </Stack>
       </CardContent>
     </Card>
   );

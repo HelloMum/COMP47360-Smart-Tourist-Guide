@@ -7,7 +7,8 @@ import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import ScheduleCard from '../../components/schedule/ScheduleCard';
-import { Typography, Divider, Button, ButtonGroup } from '@mui/material';
+import { Typography, Button, ButtonGroup } from '@mui/material';
+import moment from 'moment';
 
 const Schedule: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
@@ -15,6 +16,10 @@ const Schedule: React.FC = () => {
 
   const handleDateChange = (date: string) => {
     setCurrentDate(date);
+  };
+
+  const formatDate = (date: string) => {
+    return moment(date).format('MM-DD');
   };
 
   return (
@@ -30,9 +35,26 @@ const Schedule: React.FC = () => {
             overflowY: 'auto',
           }}
         >
-          <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{ marginBottom: '16px' }}>
+          <ButtonGroup
+            variant="text"
+            color="primary"
+            aria-label="contained primary button group"
+            style={{ marginBottom: '16px' }}
+          >
             {Object.keys(planData).map((date) => (
-              <Button key={date} onClick={() => handleDateChange(date)}>{date}</Button>
+              <Button
+                key={date}
+                onClick={() => handleDateChange(date)}
+                style={{
+                  backgroundColor: date === currentDate ? '#1976d2' : '#eee',
+                  color: date === currentDate ? '#ffffff' : '#1976d2',
+                  borderRadius: '20px',
+                  padding: '10px 20px',
+                  margin: '5px',
+                }}
+              >
+                {formatDate(date)}
+              </Button>
             ))}
           </ButtonGroup>
 
@@ -59,10 +81,18 @@ const Schedule: React.FC = () => {
               userRatings_total={item.userRatings_total}
             />
           ))}
-          <Divider style={{ margin: '16px 0' }} />
         </div>
       )}
-      <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
+      <div
+        className="map"
+        style={{
+          position: 'fixed',
+          top: NAVBAR_HEIGHT,
+          right: 0,
+          width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%',
+          height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+        }}
+      >
         <Map events={[]} />
       </div>
 

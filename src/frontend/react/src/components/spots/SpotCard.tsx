@@ -52,7 +52,15 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
 
   return (
     <>
-      <Card sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 2px rgba(0, 0, 0, 0.15)', width: "17.5vw", marginBottom: 2, gap: 1 }}>
+      <Card sx={{ 
+        borderRadius: '8px', 
+        overflow: 'hidden', 
+        boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.2)', 
+        // borderWidth:'1px',
+        width: "17.5vw", 
+        marginBottom: 2, 
+        gap: 1 }}>
+
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           <CardMedia
             component="img"
