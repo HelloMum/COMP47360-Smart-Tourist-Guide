@@ -99,7 +99,7 @@ public class ItineraryService {
                         }
                     }
                     ItineraryItem item = new ItineraryItem(event.getId(), event.getName(), eventStart, eventEnd,
-                            event.getLatitude(), event.getLongitude(), true);
+                            event.getLatitude(), event.getLongitude(), true, event.getIs_free(), event.getCategory(), event.getAddress(), event.getEvent_site_url(), event.getDescription(), event.getImage_url());
                     item.setBusyness(busyness);
                     itinerary.add(item);
                     dailyEventCount.put(date, dailyEventCount.getOrDefault(date, 0L) + 1);
@@ -169,7 +169,7 @@ public class ItineraryService {
                         }
                     }
 
-                    ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false);
+                    ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false, bestAttraction.isFree(), bestAttraction.getCategory(), bestAttraction.getAttraction_vicinity(), bestAttraction.getAttractionWebsite(), bestAttraction.getDescription(), bestAttraction.getAttraction_rating(), bestAttraction.getUser_ratings_total(), bestAttraction.getAttraction_phone_number(), bestAttraction.getInternational_phone_number());
                     item.setBusyness(minBusyness);
                     itinerary.add(item);
                     attractions.remove(bestAttraction);
@@ -246,7 +246,8 @@ public class ItineraryService {
 
                 if (bestAttraction != null) {
                     System.out.println("Adding attraction: " + bestAttraction.getAttraction_name() + " with busyness: " + minBusyness);
-                    ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false);
+                    ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false, bestAttraction.isFree(), bestAttraction.getCategory(), bestAttraction.getAttraction_vicinity(), bestAttraction.getAttractionWebsite(), bestAttraction.getDescription(), bestAttraction.getAttraction_rating(), bestAttraction.getUser_ratings_total(), bestAttraction.getAttraction_phone_number(), bestAttraction.getInternational_phone_number());
+
                     timeSlot.setOccupied(true);
                     item.setBusyness(minBusyness);
                     itinerary.add(item);
