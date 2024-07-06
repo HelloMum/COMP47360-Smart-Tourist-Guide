@@ -54,7 +54,7 @@ const Events = ({ selectedDates }) => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data);
+        console.log('Fetched events data:', data);
         setEvents(Array.isArray(data) ? data : []);
       })
       .catch(error => {

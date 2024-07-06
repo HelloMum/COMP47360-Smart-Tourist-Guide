@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { Box, Stack, Alert, AlertTitle } from '@mui/material';
-import Map from '../../components/schedule/Map_Schedule';
+import { Box, Stack } from '@mui/material';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
 import SpotDetail from '../../components/spots/SpotDetail';
-import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
+import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
 import './spots.css';
 import Sort_Spots from '../../components/spots/Sort_Spots';
 import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';
@@ -44,10 +43,11 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const fetchSpots = useCallback(() => {
     setLoading(true);
     let url;
-    if (selectedDates && selectedDates[0] && selectedDates[1]) {
-      const startDate = selectedDates[0].format('YYYY-MM-DD');
-      const endDate = selectedDates[1].format('YYYY-MM-DD');
-      url = `http://localhost:8080/attractions/filterWithDate?startDate=${startDate}&endDate=${endDate}&sortBy=${sortOption}`;
+    if (contextSelectedDates && contextSelectedDates[0] && contextSelectedDates[1]) {
+      const startDate = contextSelectedDates[0].format('YYYY-MM-DD');
+      const endDate = contextSelectedDates[1].format('YYYY-MM-DD');
+
+      url = `http://localhost:8080/attractions/filter_within_date?startDate=${startDate}&endDate=${endDate}&sortBy=${sortOption}`;
     } else {
       url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
     }
@@ -65,7 +65,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log("Fetched data:", data);
+        console.log("Fetched attractions data:", data);
         setSpots(data);
         setDisplayedSpots(data.slice(0, batchSize));
         setCurrentIndex(batchSize);
@@ -76,11 +76,11 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
       .finally(() => {
         setLoading(false);
       });
-  }, [sortOption, isFree, categories, searchTerm, selectedDates]);
+  }, [sortOption, isFree, categories, searchTerm, contextSelectedDates]);
 
   useEffect(() => {
     fetchSpots();
-  }, [sortOption, isFree, categories, searchTerm, selectedDates, fetchSpots]);
+  }, [sortOption, isFree, categories, searchTerm, contextSelectedDates, fetchSpots]);
 
   const handleSwitchChange = useCallback(() => {
     setIsFree(!isFree);
@@ -198,7 +198,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
       </div>
 
       <Btn_List onClick={toggleList} />
-      {showList && <List onClose={closeList} selectedDates={selectedDates} />}
+      {showList && <List onClose={closeList} selectedDates={contextSelectedDates} />}
 
       <Btn_Close_Left onClick={toggleLeftPanel} />
 
@@ -218,12 +218,12 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
           }}
           onClick={() => setAlertOpen(false)}
         >
-   <AlertModal
-        open={alertOpen}
-        onClose={() => setAlertOpen(false)}
-        title="Warning"
-        message="Please set the start and end dates before adding items to the list."
-      />
+          <AlertModal
+            open={alertOpen}
+            onClose={() => setAlertOpen(false)}
+            title="Warning"
+            message="Please set the start and end dates before adding items to the list."
+          />
         </Box>
       )}
     </div>

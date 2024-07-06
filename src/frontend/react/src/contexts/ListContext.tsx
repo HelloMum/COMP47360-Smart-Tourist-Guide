@@ -11,7 +11,7 @@ interface ListContextProps {
   listItems: ListItem[];
   addToList: (item: ListItem) => void;
   removeFromList: (id: string) => void;
-  clearList: () => void; // 新增 clearList 方法
+  clearList: () => void; 
   showList: boolean;
   toggleList: () => void;
   closeList: () => void;
