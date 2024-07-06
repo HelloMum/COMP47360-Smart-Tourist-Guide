@@ -9,7 +9,6 @@ import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
-import org.locationtech.jts.geom.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +20,16 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
     private Booster booster;
-    private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Autowired
     private AttractionService attractionService;
@@ -59,7 +54,6 @@ public class PredictionService {
     }
 
     public float[] predictByTaxiZone(int taxiZone, LocalDateTime dateTime) throws XGBoostError {
-        // 获取每日天气数据
         LocalDate date = dateTime.toLocalDate();
         List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
         if (dailyForecastDataList.isEmpty()) {
@@ -67,7 +61,6 @@ public class PredictionService {
         }
         DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
 
-        // 使用 taxi zone 和天气数据生成特征并进行预测
         double[] features = createFeaturesByTaxiZone(taxiZone, dailyForecastData, dateTime);
         return predict(features);
     }
@@ -192,10 +185,8 @@ public class PredictionService {
     public double[] createFeatures(Attraction attraction, DailyForecastData dailyForecastData, LocalDateTime dateTime) {
         double[] features = new double[expected_features.size()];
 
-        // 初始化所有特征值为0
         Arrays.fill(features, 0.0);
 
-        // 映射attraction和weather数据到特征
         features[getFeatureIndex("taxi_zone")] = attraction.getTaxi_zone();
         features[getFeatureIndex("temperature_2m (°C)")] = dailyForecastData.getTempDay();
         features[getFeatureIndex("rain (mm)")] = dailyForecastData.getRain();
@@ -203,7 +194,6 @@ public class PredictionService {
         features[getFeatureIndex("snowfall (cm)")] = dailyForecastData.getSnow();
         features[getFeatureIndex("wind_speed_10m (km/h)")] = dailyForecastData.getSpeed();
 
-        // 日期特征
         features[getFeatureIndex("day")] = dateTime.getDayOfMonth();
         features[getFeatureIndex("day_of_week")] = dateTime.getDayOfWeek().getValue();
         features[getFeatureIndex("is_weekend")] = (dateTime.getDayOfWeek().getValue() == 6 || dateTime.getDayOfWeek().getValue() == 7) ? 1 : 0;

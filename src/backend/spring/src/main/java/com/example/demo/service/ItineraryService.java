@@ -36,7 +36,7 @@ public class ItineraryService {
         this.availableTimeSlots = new ArrayList<>();
     }
 
-    public List<ItineraryItem> createItineraryFromSelection(List<String> ids, LocalDate startDate, LocalDate endDate) {
+    public Map<LocalDate, List<ItineraryItem>> createItineraryFromSelection(List<String> ids, LocalDate startDate, LocalDate endDate) {
         List<Attraction> selectedAttractions = new ArrayList<>();
         List<Event> selectedEvents = new ArrayList<>();
 
@@ -55,11 +55,28 @@ public class ItineraryService {
                         selectedEvents.add(event);
                     }
                 } catch (IllegalArgumentException ex) {
+                    // Handle exception
                 }
             }
         }
 
-        return createItinerary(selectedEvents, selectedAttractions, startDate, endDate);
+        List<ItineraryItem> itineraryItems = createItinerary(selectedEvents, selectedAttractions, startDate, endDate);
+
+        // Group by date and sort activities within each date
+        Map<LocalDate, List<ItineraryItem>> groupedByDate = itineraryItems.stream()
+                .collect(Collectors.groupingBy(item -> item.getStartTime().toLocalDate()));
+
+        // Sort the dates and activities within each date
+        return groupedByDate.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .sorted(Comparator.comparing(ItineraryItem::getStartTime))
+                                .collect(Collectors.toList()),
+                        (e1, e2) -> e1, // merge function
+                        LinkedHashMap::new // keep the order
+                ));
     }
 
     public List<ItineraryItem> createItinerary(List<Event> events, List<Attraction> attractions, LocalDate startDate, LocalDate endDate) {
