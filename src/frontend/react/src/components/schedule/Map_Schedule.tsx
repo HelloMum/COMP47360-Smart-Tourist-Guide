@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 
 const Map_Schedule = ({ events }) => {
@@ -143,18 +143,24 @@ const Map_Schedule = ({ events }) => {
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={events.length > 0 ? { lat: events[0].latitude, lng: events[0].longitude } : { lat: 40.725, lng: -73.99 }}
+      center={{ lat: 40.725, lng: -73.99 }}
       zoom={14}
       options={mapOptions}
       onLoad={(map) => {
         mapRef.current = map;
       }}
     >
-      {events.map((event) => (
+      {events.map((event, index) => (
         <Marker
           key={event.id}
           position={{ lat: event.latitude, lng: event.longitude }}
           title={event.name}
+          label={{
+            text: `${index + 1}`,
+            color: "white",
+            fontSize: "12px",
+            fontWeight: "bold",
+          }}
         />
       ))}
     </GoogleMap>
