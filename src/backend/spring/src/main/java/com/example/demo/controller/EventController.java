@@ -35,7 +35,7 @@ public class EventController {
         return eventService.getFilteredEventsWithoutDateRange(isFree, categoryList, name);
     }
 
-    @GetMapping("/filterWithDate")
+    @GetMapping("/filter_within_date")
     public List<Event> getFilteredEventsWithDates(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
