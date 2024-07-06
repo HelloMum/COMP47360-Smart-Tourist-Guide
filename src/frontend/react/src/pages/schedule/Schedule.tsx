@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Map from '../../components/events/Map_Events';
 import './schedule.css';
 import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
@@ -6,10 +6,16 @@ import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
-import ScheduleCard from '../../components/schedule/ScheduleCard'; // 导入 ScheduleCard 组件
+import ScheduleCard from '../../components/schedule/ScheduleCard';
+import { Typography, Divider, Button, ButtonGroup } from '@mui/material';
 
 const Schedule: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
+  const [currentDate, setCurrentDate] = useState(Object.keys(planData)[0]);
+
+  const handleDateChange = (date: string) => {
+    setCurrentDate(date);
+  };
 
   return (
     <div className="schedule" style={{ display: 'flex' }}>
@@ -24,8 +30,13 @@ const Schedule: React.FC = () => {
             overflowY: 'auto',
           }}
         >
-          {/* <h2>Plan</h2> */}
-          {planData && planData.map((item) => (
+          <ButtonGroup variant="text" color="primary" aria-label="text primary button group" style={{ marginBottom: '16px' }}>
+            {Object.keys(planData).map((date) => (
+              <Button key={date} onClick={() => handleDateChange(date)}>{date}</Button>
+            ))}
+          </ButtonGroup>
+
+          {planData[currentDate] && planData[currentDate].map((item) => (
             <ScheduleCard
               key={item.id}
               id={item.id}
@@ -35,9 +46,20 @@ const Schedule: React.FC = () => {
               latitude={item.latitude}
               longitude={item.longitude}
               busyness={item.busyness}
+              category={item.category}
+              address={item.address}
+              website={item.website}
+              description={item.description}
+              rating={item.rating}
+              attraction_phone_number={item.attraction_phone_number}
+              international_phone_number={item.international_phone_number}
+              event_image={item.event_image}
               event={item.event}
+              free={item.free}
+              userRatings_total={item.userRatings_total}
             />
           ))}
+          <Divider style={{ margin: '16px 0' }} />
         </div>
       )}
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>

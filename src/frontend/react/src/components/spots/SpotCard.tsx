@@ -63,7 +63,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />
-          <Btn_Like />
+          {/* <Btn_Like /> */}
         </Box>
         <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }}>
           <Typography
