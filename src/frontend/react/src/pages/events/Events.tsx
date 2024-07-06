@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import Map from '../../components/events/Map_Events';
 import './events.css';
 import EventCard from '../../components/events/EventCard';
@@ -21,10 +21,10 @@ const Events = ({ selectedDates }) => {
   const [searchText, setSearchText] = useState('');
   const [hoveredEventId, setHoveredEventId] = useState(null);
   const [alertOpen, setAlertOpen] = useState(false);
-  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, addItemWithDateCheck } = useContext(ListContext);
+  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, addItemWithDateCheck, selectedDates: contextSelectedDates } = useContext(ListContext);
 
-  const fetchEvents = () => {
-    let url = selectedDates
+  const fetchEvents = useCallback(() => {
+    let url = contextSelectedDates
       ? 'http://localhost:8080/events/filterWithDate'
       : 'http://localhost:8080/events/filter';
 
@@ -42,9 +42,9 @@ const Events = ({ selectedDates }) => {
       params.append('name', searchText);
     }
 
-    if (selectedDates && selectedDates[0] && selectedDates[1]) {
-      params.append('startDate', selectedDates[0].format('YYYY-MM-DD'));
-      params.append('endDate', selectedDates[1].format('YYYY-MM-DD'));
+    if (contextSelectedDates && contextSelectedDates[0] && contextSelectedDates[1]) {
+      params.append('startDate', contextSelectedDates[0].format('YYYY-MM-DD'));
+      params.append('endDate', contextSelectedDates[1].format('YYYY-MM-DD'));
     }
 
     if (params.toString()) {
@@ -61,11 +61,11 @@ const Events = ({ selectedDates }) => {
         console.error('Error fetching data:', error);
         setEvents([]);
       });
-  };
+  }, [isFree, selectedCategories, searchText, contextSelectedDates]);
 
   useEffect(() => {
     fetchEvents();
-  }, [isFree, selectedCategories, searchText, selectedDates]);
+  }, [isFree, selectedCategories, searchText, contextSelectedDates, fetchEvents]);
 
   const handleSwitchChange = () => {
     setIsFree(!isFree);
@@ -133,7 +133,7 @@ const Events = ({ selectedDates }) => {
       </div>
 
       <Btn_List onClick={toggleList} />
-      {showList && <List onClose={closeList} />}
+      {showList && <List onClose={closeList} selectedDates={contextSelectedDates} />}
 
       <Btn_Close_Left onClick={toggleLeftPanel} />
 

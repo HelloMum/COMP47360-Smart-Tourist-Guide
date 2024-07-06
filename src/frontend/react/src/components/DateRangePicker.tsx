@@ -36,6 +36,7 @@ const DateRangePicker = ({ onDateChange, className, value }) => {
   return (
     <div className={`custom-range-picker ${className}`}>
       <RangePicker
+      
         disabledDate={disabled7DaysDate(fromDate)}
         onCalendarChange={handleCalendarChange}
         onChange={handleChange}
