@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/itinerary")
@@ -18,7 +19,7 @@ public class ItineraryController {
     private ItineraryService itineraryService;
 
     @PostMapping("/create")
-    public List<ItineraryItem> createItinerary(@RequestBody UserSelection selection, @RequestParam String startDate, @RequestParam String endDate) {
+    public Map<LocalDate, List<ItineraryItem>> createItinerary(@RequestBody UserSelection selection, @RequestParam String startDate, @RequestParam String endDate) {
         System.out.println("Received user selection: " + selection);
         System.out.println("Start date: " + startDate);
         System.out.println("End date: " + endDate);

@@ -29,6 +29,8 @@ dependencies {
 	implementation 'com.h2database:h2'
 	implementation 'com.opencsv:opencsv:5.5.2'
 
+	implementation 'org.locationtech.jts:jts-core:1.18.0'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
 	// XGBoost4J dependency
 	implementation ('ml.dmlc:xgboost4j_2.13:2.0.3') {
 		exclude group: "commons-logging", module: 'commons-logging'
