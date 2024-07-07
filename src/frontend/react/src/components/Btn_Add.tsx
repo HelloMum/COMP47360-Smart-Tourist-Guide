@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
-import { CheckCircleOutline, CheckRounded } from '@mui/icons-material';
+import { CheckRounded, CloseRounded } from '@mui/icons-material';
 
 interface Btn_AddProps {
   onClick: () => void;
+  isAdded: boolean;
 }
 
-const Btn_Add: React.FC<Btn_AddProps> = ({ onClick }) => {
-  const [isAdded, setIsAdded] = useState(false);
-
-  const handleClick = () => {
-    onClick();
-    setIsAdded(true);
-  };
+const Btn_Add: React.FC<Btn_AddProps> = ({ onClick, isAdded }) => {
+  const [hover, setHover] = useState(false);
 
   return (
     <div>
@@ -24,16 +20,18 @@ const Btn_Add: React.FC<Btn_AddProps> = ({ onClick }) => {
           fontSize: '0.8rem',
           textTransform: 'none',
           boxShadow: 'none',
-          backgroundColor: isAdded ? 'lightgray' : 'primary.main',
+          backgroundColor: isAdded? 'lightgrey':'primary.main',
           color: 'white',
           '&:hover': {
-            backgroundColor: isAdded ? 'gray' : 'primary.dark',
-            boxShadow: 'none'
-          }
+            boxShadow: 'none',
+            // backgroundColor: isAdded?'#f10124' :'primary.main',
+          },
         }}
-        onClick={handleClick}
+        onClick={onClick}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
       >
-        {isAdded ? <CheckRounded /> : 'Add'}
+        {isAdded ? (hover ? <CloseRounded /> : <CheckRounded />) : 'Add'}
       </Button>
     </div>
   );

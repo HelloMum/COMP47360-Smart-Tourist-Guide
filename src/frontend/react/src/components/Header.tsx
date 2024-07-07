@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import './Header.css';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
@@ -7,18 +7,22 @@ import { Box, Button, Stack } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
 import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
-import { useNavigate } from 'react-router-dom';
 import { NAVBAR_HEIGHT } from '../constants';
 import DateRangePicker from './DateRangePicker';
+import { ListContext } from '../contexts/ListContext';
+import AlertModal from './AlertModal';
+import Logo from './Logo';
 
-const Header: React.FC = () => {
+const Header = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const { planData, selectedDates, setSelectedDates } = useContext(ListContext);
+  const [alertOpen, setAlertOpen] = useState(false);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path) => location.pathname === path;
 
-  const buttonStyle = (path: string) => ({
+  const buttonStyle = (path) => ({
     color: theme.palette.primary.dark,
     borderColor: isActive(path) ? theme.palette.primary.main : 'transparent',
     borderRadius: 20,
@@ -29,6 +33,18 @@ const Header: React.FC = () => {
     borderStyle: 'solid',
     transition: 'border-color 0.2s ease-in-out',
   });
+
+  const handlePlanClick = () => {
+    if (!planData) {
+      setAlertOpen(true);
+    } else {
+      navigate('/schedule');
+    }
+  };
+
+  const handleDateChange = (dates: [moment.Moment | null, moment.Moment | null] | null) => {
+    setSelectedDates(dates);
+  };
 
   return (
     <Box
@@ -44,16 +60,9 @@ const Header: React.FC = () => {
         zIndex: 1000,
         paddingRight: '2%',
         paddingLeft: '2%',
-        // borderTop: `1px solid ${theme.palette.primary.light}`, 
       }}
     >
-      {/* --------------------------logo------------------------ */}
-
-      <Link to="/" className="logo" style={{ color: theme.palette.primary.dark }}>
-        Hello,World
-      </Link>
-
-      {/* ---------------3 buttons  & date range picker------------------ */}
+      <Logo />
 
       <Stack direction="row" spacing={3} alignItems="center">
         <Button
@@ -76,21 +85,27 @@ const Header: React.FC = () => {
 
         <Button
           variant="text"
-          onClick={() => navigate('/schedule')}
+          onClick={handlePlanClick}
           style={buttonStyle('/schedule')}
           startIcon={<CalendarMonthRoundedIcon />}
         >
           Plan
         </Button>
 
-        <DateRangePicker />
+        <DateRangePicker
+          onDateChange={handleDateChange}
+          value={selectedDates} 
+        />
       </Stack>
 
-      {/* -----------------  about & account ------------------ */}
-      
-     
-        <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
-   
+      <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
+
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title="Warning"
+        message="Please generate a schedule first."
+      />
     </Box>
   );
 };
