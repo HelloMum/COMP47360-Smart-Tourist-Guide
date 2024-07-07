@@ -140,6 +140,14 @@ const Map_Schedule = ({ events }) => {
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
 
+  const orangeMarker = {
+    path: 'M 0, 0 m -12, 0 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0', 
+    fillColor: 'orange',
+    fillOpacity: 1,
+    strokeWeight: 0,
+    scale: 1.2,
+  };
+
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
@@ -161,6 +169,7 @@ const Map_Schedule = ({ events }) => {
             fontSize: "12px",
             fontWeight: "bold",
           }}
+          icon={orangeMarker}
         />
       ))}
     </GoogleMap>

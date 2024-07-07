@@ -6,7 +6,7 @@ import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import ScheduleCard from '../../components/schedule/ScheduleCard';
-import { Typography, Button, ButtonGroup } from '@mui/material';
+import { Typography, Button, Stack, Box } from '@mui/material';
 import moment from 'moment';
 import Map_Schedule from '../../components/schedule/Map_Schedule';
 
@@ -28,7 +28,11 @@ const Schedule = () => {
   };
 
   const formatDate = (date) => {
-    return moment(date).format('MM-DD');
+    return moment(date).format('MMMM Do YYYY');
+  };
+
+  const formatDayOfWeek = (date) => {
+    return moment(date).format('ddd');
   };
 
   if (!planData) {
@@ -42,37 +46,55 @@ const Schedule = () => {
           className="left"
           style={{
             width: LEFT_WIDTH,
-            padding: LEFT_PADDING,
+            padding: '1vw 2vw',
             marginTop: NAVBAR_HEIGHT,
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
             overflowY: 'auto',
           }}
         >
-          <ButtonGroup
-            variant="text"
-            color="primary"
-            aria-label="contained primary button group"
-            style={{ marginBottom: '16px' }}
-          >
+          {/* full date */}
+          <Box mb={2}>
+            <Typography variant="h6"  align="left"   sx={{
+          fontFamily: '"Lexend", sans-serif'
+        }}>
+              {moment(currentDate).format('dddd, Do MMMM YYYY')}
+            </Typography>
+          </Box>
+
+          {/* date btn */}
+          <Stack direction="row" spacing={1} mb={5}>
             {Object.keys(planData).map((date) => (
               <Button
                 key={date}
                 onClick={() => handleDateChange(date)}
                 style={{
-                  backgroundColor: date === currentDate ? '#ffc147' : '#eee',
-                  color: date === currentDate ? '#000' : '#888',
-                  borderRadius: '4px',
+                  backgroundColor: date === currentDate ? 'orange' : '#f8f8f8',
+                  color: date === currentDate ? '#fff' : '#888',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  minWidth: '60px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+               
                   
-                  padding: '6px 8px',
-                  margin: '5px',
                 }}
               >
-                {formatDate(date)}
+                <Typography variant="caption" style={{ fontWeight: 'normal',   fontFamily:'Lexend', }}>
+                  {formatDayOfWeek(date)}
+                </Typography>
+                <Typography variant="body1" style={{ fontWeight: '400',   fontFamily:'Lexend', fontSize: '1.5em' }}>
+                  {moment(date).format('DD')}
+                </Typography>
               </Button>
             ))}
-          </ButtonGroup>
+          </Stack>
 
-          {events.map((item) => (
+          {/* <h2 style={{ marginLeft: 6, marginTop: 5 ,marginBottom:25}}>
+            {events.length} activit{events.length !== 1 ? 'ies' : 'y'}
+          </h2> */}
+
+          {events.map((item, index) => (
             <ScheduleCard
               key={item.id}
               id={item.id}
@@ -93,10 +115,12 @@ const Schedule = () => {
               event={item.event}
               free={item.free}
               userRatings_total={item.userRatings_total}
+              index={index + 1}
             />
           ))}
         </div>
       )}
+
       <div
         className="map"
         style={{

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, CardMedia, Stack } from '@mui/material';
-import { LocationOnRounded, PhoneEnabledRounded, PublicRounded } from '@mui/icons-material';
+import { CardMedia, Typography, Box, IconButton, Paper, Divider, Stack, Rating } from '@mui/material';
+import { LocationOnRounded, PhoneEnabledRounded, PublicRounded, ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import moment from 'moment';
 import Tag_IsFree from '../Tag_IsFree';
 import Tag_Category from '../Tag_Category';
@@ -24,6 +24,7 @@ interface ScheduleCardProps {
   event: boolean;
   free: boolean;
   userRatings_total: number;
+  index: number; // 新增一个index属性
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
@@ -44,10 +45,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   event_image,
   event,
   free,
-  userRatings_total
+  userRatings_total,
+  index 
 }) => {
-  const formattedStartTime = moment(startTime).format('LT'); 
-  const formattedEndTime = moment(endTime).format('LT');    
+  const formattedStartTime = moment(startTime).format('hh:mm A'); 
+  const formattedEndTime = moment(endTime).format('hh:mm A');    
 
   const defaultImage = `/images/spots_small/${id}_1.webp`;
   const secondImage = `/images/spots_small/${id}_2.webp`;
@@ -55,6 +57,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
   const [currentImage, setCurrentImage] = useState(imageSrc);
   const [imageStyle, setImageStyle] = useState({});
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMouseEnter = () => {
     if (event) {
@@ -86,94 +89,164 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     }
   };
 
-  return (
-    <Card variant="outlined" sx={{ 
-      borderRadius: '8px', 
-      overflow: 'hidden', 
-      boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.2)', 
-      marginBottom: 3, 
-      gap: 1 
-    }}>
-      <CardContent>
-        <Stack spacing={3}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Box>
-              <Typography variant="h5">{formattedStartTime} - {formattedEndTime}</Typography>
-           
-            </Box>
-            <Typography variant="body1">
-              <strong>Busyness:</strong> {busyness.toFixed(2)}
-            </Typography>
-          </Box>
-          <Stack direction='row' gap={1}>
-            <Box
-              sx={{ 
-                height: 200,
-                width: 200,
-                overflow: 'hidden',
-                position: 'relative',
-                borderRadius:'6px',
-                boxShadow:2
+  const toggleExpand = () => setIsExpanded(!isExpanded);
 
-              
-            
+  return (
+    <Box sx={{ marginBottom: 3, display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
+
+
+      <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
+
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            backgroundColor: '#fdddb5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          
+            zIndex: 1,
+            position: 'relative',
+          }}
+        >
+          <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#d4831f' }}>{index}</Typography>
+        
+        </Box>
+
+
+      </Box>
+
+      {/* -----------   time  ------------------- */}
+      <Stack direction='column'   gap={1}   sx={{ minWidth: '5vw', textAlign: 'right', marginRight: 2 }}>
+        <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#707070',fontSize:'1.1rem' }}>{formattedStartTime}</Typography>
+        
+        <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#aaa',fontSize:'0.9rem' }}>{formattedEndTime}</Typography>
+      </Stack>
+      <Paper variant="outlined" sx={{ 
+        borderRadius: '8px', 
+        overflow: 'hidden', 
+        padding: 2,
+        position: 'relative',
+        display: 'flex',
+        // boxShadow: '0 0px 1px rgba(0, 0, 0, 0.00)',
+        width: '100%'
+      }}>
+        <Box
+          sx={{ 
+            height: 110,
+            width: 120,
+            overflow: 'hidden',
+            position: 'relative',
+            borderRadius: '2px',
+            marginRight: 2,
+            boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)'
+          }}
+        >
+          {currentImage && (
+            <CardMedia
+              component="img"
+              image={currentImage}
+              alt={name}
+              style={{ 
+                height: '100%',
+                width: '100%', 
+                objectFit: 'cover', 
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                ...imageStyle 
               }}
-            >
-              {currentImage && (
-                <CardMedia
-                  component="img"
-                  image={currentImage}
-                  alt={name}
-                  style={{ 
-                    height: '100%',
-                    width: '100%', 
-                    objectFit: 'cover', 
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    ...imageStyle 
-                  }}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                />
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            />
+          )}
+        </Box>
+        <Box flex={2} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400 }}>{name}</Typography>
+
+          <Box display="flex" alignItems="center" marginBottom="8px" gap={1}>
+            <Tag_IsFree isFree={free} />
+            <Tag_Category category={category} />
+            {website && (
+              <a href={website} target="_blank" rel="noopener noreferrer">
+                <PublicRounded sx={{ fontSize: 'large', color: '#333' }} />
+              </a>
+            )}
+          </Box>
+
+          <Stack direction='row'>
+
+          <Typography variant="body1" color="text.secondary">
+            Area Busyness: {busyness.toFixed(0)}  
+           
+
+          </Typography> 
+          
+          <Rating
+      name="read-only"
+      value={busyness}
+      readOnly
+      icon={
+        <Box
+          sx={{
+            width: 24,
+            height: 24,
+            borderRadius: '50%',
+            backgroundColor: '#fdddb5',
+            margin:'1px'
+            // border: '2px solid #d4831f',
+          }}
+        />
+      }
+      emptyIcon={
+        <Box
+          sx={{
+            width: 24,
+            height: 24,
+            borderRadius: '50%',
+            border: '2px solid #d4831f',
+          }}
+        />
+      }
+    />
+
+</Stack>
+          {isExpanded && (
+            <Box marginTop={0}>
+           
+              {address && (
+                <Box display="flex" alignItems="center" marginTop="8px">
+                  <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
+                  <Typography variant="body2" color="text.secondary">{address}</Typography>
+                </Box>
               )}
-            </Box>
-            <Box marginLeft={2} flex={1}>
-              <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400 }}>{name}</Typography>
-              <Box display="flex" alignItems="center" marginBottom="8px">
-                <Tag_IsFree isFree={free} />
-                <Tag_Category category={category} />
-                {website && (
-                  <a href={website} target="_blank" rel="noopener noreferrer" style={{ marginLeft: '8px' }}>
-                    <PublicRounded sx={{ fontSize: 'large' }} />
-                  </a>
-                )}
-              </Box>
-              <Stack gap={1.5} marginTop={2}>
-                {address && (
-                  <Box display="flex" alignItems="center">
-                    <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-                    <Typography variant="body2" color="text.secondary">{address}</Typography>
-                  </Box>
-                )}
-                {(attraction_phone_number || international_phone_number) && (
-                  <Box display="flex" alignItems="center">
-                    <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-                    <Typography variant="body2" color="text.secondary">
-                      {attraction_phone_number || 'No local phone provided'} <br />
-                      {international_phone_number || 'No international phone provided'}
-                    </Typography>
-                  </Box>
-                )}
-              </Stack>
-              <Typography variant="body2">
+              {(attraction_phone_number || international_phone_number) && (
+                <Box display="flex" alignItems="center" marginTop="8px">
+                  <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
+                  <Typography variant="body2" color="text.secondary">
+                    local: {attraction_phone_number || 'No local phone provided'} , international: 
+                    {international_phone_number || 'No international phone provided'}
+                  </Typography>
+           
+                </Box>
+                
+              )}
+                 <Typography variant="body2" style={{marginTop: '8px'}}>
                 {description}
               </Typography>
             </Box>
-          </Stack>
-        </Stack>
-      </CardContent>
-    </Card>
+            
+          )}
+        </Box>
+        <Box position="absolute" bottom={4} right={8}>
+          <IconButton onClick={toggleExpand}>
+            {isExpanded ? <ExpandLessRounded /> : <ExpandMoreRounded />}
+          </IconButton>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 

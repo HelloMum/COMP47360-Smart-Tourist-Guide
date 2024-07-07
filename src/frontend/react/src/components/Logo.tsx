@@ -25,7 +25,7 @@ const Logo: React.FC = () => {
       }}
     >
       <PublicRounded sx={{ fontSize: '32px', marginRight: '4px' }} />
-      HelloWorld
+      TourWise
     </Link>
   );
 };
