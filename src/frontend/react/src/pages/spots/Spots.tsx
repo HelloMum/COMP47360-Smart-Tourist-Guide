@@ -46,9 +46,9 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
     if (selectedDates && selectedDates[0] && selectedDates[1]) {
       const startDate = selectedDates[0].format('YYYY-MM-DD');
       const endDate = selectedDates[1].format('YYYY-MM-DD');
-      url = `http://localhost:8080/attractions/filterWithDate?startDate=${startDate}&endDate=${endDate}&sortBy=${sortOption}`;
+      url = `/api/attractions/filterWithDate?startDate=${startDate}&endDate=${endDate}&sortBy=${sortOption}`;
     } else {
-      url = `http://localhost:8080/attractions/filter?sortBy=${sortOption}`;
+      url = `/api/attractions/filter?sortBy=${sortOption}`;
     }
 
     if (isFree) {
