@@ -1,20 +1,18 @@
 plugins {
-	id 'java'
 	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.5'
 	id 'io.freefair.lombok' version '8.6'
 	id 'com.github.ben-manes.versions' version '0.39.0'
-}
-
-springBoot {
-	mainClass = 'com.example.demo.DemoApplication'
+	id 'java'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
 
 repositories {
@@ -31,7 +29,8 @@ dependencies {
 
 	implementation 'org.locationtech.jts:jts-core:1.18.0'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
-	// XGBoost4J dependency
+
+	// XGBoost4J dependencies
 	implementation ('ml.dmlc:xgboost4j_2.13:2.0.3') {
 		exclude group: "commons-logging", module: 'commons-logging'
 	}
@@ -43,11 +42,15 @@ dependencies {
 	runtimeOnly 'org.bytedeco:openblas:0.3.21-1.5.8'
 	runtimeOnly 'org.bytedeco:openblas-platform:0.3.21-1.5.8'
 
-	// JUnit 5 dependencies
+	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
-	testImplementation 'org.mockito:mockito-core'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+	testImplementation 'org.mockito:mockito-core'
+}
+
+test {
+	useJUnitPlatform()
 }
 
 jar {
@@ -57,8 +60,4 @@ jar {
 		)
 	}
 	enabled = true
-}
-
-test {
-	useJUnitPlatform()
 }
