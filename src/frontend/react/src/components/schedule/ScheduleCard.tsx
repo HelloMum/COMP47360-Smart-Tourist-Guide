@@ -24,7 +24,7 @@ interface ScheduleCardProps {
   event: boolean;
   free: boolean;
   userRatings_total: number;
-  index: number; // 新增一个index属性
+  index: number; 
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({

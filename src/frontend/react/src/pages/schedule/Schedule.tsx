@@ -6,7 +6,7 @@ import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import ScheduleCard from '../../components/schedule/ScheduleCard';
-import { Typography, Button, Stack, Box } from '@mui/material';
+import { Typography, Button, Stack, Box, CircularProgress } from '@mui/material';
 import moment from 'moment';
 import Map_Schedule from '../../components/schedule/Map_Schedule';
 
@@ -15,10 +15,13 @@ const Schedule = () => {
   const initialDate = planData ? Object.keys(planData)[0] : null;
   const [currentDate, setCurrentDate] = useState(initialDate);
   const [events, setEvents] = useState(initialDate ? planData[initialDate] : []);
+  const [weather, setWeather] = useState(null);
+  const [loadingWeather, setLoadingWeather] = useState(false);
 
   useEffect(() => {
     if (currentDate) {
       setEvents(planData[currentDate] || []);
+      fetchWeather(currentDate);
     }
   }, [planData, currentDate]);
 
@@ -35,12 +38,24 @@ const Schedule = () => {
     return moment(date).format('ddd');
   };
 
+  const fetchWeather = async (date) => {
+    setLoadingWeather(true);
+    try {
+      const response = await fetch(`http://localhost:8080/weather/by_date/${date}`);
+      const data = await response.json();
+      setWeather(data[0]); 
+    } catch (error) {
+      console.error('Failed to fetch weather data:', error);
+    }
+    setLoadingWeather(false);
+  };
+
   if (!planData) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="schedule" style={{ display: 'flex' }}>
+    <div className="schedule" style={{ display: 'flex', flexDirection: 'column' }}>
       {isLeftPanelVisible && (
         <div
           className="left"
@@ -52,16 +67,48 @@ const Schedule = () => {
             overflowY: 'auto',
           }}
         >
-          {/* full date */}
           <Box mb={2}>
-            <Typography variant="h6"  align="left"   sx={{
-          fontFamily: '"Lexend", sans-serif'
-        }}>
-              {moment(currentDate).format('dddd, Do MMMM YYYY')}
-            </Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="h6" align="left" sx={{ fontFamily: '"Lexend", sans-serif' }}>
+                {moment(currentDate).format('dddd, Do MMMM YYYY')}
+              </Typography>
+
+              {/* Weather Info */}
+              <Box display="flex" alignItems="center" 
+
+              // sx={{boxShadow:1,borderRadius:2,padding:'5px 10px'}}
+              
+              >
+                {loadingWeather ? (
+                  <CircularProgress size={24} />
+                ) : weather ? (
+                  <Box display="flex" alignItems="center">
+                    <Typography variant="h6" style={{ fontWeight: '300', fontFamily: 'Lexend', marginRight: '0px',fontSize:'20px' }}>
+                      {weather.tempDay}°C
+                    </Typography>
+                    <img
+                      src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
+                      alt={weather.weather_description}
+                      style={{ marginRight: '0px',height:'70px' }}
+                    />
+                    <Box>
+                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend',fontSize:'12px' }}>
+                        Wind: {weather.speed.toFixed(1)} m/s
+                      </Typography>
+                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend',fontSize:'12px'  }}>
+                        Humidity: {weather.humidity}%
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" style={{ fontWeight: 'normal', fontFamily: 'Lexend' }}>
+                    No weather data
+                  </Typography>
+                )}
+              </Box>
+            </Stack>
           </Box>
 
-          {/* date btn */}
           <Stack direction="row" spacing={1} mb={5}>
             {Object.keys(planData).map((date) => (
               <Button
@@ -76,23 +123,17 @@ const Schedule = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-               
-                  
                 }}
               >
-                <Typography variant="caption" style={{ fontWeight: 'normal',   fontFamily:'Lexend', }}>
+                <Typography variant="caption" style={{ fontWeight: 'normal', fontFamily: 'Lexend' }}>
                   {formatDayOfWeek(date)}
                 </Typography>
-                <Typography variant="body1" style={{ fontWeight: '400',   fontFamily:'Lexend', fontSize: '1.5em' }}>
+                <Typography variant="body1" style={{ fontWeight: '400', fontFamily: 'Lexend', fontSize: '1.5em' }}>
                   {moment(date).format('DD')}
                 </Typography>
               </Button>
             ))}
           </Stack>
-
-          {/* <h2 style={{ marginLeft: 6, marginTop: 5 ,marginBottom:25}}>
-            {events.length} activit{events.length !== 1 ? 'ies' : 'y'}
-          </h2> */}
 
           {events.map((item, index) => (
             <ScheduleCard
