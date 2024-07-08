@@ -142,10 +142,12 @@ const Map_Schedule = ({ events }) => {
 
   const orangeMarker = {
     path: 'M 0, 0 m -12, 0 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0', 
-    fillColor: 'orange',
+    fillColor: '#ffa500',
     fillOpacity: 1,
     strokeWeight: 0,
-    scale: 1.2,
+    // strokeColor: '#d4831f',
+    // strokeOpacity: 0.4,
+    scale: 1.4,
   };
 
   return (
@@ -165,9 +167,12 @@ const Map_Schedule = ({ events }) => {
           title={event.name}
           label={{
             text: `${index + 1}`,
-            color: "white",
-            fontSize: "12px",
-            fontWeight: "bold",
+              color: "white",
+            // color: "#b66501",
+            // color:"darkorange",
+            fontSize: "18px",
+            fontWeight: "normal",
+            fontFamily: 'Lexend', 
           }}
           icon={orangeMarker}
         />
