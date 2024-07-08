@@ -30,8 +30,8 @@ const Header = () => {
         width: '100%',
         boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.15)',
         zIndex: 1000,
-        paddingRight: '7%',
-        paddingLeft: '7%',
+        paddingRight: '8%',
+        paddingLeft: '8%',
       }}
     >
 <Logo/>
