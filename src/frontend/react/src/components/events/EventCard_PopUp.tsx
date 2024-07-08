@@ -3,7 +3,6 @@ import { CardMedia, Typography, IconButton, Box, Stack } from '@mui/material';
 import { AccessTimeRounded, CloseRounded, DateRangeRounded, ExpandLessRounded, ExpandMoreRounded, LocationOnRounded, PublicRounded } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import Btn_Add from '../Btn_Add';
-import Btn_Like from '../Btn_Like';
 import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
 import { ListContext } from '../../contexts/ListContext';
@@ -22,7 +21,7 @@ const formatDateTime = (dateTime) => {
 };
 
 const EventCard_PopUp = ({ event, onClose }) => {
-  const theme = useTheme(); 
+  const theme = useTheme();
   const { date, time } = formatDateTime(event.time_start);
   const imageUrl = event.image_url || "images/events/default.jpg";
   const [isExpanded, setIsExpanded] = useState(false);
@@ -30,13 +29,15 @@ const EventCard_PopUp = ({ event, onClose }) => {
     setIsExpanded(!isExpanded);
   };
 
-  const { addToList } = useContext(ListContext);
+  const { addItemWithDateCheck, isItemInList } = useContext(ListContext);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const handleAdd = () => {
     const eventData = { id: event.id, title: event.name, image: imageUrl };
-    addToList(eventData);
-    console.log('Add:', eventData);
+    addItemWithDateCheck(eventData, () => setAlertOpen(true), 'EventCard_PopUp');
   };
+
+  const isAdded = isItemInList(event.name);
 
   return (
     <Stack direction="row" width='450px'>
@@ -113,7 +114,7 @@ const EventCard_PopUp = ({ event, onClose }) => {
         </Stack>
 
         <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1 }}>
-          <Btn_Add onClick={handleAdd} />
+          <Btn_Add onClick={handleAdd} isAdded={isAdded} />
           {isExpanded ? <ExpandLessRounded onClick={toggleExpand} /> : <ExpandMoreRounded onClick={toggleExpand} />}
         </Stack>
       </Box>

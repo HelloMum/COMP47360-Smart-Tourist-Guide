@@ -25,7 +25,7 @@ const Events = ({ selectedDates }) => {
 
   const fetchEvents = useCallback(() => {
     let url = contextSelectedDates
-      ? '/api/events/filterWithDate'
+      ? '/api/events/filter_within_date'
       : '/api/events/filter';
 
     const params = new URLSearchParams();
