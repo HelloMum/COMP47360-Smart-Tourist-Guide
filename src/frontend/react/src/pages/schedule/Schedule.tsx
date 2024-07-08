@@ -43,7 +43,7 @@ const Schedule = () => {
     try {
       const response = await fetch(`/api/weather/by_date/${date}`);
       const data = await response.json();
-      setWeather(data[0]);
+      setWeather(data[0]); 
     } catch (error) {
       console.error('Failed to fetch weather data:', error);
     }
@@ -61,37 +61,41 @@ const Schedule = () => {
           className="left"
           style={{
             width: LEFT_WIDTH,
-            padding: '0.5vw 2vw 0vw 2vw',
+            padding: '1vw 2vw',
             marginTop: NAVBAR_HEIGHT,
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-            display: 'flex',
-            flexDirection: 'column',
+            overflowY: 'auto',
           }}
         >
-          <Box mb={0}>
+          <Box mb={2}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h6" align="left" sx={{ fontFamily: '"Lexend", sans-serif' }}>
                 {moment(currentDate).format('dddd, Do MMMM YYYY')}
               </Typography>
 
-              <Box display="flex" alignItems="center" style={{ minHeight: '70px' }}>
+              {/* Weather Info */}
+              <Box display="flex" alignItems="center" 
+
+              // sx={{boxShadow:1,borderRadius:2,padding:'5px 10px'}}
+              
+              >
                 {loadingWeather ? (
                   <CircularProgress size={24} />
                 ) : weather ? (
                   <Box display="flex" alignItems="center">
-                    <Typography variant="h6" style={{ fontWeight: '300', fontFamily: 'Lexend', marginRight: '0px', fontSize: '20px' }}>
+                    <Typography variant="h6" style={{ fontWeight: '300', fontFamily: 'Lexend', marginRight: '0px',fontSize:'20px' }}>
                       {weather.tempDay}°C
                     </Typography>
                     <img
                       src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
                       alt={weather.weather_description}
-                      style={{ marginRight: '0px', height: '70px' }}
+                      style={{ marginRight: '0px',height:'70px' }}
                     />
                     <Box>
-                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend', fontSize: '12px' }}>
+                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend',fontSize:'12px' }}>
                         Wind: {weather.speed.toFixed(1)} m/s
                       </Typography>
-                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend', fontSize: '12px' }}>
+                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend',fontSize:'12px'  }}>
                         Humidity: {weather.humidity}%
                       </Typography>
                     </Box>
@@ -105,7 +109,7 @@ const Schedule = () => {
             </Stack>
           </Box>
 
-          <Stack direction="row" spacing={1} mb={3}>
+          <Stack direction="row" spacing={1} mb={5}>
             {Object.keys(planData).map((date) => (
               <Button
                 key={date}
@@ -116,64 +120,45 @@ const Schedule = () => {
                   borderRadius: '20px',
                   padding: '8px 16px',
                   minWidth: '60px',
-                  minHeight: '65px', 
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center', 
                 }}
               >
-                <Typography variant="caption" style={{ fontWeight: 'normal', fontFamily: 'Lexend', lineHeight: 1 }}>
+                <Typography variant="caption" style={{ fontWeight: 'normal', fontFamily: 'Lexend' }}>
                   {formatDayOfWeek(date)}
                 </Typography>
-                <Typography variant="body1" style={{ fontWeight: '400', fontFamily: 'Lexend', fontSize: '1.5em', lineHeight: 1 }}>
+                <Typography variant="body1" style={{ fontWeight: '400', fontFamily: 'Lexend', fontSize: '1.5em' }}>
                   {moment(date).format('DD')}
                 </Typography>
               </Button>
             ))}
           </Stack>
 
-          <div
-            className="card-container"
-            style={{
-              flexGrow: 1,
-              overflowY: 'scroll',
-              msOverflowStyle: 'none', // IE and Edge
-              scrollbarWidth: 'none', // Firefox
-            }}
-          >
-            <style>
-              {`
-                .card-container::-webkit-scrollbar {
-                  display: none; // Hide scrollbar for Chrome, Safari, and Opera
-                }
-              `}
-            </style>
-            {events.map((item, index) => (
-              <ScheduleCard
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                startTime={item.startTime}
-                endTime={item.endTime}
-                latitude={item.latitude}
-                longitude={item.longitude}
-                busyness={item.busyness}
-                category={item.category}
-                address={item.address}
-                website={item.website}
-                description={item.description}
-                rating={item.rating}
-                attraction_phone_number={item.attraction_phone_number}
-                international_phone_number={item.international_phone_number}
-                event_image={item.event_image}
-                event={item.event}
-                free={item.free}
-                userRatings_total={item.userRatings_total}
-                index={index + 1}
-              />
-            ))}
-          </div>
+          {events.map((item, index) => (
+            <ScheduleCard
+              key={item.id}
+              id={item.id}
+              name={item.name}
+              startTime={item.startTime}
+              endTime={item.endTime}
+              latitude={item.latitude}
+              longitude={item.longitude}
+              busyness={item.busyness}
+              category={item.category}
+              address={item.address}
+              website={item.website}
+              description={item.description}
+              rating={item.rating}
+              attraction_phone_number={item.attraction_phone_number}
+              international_phone_number={item.international_phone_number}
+              event_image={item.event_image}
+              event={item.event}
+              free={item.free}
+              userRatings_total={item.userRatings_total}
+              index={index + 1}
+            />
+          ))}
         </div>
       )}
 
