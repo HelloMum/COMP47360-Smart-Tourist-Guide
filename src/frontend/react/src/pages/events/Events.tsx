@@ -25,8 +25,8 @@ const Events = ({ selectedDates }) => {
 
   const fetchEvents = useCallback(() => {
     let url = contextSelectedDates
-      ? 'http://localhost:8080/events/filter_within_date'
-      : 'http://localhost:8080/events/filter';
+      ? '/api/events/filter_within_date'
+      : '/api/events/filter';
 
     const params = new URLSearchParams();
 
@@ -54,7 +54,7 @@ const Events = ({ selectedDates }) => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched events data:', data);
+        console.log('Fetched data:', data);
         setEvents(Array.isArray(data) ? data : []);
       })
       .catch(error => {
