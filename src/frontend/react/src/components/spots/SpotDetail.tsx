@@ -8,7 +8,7 @@ import { ListContext } from '../../contexts/ListContext';
 import AlertModal from '../AlertModal';
 
 const SpotDetail = ({ spot, onCollapse }) => {
-  const { listItems, addItemWithDateCheck, isItemInList } = useContext(ListContext); // Get necessary methods from ListContext
+  const { addItemWithDateCheck, isItemInList } = useContext(ListContext);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -25,14 +25,14 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
   const handleAdd = () => {
     const spotData = {
-      id: spot.id,
+      id: spot.index, 
       title: spot.attraction_name,
-      image: `/images/spots_small/${spot.index}_2.webp`,
+      image: `/images/spots_small/${spot.index}_1.webp`,
     };
-    addItemWithDateCheck(spotData, () => setAlertOpen(true));
+    addItemWithDateCheck(spotData, () => setAlertOpen(true), 'SpotDetail');
   };
 
-  const isAdded = isItemInList(spot.id);
+  const isAdded = isItemInList(spot.attraction_name);
 
   return (
     <Card sx={{
@@ -229,7 +229,6 @@ const SpotDetail = ({ spot, onCollapse }) => {
             alt="Selected image"
             sx={{
               maxHeight: '70vh',
-              // height: '60%',
               objectFit: 'cover',
             }}
           />

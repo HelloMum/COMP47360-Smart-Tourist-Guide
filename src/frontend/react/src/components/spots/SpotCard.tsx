@@ -45,14 +45,21 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
 
   const handleAdd = () => {
     const spotData = { id, title, image: image1 };
-    addItemWithDateCheck(spotData, () => setAlertOpen(true));
+    addItemWithDateCheck(spotData, () => setAlertOpen(true), 'SpotCard');
   };
 
-  const isAdded = isItemInList(id);
+  const isAdded = isItemInList(title);
 
   return (
     <>
-      <Card sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 2px rgba(0, 0, 0, 0.15)', width: "17.5vw", marginBottom: 2, gap: 1 }}>
+      <Card sx={{ 
+        borderRadius: '8px', 
+        overflow: 'hidden', 
+        boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.2)', 
+        width: "17.5vw", 
+        marginBottom: 2, 
+        gap: 1 }}>
+
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           <CardMedia
             component="img"
@@ -63,7 +70,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />
-          <Btn_Like />
+          {/* <Btn_Like /> */}
         </Box>
         <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }}>
           <Typography

@@ -5,7 +5,6 @@ import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
 import { NAVBAR_HEIGHT } from '../../constants';
 import Btn_Close_List from './Btn_Close_List';
-import moment from 'moment';
 import { ClearRounded } from '@mui/icons-material';
 import AlertModal from '../AlertModal';
 
@@ -137,38 +136,34 @@ const List: React.FC<ListProps> = ({ onClose }) => {
           >
             <Typography variant="h6">{listItems.length} items</Typography>
 
-
-
-{  listItems.length >0   &&      (<Button
-              variant="outlined"
-              startIcon={<ClearRounded sx={{ fontSize: '16px', marginRight: '-6px' }} />} 
-              sx={{
-                borderRadius: '4px',
-                paddingX: '4px',
-                paddingY: '1px',
-                fontSize: '10px',
-                boxShadow: 0,
-                borderColor: 'orange',
-                color: 'orange',
-                borderWidth: '1px',
-                '&:hover': {
+            {listItems.length > 0 && (
+              <Button
+                variant="outlined"
+                startIcon={<ClearRounded sx={{ fontSize: '16px', marginRight: '-6px' }} />}
+                sx={{
+                  borderRadius: '4px',
+                  paddingX: '4px',
+                  paddingY: '1px',
+                  fontSize: '10px',
+                  boxShadow: 0,
                   borderColor: 'orange',
-                  backgroundColor: 'rgba(250, 161, 54, 0.3)',
-                },
-                '&:active': {
-                  borderColor: 'orange',
-                  backgroundColor: 'rgba(250, 161, 54, 0.12)',
                   color: 'orange',
-                },
-              }}
-              onClick={clearList}
-            >
-              Clear All
-            </Button>  )}
-
-
-
-
+                  borderWidth: '1px',
+                  '&:hover': {
+                    borderColor: 'orange',
+                    backgroundColor: 'rgba(250, 161, 54, 0.3)',
+                  },
+                  '&:active': {
+                    borderColor: 'orange',
+                    backgroundColor: 'rgba(250, 161, 54, 0.12)',
+                    color: 'orange',
+                  },
+                }}
+                onClick={clearList}
+              >
+                Clear All
+              </Button>
+            )}
           </Box>
         </Box>
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
-import HeaderHome from './components/HeaderHome';
+import HeaderHome from './components/Header_Home';
 import HomePage from './pages/home/Home';
 import Spots from './pages/spots/Spots';
 import Events from './pages/events/Events';
