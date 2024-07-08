@@ -41,7 +41,7 @@ const Schedule = () => {
   const fetchWeather = async (date) => {
     setLoadingWeather(true);
     try {
-      const response = await fetch(`http://localhost:8080/weather/by_date/${date}`);
+      const response = await fetch(`/api/weather/by_date/${date}`);
       const data = await response.json();
       setWeather(data[0]); 
     } catch (error) {
