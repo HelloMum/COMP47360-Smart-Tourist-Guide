@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, Box, CardMedia, Typography, Stack, IconButton } from '@mui/material';
 import { AccessTimeRounded, DateRangeRounded, ExpandLessRounded, ExpandMoreRounded, LocationOnRounded, PublicRounded } from '@mui/icons-material';
 import Btn_Add from '../Btn_Add';
@@ -23,7 +23,6 @@ interface EventCardProps {
   event: Event;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-  onAdd: (eventData: { id: string | number, title: string, image: string }) => void;
 }
 
 const formatDateTime = (dateTime: string) => {
@@ -33,7 +32,7 @@ const formatDateTime = (dateTime: string) => {
   return { date: formattedDate, time: formattedTime };
 };
 
-const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave, onAdd }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { date, time } = formatDateTime(event.time_start);
   const imageUrl = event.image_url || "images/events/default.jpg";
@@ -42,12 +41,12 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
 
   const handleAdd = () => {
     const eventData = { id: event.id, title: event.name, image: imageUrl };
-    addItemWithDateCheck(eventData, () => setAlertOpen(true));
+    addItemWithDateCheck(eventData, () => setAlertOpen(true), 'EventCard');
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
-  const isAdded = isItemInList(event.id);
+  const isAdded = isItemInList(event.name);
 
   return (
     <>
@@ -65,7 +64,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
           height: isExpanded ? 'auto' : '170px',
           transition: 'box-shadow 0.3s',
           '&:hover': {
-            boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)' 
+            boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)'
           }
         }}
         onMouseEnter={onMouseEnter}
