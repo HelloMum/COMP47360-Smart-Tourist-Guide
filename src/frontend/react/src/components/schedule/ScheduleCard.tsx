@@ -99,8 +99,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
         <Box
           sx={{
-            width: 40,
-            height: 40,
+            width: 35,
+            height: 35,
             borderRadius: '50%',
             backgroundColor: '#fdddb5',
             display: 'flex',
@@ -119,8 +119,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       </Box>
 
       {/* -----------   time  ------------------- */}
-      <Stack direction='column'   gap={1}   sx={{ minWidth: '5vw', textAlign: 'right', marginRight: 2 }}>
-        <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#707070',fontSize:'1.1rem' }}>{formattedStartTime}</Typography>
+      <Stack direction='column'   gap={1}   sx={{ minWidth: '5vw', textAlign: 'right', marginX: 1 }}>
+        <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#707070',fontSize:'1.05rem' }}>{formattedStartTime}</Typography>
         
         <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#aaa',fontSize:'0.9rem' }}>{formattedEndTime}</Typography>
       </Stack>
@@ -240,7 +240,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             
           )}
         </Box>
-        <Box position="absolute" bottom={4} right={8}>
+        <Box position="absolute" bottom={0} right={3}>
           <IconButton onClick={toggleExpand}>
             {isExpanded ? <ExpandLessRounded /> : <ExpandMoreRounded />}
           </IconButton>
