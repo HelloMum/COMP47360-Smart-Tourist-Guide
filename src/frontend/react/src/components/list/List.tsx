@@ -53,7 +53,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       // Log the data to be sent
       console.log('Data to be sent to backend:', selection, startDate, endDate);
 
-      const response = await fetch(`http://localhost:8080/itinerary/create?startDate=${startDate}&endDate=${endDate}`, {
+      const response = await fetch(`/api/itinerary/create?startDate=${startDate}&endDate=${endDate}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
