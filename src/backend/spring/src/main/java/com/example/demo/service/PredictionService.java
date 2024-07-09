@@ -5,6 +5,7 @@ import com.example.demo.model.DailyForecastData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.annotation.PostConstruct;
 import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
@@ -16,7 +17,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
@@ -38,6 +41,33 @@ public class PredictionService {
     private DailyWeatherDataService dailyWeatherDataService;
 
 
+    private final Map<String, Double> meanMap = new HashMap<>();
+    private final Map<String, Double> stdMap = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        loadMeanStdData();
+    }
+
+    private void loadMeanStdData() {
+        try {
+            ClassPathResource resource = new ClassPathResource("mean_std_data.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            String line;
+            reader.readLine(); // skip header
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    String key = parts[0] + "_" + parts[1] + "_" + parts[2];
+                    meanMap.put(key, Double.parseDouble(parts[3]));
+                    stdMap.put(key, Double.parseDouble(parts[4]));
+                }
+            }
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private static final Map<LocalDate, String> usHolidays = new HashMap<>();
 
@@ -152,9 +182,18 @@ public class PredictionService {
         return expected_features.indexOf(featureName);
     }
 
-    public double[] createFeatures(Attraction attraction, DailyForecastData dailyForecastData, LocalDateTime dateTime) {
-        double[] features = new double[expected_features.size()];
+    public float predictByAttractionId(int attractionId, LocalDateTime dateTime) throws XGBoostError {
+        Attraction attraction = attractionService.getAttractionByIndex(attractionId);
+        LocalDate date = dateTime.toLocalDate();
 
+        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
+        if (dailyForecastDataList.isEmpty()) {
+            throw new IllegalArgumentException("Weather data not found for the given date.");
+        }
+        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
+
+        // Create features
+        double[] features = new double[expected_features.size()];
         Arrays.fill(features, 0.0);
 
         features[getFeatureIndex("taxi_zone")] = attraction.getTaxi_zone();
@@ -164,6 +203,7 @@ public class PredictionService {
         features[getFeatureIndex("wind_speed_10m (km/h)")] = dailyForecastData.getSpeed();
 
         features[getFeatureIndex("day")] = dateTime.getDayOfMonth();
+
         for (String day : new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}) {
             features[getFeatureIndex("week_" + day)] = (dateTime.getDayOfWeek().toString().equalsIgnoreCase(day)) ? 1 : 0;
         }
@@ -176,8 +216,6 @@ public class PredictionService {
             features[getFeatureIndex("hour_" + i)] = (dateTime.getHour() == i) ? 1 : 0;
         }
 
-        LocalDate date = dateTime.toLocalDate();
-
         String holiday = usHolidays.getOrDefault(date, "No");
 
         for (String holidayFeature : new String[]{
@@ -186,8 +224,7 @@ public class PredictionService {
                 "holiday_Juneteenth National Independence Day (observed)", "holiday_Labor Day",
                 "holiday_Martin Luther King Jr. Day", "holiday_Memorial Day", "holiday_New Year's Day",
                 "holiday_New Year's Day (observed)", "holiday_No", "holiday_Thanksgiving",
-                "holiday_Veterans Day", "holiday_Veterans Day (observed)", "holiday_Washington's Birthday"
-        }) {
+                "holiday_Veterans Day", "holiday_Veterans Day (observed)", "holiday_Washington's Birthday"}) {
             features[getFeatureIndex(holidayFeature)] = 0;
         }
 
@@ -197,7 +234,6 @@ public class PredictionService {
             features[getFeatureIndex("holiday_No")] = 1;
         }
 
-        // 0 = Monday, ..., 6 = Sunday
         int dayOfWeekIndex = dateTime.getDayOfWeek().getValue() - 1;
         features[getFeatureIndex("day_of_week_" + dayOfWeekIndex)] = 1;
         features[getFeatureIndex("is_weekend_1")] = (dateTime.getDayOfWeek().getValue() == 6 || dateTime.getDayOfWeek().getValue() == 7) ? 1 : 0;
@@ -209,80 +245,13 @@ public class PredictionService {
         int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
         features[getFeatureIndex("quarter_" + quarter)] = 1;
 
-        return features;
-    }
-
-
-    public double[] createFeaturesByTaxiZone(int taxiZone, DailyForecastData dailyForecastData, LocalDateTime dateTime) {
-        double[] features = new double[expected_features.size()];
-
-        Arrays.fill(features, 0.0);
-
-        features[getFeatureIndex("taxi_zone")] = taxiZone;
-        features[getFeatureIndex("temperature_2m (°C)")] = dailyForecastData.getTempDay();
-        features[getFeatureIndex("rain (mm)")] = dailyForecastData.getRain();
-        features[getFeatureIndex("snowfall (cm)")] = dailyForecastData.getSnow();
-        features[getFeatureIndex("wind_speed_10m (km/h)")] = dailyForecastData.getSpeed();
-
-        features[getFeatureIndex("day")] = dateTime.getDayOfMonth();
-        for (String day : new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}) {
-            features[getFeatureIndex("week_" + day)] = (dateTime.getDayOfWeek().toString().equalsIgnoreCase(day)) ? 1 : 0;
+        // Print all feature values
+        System.out.println("Feature values:");
+        for (int i = 0; i < features.length; i++) {
+            System.out.println(expected_features.get(i) + ": " + features[i]);
         }
 
-        for (int i = 1; i <= 12; i++) {
-            features[getFeatureIndex("month_" + i)] = (dateTime.getMonthValue() == i) ? 1 : 0;
-        }
-
-        for (int i = 0; i < 24; i++) {
-            features[getFeatureIndex("hour_" + i)] = (dateTime.getHour() == i) ? 1 : 0;
-        }
-
-        LocalDate date = dateTime.toLocalDate();
-
-        String holiday = usHolidays.getOrDefault(date, "No");
-
-        for (String holidayFeature : new String[]{
-                "holiday_Christmas Day", "holiday_Christmas Day (observed)", "holiday_Columbus Day",
-                "holiday_Independence Day", "holiday_Juneteenth National Independence Day",
-                "holiday_Juneteenth National Independence Day (observed)", "holiday_Labor Day",
-                "holiday_Martin Luther King Jr. Day", "holiday_Memorial Day", "holiday_New Year's Day",
-                "holiday_New Year's Day (observed)", "holiday_No", "holiday_Thanksgiving",
-                "holiday_Veterans Day", "holiday_Veterans Day (observed)", "holiday_Washington's Birthday"
-        }) {
-            features[getFeatureIndex(holidayFeature)] = 0;
-        }
-
-        if (!holiday.equals("No")) {
-            features[getFeatureIndex("holiday_" + holiday)] = 1;
-        } else {
-            features[getFeatureIndex("holiday_No")] = 1;
-        }
-
-        // 0 = Monday, ..., 6 = Sunday
-        int dayOfWeekIndex = dateTime.getDayOfWeek().getValue() - 1;
-        features[getFeatureIndex("day_of_week_" + dayOfWeekIndex)] = 1;
-        features[getFeatureIndex("is_weekend_1")] = (dateTime.getDayOfWeek().getValue() == 6 || dateTime.getDayOfWeek().getValue() == 7) ? 1 : 0;
-        features[getFeatureIndex("is_weekend_0")] = (dateTime.getDayOfWeek().getValue() >= 1 && dateTime.getDayOfWeek().getValue() <= 5) ? 1 : 0;
-
-        for (String quarterFeature : new String[]{"quarter_1", "quarter_2", "quarter_3", "quarter_4"}) {
-            features[getFeatureIndex(quarterFeature)] = 0;
-        }
-        int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
-        features[getFeatureIndex("quarter_" + quarter)] = 1;
-
-        return features;
-    }
-
-    public float predictByAttractionId(int attractionId, LocalDateTime dateTime) throws XGBoostError {
-        Attraction attraction = attractionService.getAttractionByIndex(attractionId);
-        LocalDate date = dateTime.toLocalDate();
-        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
-        if (dailyForecastDataList.isEmpty()) {
-            throw new IllegalArgumentException("Weather data not found for the given date.");
-        }
-        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
-        double[] features = createFeatures(attraction, dailyForecastData, dateTime);
-
+        // Predict passenger count
         float[] floatFeatures = new float[features.length];
         for (int i = 0; i < features.length; i++) {
             floatFeatures[i] = (float) features[i];
@@ -297,7 +266,34 @@ public class PredictionService {
 
         try {
             float[][] predictions = booster.predict(dmatrix);
-            return (float) Math.expm1(predictions[0][0]);
+            float passengerCount = (float) Math.expm1(predictions[0][0]);
+
+            // Calculate busyness index
+            String key = attraction.getTaxi_zone() + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
+            Double mean = meanMap.get(key);
+            Double std = stdMap.get(key);
+            System.out.println("mean: " + mean);
+            System.out.println("std: " + std);
+
+            if (mean == null || std == null) {
+                throw new IllegalArgumentException("Mean or standard deviation not found for key: " + key);
+            }
+
+            double zScore = (passengerCount - mean) / std;
+            int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);
+            System.out.println("busynessIndex100: " + busynessIndex100);
+
+            if (busynessIndex100 <= 20) {
+                return 1;
+            } else if (busynessIndex100 <= 40) {
+                return 2;
+            } else if (busynessIndex100 <= 60) {
+                return 3;
+            } else if (busynessIndex100 <= 80) {
+                return 4;
+            } else {
+                return 5;
+            }
         } catch (XGBoostError e) {
             throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
         }
@@ -310,8 +306,66 @@ public class PredictionService {
             throw new IllegalArgumentException("Weather data not found for the given date.");
         }
         DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
-        double[] features = createFeaturesByTaxiZone(taxiZone, dailyForecastData, dateTime);
 
+        // Create features
+        double[] features = new double[expected_features.size()];
+        Arrays.fill(features, 0.0);
+
+        features[getFeatureIndex("taxi_zone")] = taxiZone;
+        features[getFeatureIndex("temperature_2m (°C)")] = dailyForecastData.getTempDay();
+        features[getFeatureIndex("rain (mm)")] = dailyForecastData.getRain();
+        features[getFeatureIndex("snowfall (cm)")] = dailyForecastData.getSnow();
+        features[getFeatureIndex("wind_speed_10m (km/h)")] = dailyForecastData.getSpeed();
+        features[getFeatureIndex("day")] = dateTime.getDayOfMonth();
+
+        for (String day : new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}) {
+            features[getFeatureIndex("week_" + day)] = (dateTime.getDayOfWeek().toString().equalsIgnoreCase(day)) ? 1 : 0;
+        }
+
+        for (int i = 1; i <= 12; i++) {
+            features[getFeatureIndex("month_" + i)] = (dateTime.getMonthValue() == i) ? 1 : 0;
+        }
+
+        for (int i = 0; i < 24; i++) {
+            features[getFeatureIndex("hour_" + i)] = (dateTime.getHour() == i) ? 1 : 0;
+        }
+
+        String holiday = usHolidays.getOrDefault(date, "No");
+
+        for (String holidayFeature : new String[]{
+                "holiday_Christmas Day", "holiday_Christmas Day (observed)", "holiday_Columbus Day",
+                "holiday_Independence Day", "holiday_Juneteenth National Independence Day",
+                "holiday_Juneteenth National Independence Day (observed)", "holiday_Labor Day",
+                "holiday_Martin Luther King Jr. Day", "holiday_Memorial Day", "holiday_New Year's Day",
+                "holiday_New Year's Day (observed)", "holiday_No", "holiday_Thanksgiving",
+                "holiday_Veterans Day", "holiday_Veterans Day (observed)", "holiday_Washington's Birthday"}) {
+            features[getFeatureIndex(holidayFeature)] = 0;
+        }
+
+        if (!holiday.equals("No")) {
+            features[getFeatureIndex("holiday_" + holiday)] = 1;
+        } else {
+            features[getFeatureIndex("holiday_No")] = 1;
+        }
+
+        int dayOfWeekIndex = dateTime.getDayOfWeek().getValue() - 1;
+        features[getFeatureIndex("day_of_week_" + dayOfWeekIndex)] = 1;
+        features[getFeatureIndex("is_weekend_1")] = (dateTime.getDayOfWeek().getValue() == 6 || dateTime.getDayOfWeek().getValue() == 7) ? 1 : 0;
+        features[getFeatureIndex("is_weekend_0")] = (dateTime.getDayOfWeek().getValue() >= 1 && dateTime.getDayOfWeek().getValue() <= 5) ? 1 : 0;
+
+        for (String quarterFeature : new String[]{"quarter_1", "quarter_2", "quarter_3", "quarter_4"}) {
+            features[getFeatureIndex(quarterFeature)] = 0;
+        }
+        int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
+        features[getFeatureIndex("quarter_" + quarter)] = 1;
+
+        // Print all feature values
+        System.out.println("Feature values:");
+        for (int i = 0; i < features.length; i++) {
+            System.out.println(expected_features.get(i) + ": " + features[i]);
+        }
+
+        // Predict passenger count
         float[] floatFeatures = new float[features.length];
         for (int i = 0; i < features.length; i++) {
             floatFeatures[i] = (float) features[i];
@@ -326,7 +380,34 @@ public class PredictionService {
 
         try {
             float[][] predictions = booster.predict(dmatrix);
-            return (float) Math.expm1(predictions[0][0]);
+            float passengerCount = (float) Math.expm1(predictions[0][0]);
+
+            // Calculate busyness index
+            String key = taxiZone + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
+            Double mean = meanMap.get(key);
+            Double std = stdMap.get(key);
+            System.out.println("mean: " + mean);
+            System.out.println("std: " + std);
+
+            if (mean == null || std == null) {
+                throw new IllegalArgumentException("Mean or standard deviation not found for key: " + key);
+            }
+
+            double zScore = (passengerCount - mean) / std;
+            int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);  // 将 z-score 转换到 1-100 范围
+            System.out.println("busynessIndex100: " + busynessIndex100);
+
+            if (busynessIndex100 <= 20) {
+                return 1;
+            } else if (busynessIndex100 <= 40) {
+                return 2;
+            } else if (busynessIndex100 <= 60) {
+                return 3;
+            } else if (busynessIndex100 <= 80) {
+                return 4;
+            } else {
+                return 5;
+            }
         } catch (XGBoostError e) {
             throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
         }

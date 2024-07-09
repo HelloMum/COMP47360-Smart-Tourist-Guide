@@ -27,12 +27,6 @@ public class PredictionController {
     @Autowired
     private PredictionService predictionService;
 
-    @Autowired
-    private AttractionService attractionService;
-
-    @Autowired
-    private DailyWeatherDataService dailyWeatherDataService;
-
     private static final Map<LocalDate, String> usHolidays = new HashMap<>();
 
     static {
@@ -84,15 +78,6 @@ public class PredictionController {
 
             // Loop through each day in the date range
             for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
-                // Get weather data for the day
-                List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
-
-                if (dailyForecastDataList.isEmpty()) {
-                    continue;
-                }
-
-                DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
-
                 // Loop through each hour of the day
                 for (int hour = 0; hour < 24; hour++) {
                     LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.of(hour, 0));
@@ -103,12 +88,14 @@ public class PredictionController {
                     for (int taxiZone : taxiZones) {
                         try {
                             System.out.println("Predicting for dateTime: " + dateTimeKey + " taxiZone: " + taxiZone);
-                            System.out.println("Weather data: " + dailyForecastData);
 
                             float prediction = predictionService.predictByTaxiZone(taxiZone, dateTime);
                             System.out.println("Prediction for taxiZone " + taxiZone + ": " + prediction);
 
                             hourlyPredictions.put(taxiZone, prediction);
+                        } catch (IllegalArgumentException e) {
+                            System.err.println("Mean or standard deviation not found for key: " + taxiZone + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour());
+                            hourlyPredictions.put(taxiZone, -1.0f);
                         } catch (XGBoostError e) {
                             e.printStackTrace();
                             hourlyPredictions.put(taxiZone, -1.0f);
