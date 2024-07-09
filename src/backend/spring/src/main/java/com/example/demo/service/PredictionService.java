@@ -394,7 +394,7 @@ public class PredictionService {
             }
 
             double zScore = (passengerCount - mean) / std;
-            int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);  // 将 z-score 转换到 1-100 范围
+            int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);
             System.out.println("busynessIndex100: " + busynessIndex100);
 
             if (busynessIndex100 <= 20) {
