@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { CardMedia, Typography, Box, IconButton, Paper, Divider, Stack, Rating } from '@mui/material';
+import { CardMedia, Typography, Box, IconButton, Paper, Stack } from '@mui/material';
 import { LocationOnRounded, PhoneEnabledRounded, PublicRounded, ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import moment from 'moment';
 import Tag_IsFree from '../Tag_IsFree';
 import Tag_Category from '../Tag_Category';
+import BusynessProgressBar from './BusynessProgressBar';
 
 interface ScheduleCardProps {
   id: string | number;
@@ -24,7 +25,8 @@ interface ScheduleCardProps {
   event: boolean;
   free: boolean;
   userRatings_total: number;
-  index: number; 
+  index: number;
+  onStartTimeClick: (startTime: string) => void; // 新增回调函数
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
@@ -46,10 +48,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   event,
   free,
   userRatings_total,
-  index 
+  index,
+  onStartTimeClick // 新增回调函数
 }) => {
-  const formattedStartTime = moment(startTime).format('hh:mm A'); 
-  const formattedEndTime = moment(endTime).format('hh:mm A');    
+  const formattedStartTime = moment(startTime).format('hh:mm A');
+  const formattedEndTime = moment(endTime).format('hh:mm A');
 
   const defaultImage = `/images/spots_small/${id}_1.webp`;
   const secondImage = `/images/spots_small/${id}_2.webp`;
@@ -93,10 +96,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
   return (
     <Box sx={{ marginBottom: 3, display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
-
-
       <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
-
         <Box
           sx={{
             width: 35,
@@ -106,36 +106,36 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-          
             zIndex: 1,
             position: 'relative',
           }}
         >
-          <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#d4831f' }}>{index}</Typography>
-        
+          <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#d4831f' }}>{index}</Typography>
         </Box>
-
-
       </Box>
 
-      {/* -----------   time  ------------------- */}
-      <Stack direction='column'   gap={1}   sx={{ minWidth: '5vw', textAlign: 'right', marginX: 1 }}>
-        <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#707070',fontSize:'1.05rem' }}>{formattedStartTime}</Typography>
-        
-        <Typography variant="h6" style={{ fontWeight: 'normal',   fontFamily:'Lexend',color:'#aaa',fontSize:'0.9rem' }}>{formattedEndTime}</Typography>
+      <Stack direction='column' gap={1} sx={{ minWidth: '5vw', textAlign: 'right', marginX: 1 }}>
+        <Typography
+          variant="h6"
+          style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1.05rem',cursor: 'pointer' }}
+          onClick={() => onStartTimeClick(startTime)} // 添加点击事件
+        >
+          {formattedStartTime}
+        </Typography>
+        <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}>{formattedEndTime}</Typography>
       </Stack>
-      <Paper variant="outlined" sx={{ 
-        borderRadius: '8px', 
-        overflow: 'hidden', 
+
+      <Paper variant="outlined" sx={{
+        borderRadius: '8px',
+        overflow: 'hidden',
         padding: 2,
         position: 'relative',
         display: 'flex',
-        // boxShadow: '0 0px 1px rgba(0, 0, 0, 0.00)',
         width: '100%'
       }}>
         <Box
-          sx={{ 
-            height: 110,
+          sx={{
+            height: 100,
             width: 120,
             overflow: 'hidden',
             position: 'relative',
@@ -149,14 +149,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
               component="img"
               image={currentImage}
               alt={name}
-              style={{ 
+              style={{
                 height: '100%',
-                width: '100%', 
-                objectFit: 'cover', 
+                width: '100%',
+                objectFit: 'cover',
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                ...imageStyle 
+                ...imageStyle
               }}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -164,7 +164,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           )}
         </Box>
         <Box flex={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400 }}>{name}</Typography>
+          <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400, marginBottom: '8px' }}>{name}</Typography>
 
           <Box display="flex" alignItems="center" marginBottom="8px" gap={1}>
             <Tag_IsFree isFree={free} />
@@ -176,46 +176,17 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             )}
           </Box>
 
-          <Stack direction='row'>
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography variant="body2" color="text.secondary">
+              area busyness
+            </Typography>
+            <Box flexGrow={1}>
+              <BusynessProgressBar busyness={busyness} />
+            </Box>
+          </Box>
 
-          <Typography variant="body1" color="text.secondary">
-            Area Busyness: {busyness.toFixed(0)}  
-           
-
-          </Typography> 
-          
-          <Rating
-      name="read-only"
-      value={busyness}
-      readOnly
-      icon={
-        <Box
-          sx={{
-            width: 24,
-            height: 24,
-            borderRadius: '50%',
-            backgroundColor: '#fdddb5',
-            margin:'1px'
-            // border: '2px solid #d4831f',
-          }}
-        />
-      }
-      emptyIcon={
-        <Box
-          sx={{
-            width: 24,
-            height: 24,
-            borderRadius: '50%',
-            border: '2px solid #d4831f',
-          }}
-        />
-      }
-    />
-
-</Stack>
           {isExpanded && (
             <Box marginTop={0}>
-           
               {address && (
                 <Box display="flex" alignItems="center" marginTop="8px">
                   <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
@@ -226,18 +197,15 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
                 <Box display="flex" alignItems="center" marginTop="8px">
                   <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
                   <Typography variant="body2" color="text.secondary">
-                    local: {attraction_phone_number || 'No local phone provided'} , international: 
+                    local: {attraction_phone_number || 'No local phone provided'}, international:
                     {international_phone_number || 'No international phone provided'}
                   </Typography>
-           
                 </Box>
-                
               )}
-                 <Typography variant="body2" style={{marginTop: '8px'}}>
+              <Typography variant="body2" style={{ marginTop: '8px' }}>
                 {description}
               </Typography>
             </Box>
-            
           )}
         </Box>
         <Box position="absolute" bottom={0} right={3}>

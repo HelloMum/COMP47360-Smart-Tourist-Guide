@@ -17,6 +17,7 @@ const Schedule = () => {
   const [events, setEvents] = useState(initialDate ? planData[initialDate] : []);
   const [weather, setWeather] = useState(null);
   const [loadingWeather, setLoadingWeather] = useState(false);
+  const [busynessData, setBusynessData] = useState(null);
 
   useEffect(() => {
     if (currentDate) {
@@ -48,6 +49,33 @@ const Schedule = () => {
       console.error('Failed to fetch weather data:', error);
     }
     setLoadingWeather(false);
+  };
+
+  const fetchBusynessData = async (startTime) => {
+    try {
+      const formattedDate = moment(startTime).format('YYYY-MM-DD');
+      const response = await fetch(`http://localhost:8080/busyness/predict_by_date_range?startDate=${formattedDate}&endDate=${formattedDate}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startDate: formattedDate,
+          endDate: formattedDate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('busyness data', data);
+
+      setBusynessData(data[formattedDate]);
+    } catch (error) {
+      console.error('Failed to fetch busyness data:', error);
+    }
   };
 
   if (!planData) {
@@ -116,11 +144,11 @@ const Schedule = () => {
                   borderRadius: '20px',
                   padding: '8px 16px',
                   minWidth: '60px',
-                  minHeight: '65px', 
+                  minHeight: '65px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center', 
+                  justifyContent: 'center',
                 }}
               >
                 <Typography variant="caption" style={{ fontWeight: 'normal', fontFamily: 'Lexend', lineHeight: 1 }}>
@@ -171,6 +199,7 @@ const Schedule = () => {
                 free={item.free}
                 userRatings_total={item.userRatings_total}
                 index={index + 1}
+                onStartTimeClick={fetchBusynessData} // Pass the callback function
               />
             ))}
           </div>
@@ -187,7 +216,7 @@ const Schedule = () => {
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
-        <Map_Schedule events={events} />
+        <Map_Schedule events={events} busynessData={busynessData} />
       </div>
 
       <Btn_List onClick={toggleList} />
