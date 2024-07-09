@@ -37,6 +37,8 @@ public class PredictionService {
     @Autowired
     private DailyWeatherDataService dailyWeatherDataService;
 
+
+
     private static final Map<LocalDate, String> usHolidays = new HashMap<>();
 
     static {
@@ -51,18 +53,6 @@ public class PredictionService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public float[] predictByTaxiZone(int taxiZone, LocalDateTime dateTime) throws XGBoostError {
-        LocalDate date = dateTime.toLocalDate();
-        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
-        if (dailyForecastDataList.isEmpty()) {
-            throw new IllegalArgumentException("Weather data not found for the given date.");
-        }
-        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
-
-        double[] features = createFeaturesByTaxiZone(taxiZone, dailyForecastData, dateTime);
-        return predict(features);
     }
 
     private final List<String> expected_features = Arrays.asList(
@@ -162,27 +152,6 @@ public class PredictionService {
         return expected_features.indexOf(featureName);
     }
 
-    public float[] predict(double[] features) throws XGBoostError {
-        float[] floatFeatures = new float[features.length];
-        for (int i = 0; i < features.length; i++) {
-            floatFeatures[i] = (float) features[i];
-        }
-
-        DMatrix dmatrix;
-        try {
-            dmatrix = new DMatrix(floatFeatures, 1, features.length, Float.NaN);
-        } catch (XGBoostError e) {
-            throw new RuntimeException("Failed to create DMatrix for prediction.", e);
-        }
-
-        try {
-            float[][] predictions = booster.predict(dmatrix);
-            return predictions[0];
-        } catch (XGBoostError e) {
-            throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
-        }
-    }
-
     public double[] createFeatures(Attraction attraction, DailyForecastData dailyForecastData, LocalDateTime dateTime) {
         double[] features = new double[expected_features.size()];
 
@@ -243,17 +212,6 @@ public class PredictionService {
         return features;
     }
 
-    public float[] predictByAttractionId(int attractionId, LocalDateTime dateTime) throws XGBoostError {
-        Attraction attraction = attractionService.getAttractionByIndex(attractionId);
-        LocalDate date = dateTime.toLocalDate();
-        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
-        if (dailyForecastDataList.isEmpty()) {
-            throw new IllegalArgumentException("Weather data not found for the given date.");
-        }
-        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
-        double[] features = createFeatures(attraction, dailyForecastData, dateTime);
-        return predict(features);
-    }
 
     public double[] createFeaturesByTaxiZone(int taxiZone, DailyForecastData dailyForecastData, LocalDateTime dateTime) {
         double[] features = new double[expected_features.size()];
@@ -314,4 +272,64 @@ public class PredictionService {
 
         return features;
     }
+
+    public float predictByAttractionId(int attractionId, LocalDateTime dateTime) throws XGBoostError {
+        Attraction attraction = attractionService.getAttractionByIndex(attractionId);
+        LocalDate date = dateTime.toLocalDate();
+        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
+        if (dailyForecastDataList.isEmpty()) {
+            throw new IllegalArgumentException("Weather data not found for the given date.");
+        }
+        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
+        double[] features = createFeatures(attraction, dailyForecastData, dateTime);
+
+        float[] floatFeatures = new float[features.length];
+        for (int i = 0; i < features.length; i++) {
+            floatFeatures[i] = (float) features[i];
+        }
+
+        DMatrix dmatrix;
+        try {
+            dmatrix = new DMatrix(floatFeatures, 1, features.length, Float.NaN);
+        } catch (XGBoostError e) {
+            throw new RuntimeException("Failed to create DMatrix for prediction.", e);
+        }
+
+        try {
+            float[][] predictions = booster.predict(dmatrix);
+            return (float) Math.expm1(predictions[0][0]);
+        } catch (XGBoostError e) {
+            throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
+        }
+    }
+
+    public float predictByTaxiZone(int taxiZone, LocalDateTime dateTime) throws XGBoostError {
+        LocalDate date = dateTime.toLocalDate();
+        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
+        if (dailyForecastDataList.isEmpty()) {
+            throw new IllegalArgumentException("Weather data not found for the given date.");
+        }
+        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
+        double[] features = createFeaturesByTaxiZone(taxiZone, dailyForecastData, dateTime);
+
+        float[] floatFeatures = new float[features.length];
+        for (int i = 0; i < features.length; i++) {
+            floatFeatures[i] = (float) features[i];
+        }
+
+        DMatrix dmatrix;
+        try {
+            dmatrix = new DMatrix(floatFeatures, 1, features.length, Float.NaN);
+        } catch (XGBoostError e) {
+            throw new RuntimeException("Failed to create DMatrix for prediction.", e);
+        }
+
+        try {
+            float[][] predictions = booster.predict(dmatrix);
+            return (float) Math.expm1(predictions[0][0]);
+        } catch (XGBoostError e) {
+            throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
+        }
+    }
+
 }
