@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { CardMedia, Typography, Box, IconButton, Paper, Stack } from '@mui/material';
-import { LocationOnRounded, PhoneEnabledRounded, PublicRounded, ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
+import { CardMedia, Typography, Box, Paper, Stack, IconButton } from '@mui/material';
+import { PublicRounded, Close } from '@mui/icons-material';
 import moment from 'moment';
 import Tag_IsFree from '../Tag_IsFree';
 import Tag_Category from '../Tag_Category';
@@ -27,9 +27,10 @@ interface ScheduleCardProps {
   userRatings_total: number;
   index: number;
   onStartTimeClick: (startTime: string) => void;
+  onClose: () => void;
 }
 
-const ScheduleCard: React.FC<ScheduleCardProps> = ({
+const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
   id,
   name,
   startTime,
@@ -49,7 +50,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   free,
   userRatings_total,
   index,
-  onStartTimeClick
+  onStartTimeClick,
+  onClose
 }) => {
   const formattedStartTime = moment(startTime).format('hh:mm A');
   const formattedEndTime = moment(endTime).format('hh:mm A');
@@ -60,7 +62,6 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
   const [currentImage, setCurrentImage] = useState(imageSrc);
   const [imageStyle, setImageStyle] = useState({});
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMouseEnter = () => {
     if (event) {
@@ -92,51 +93,44 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     }
   };
 
-  const toggleExpand = () => setIsExpanded(!isExpanded);
-
   return (
     <Box sx={{ marginBottom: 3, display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
-      <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
-        <Box
-          sx={{
-            width: 35,
-            height: 35,
-            borderRadius: '50%',
-            backgroundColor: '#fdddb5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1,
-            position: 'relative',
-          }}
-        >
-          <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#d4831f' }}>{index}</Typography>
-        </Box>
-      </Box>
-
-      <Stack direction='column' gap={1} sx={{ minWidth: '5vw', textAlign: 'right', marginX: 1 }}>
-        <Typography
-          variant="h6"
-          style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1.05rem', cursor: 'pointer' }}
-          onClick={() => onStartTimeClick(startTime)}
-        >
-          {formattedStartTime}
-        </Typography>
-        <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}>{formattedEndTime}</Typography>
-      </Stack>
-
       <Paper variant="outlined" sx={{
         borderRadius: '8px',
         overflow: 'hidden',
-        padding: 2,
+        paddingY: 2,
+        paddingLeft: 2,
         position: 'relative',
         display: 'flex',
-        width: '100%'
+        width: '450px',
+        backgroundColor: 'white',
       }}>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+          }}
+        >
+          <Close />
+        </IconButton>
+
+        <Stack direction='column' gap={1} sx={{ textAlign: 'right', marginRight: 1 }}>
+          <Typography
+            variant="h6"
+            style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1.05rem', cursor: 'pointer' }}
+            onClick={() => onStartTimeClick(startTime)}
+          >
+            {formattedStartTime}
+          </Typography>
+          <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}>{formattedEndTime}</Typography>
+        </Stack>
+
         <Box
           sx={{
             height: 100,
-            width: 120,
+            width: 100,
             overflow: 'hidden',
             position: 'relative',
             borderRadius: '2px',
@@ -163,6 +157,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             />
           )}
         </Box>
+
         <Box flex={2} sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400, marginBottom: '8px' }}>{name}</Typography>
 
@@ -184,38 +179,10 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
               <BusynessProgressBar busyness={busyness} />
             </Box>
           </Box>
-
-          {isExpanded && (
-            <Box marginTop={0}>
-              {address && (
-                <Box display="flex" alignItems="center" marginTop="8px">
-                  <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-                  <Typography variant="body2" color="text.secondary">{address}</Typography>
-                </Box>
-              )}
-              {(attraction_phone_number || international_phone_number) && (
-                <Box display="flex" alignItems="center" marginTop="8px">
-                  <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-                  <Typography variant="body2" color="text.secondary">
-                    local: {attraction_phone_number || 'No local phone provided'}, international:
-                    {international_phone_number || 'No international phone provided'}
-                  </Typography>
-                </Box>
-              )}
-              <Typography variant="body2" style={{ marginTop: '8px' }}>
-                {description}
-              </Typography>
-            </Box>
-          )}
-        </Box>
-        <Box position="absolute" bottom={0} right={3}>
-          <IconButton onClick={toggleExpand}>
-            {isExpanded ? <ExpandLessRounded /> : <ExpandMoreRounded />}
-          </IconButton>
         </Box>
       </Paper>
     </Box>
   );
 };
 
-export default ScheduleCard;
+export default ScheduleCard_Popup;
