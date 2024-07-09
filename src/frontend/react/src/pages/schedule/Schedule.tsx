@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './schedule.css';
-import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
+import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
 import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';

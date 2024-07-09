@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, Marker, OverlayView } from '@react-google-maps/api';
 import moment from 'moment';
 import ScheduleCard_Popup from './ScheduleCard_PopUp';
 import Legend from './Legend';
-import mapOptions from '../../utils/mapStyles'; 
-import  googleMapsConfig  from '../../utils/apiConfig'; 
-
+import mapOptions from '../../utils/mapStyles';
+import googleMapsConfig from '../../utils/apiConfig';
 
 interface MapScheduleProps {
   events: any[];
@@ -25,7 +24,6 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   const [showGeoJson, setShowGeoJson] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
-  const [popupPosition, setPopupPosition] = useState<{ x: number, y: number } | null>(null);
 
   const containerStyle = {
     width: '100%',
@@ -105,44 +103,16 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   }, [isLoaded, filteredGeoJson, busynessData, selectedTime, showGeoJson]);
 
   const getBusynessColor = (busyness: number) => {
-    if (busyness <= 1) return '#185394'; 
+    if (busyness <= 1) return '#185394';
     if (busyness <= 2) return '#276cad';
-    if (busyness <= 3) return '#4e9bc7'; 
-    if (busyness <= 4) return '#add2e4'; 
-    if (busyness <= 5) return '#ecf3f5'; 
-    if (busyness <= 6) return '#fddecc'; 
-    if (busyness <= 7) return '#f4a886'; 
-    if (busyness <= 8) return '#e98e6f'; 
-    if (busyness <= 9) return '#ce5246'; 
-    return '#c6403d'; 
-  };
-
-  const getPopupPosition = (latLng: google.maps.LatLng) => {
-    if (!mapRef.current) return { display: 'none' };
-
-    const map = mapRef.current;
-    const scale = Math.pow(2, map.getZoom());
-    const projection = map.getProjection();
-    const bounds = map.getBounds();
-
-    if (projection && bounds) {
-      const nw = projection.fromLatLngToPoint(bounds.getNorthEast());
-      const se = projection.fromLatLngToPoint(bounds.getSouthWest());
-      const worldPoint = projection.fromLatLngToPoint(latLng);
-
-      const pos = {
-        x: (worldPoint.x - se.x) * scale,
-        y: (worldPoint.y - nw.y) * scale,
-      };
-
-      return {
-        left: `${pos.x - 210}px`, // Adjust x to center the popup
-        top: `${pos.y - 160}px`, // Adjust y to position the popup above the marker
-        position: 'absolute' as 'absolute',
-        zIndex: 10,
-      };
-    }
-    return { display: 'none' };
+    if (busyness <= 3) return '#4e9bc7';
+    if (busyness <= 4) return '#add2e4';
+    if (busyness <= 5) return '#ecf3f5';
+    if (busyness <= 6) return '#fddecc';
+    if (busyness <= 7) return '#f4a886';
+    if (busyness <= 8) return '#e98e6f';
+    if (busyness <= 9) return '#ce5246';
+    return '#c6403d';
   };
 
   if (loadError) return <div>Error loading maps</div>;
@@ -185,48 +155,74 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
               fontFamily: 'Lexend',
             }}
             icon={orangeMarker}
-            onClick={(e) => {
+            onClick={() => {
               setSelectedEvent(event);
-              setPopupPosition(getPopupPosition(e.latLng));
             }}
           />
         ))}
+
+        {clickedZone && (
+          <OverlayView
+            position={clickedZone.position}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+              padding: '10px',
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              maxWidth: '300px'
+            }}>
+              <h4>{clickedZone.name}</h4>
+              <p>Busyness: {clickedZone.busyness}</p>
+            </div>
+          </OverlayView>
+        )}
+
+        {selectedEvent && (
+          <OverlayView
+            position={{ lat: selectedEvent.latitude, lng: selectedEvent.longitude }}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+              // padding: '10px',
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              // maxWidth: '470px'
+            }}>
+              <ScheduleCard_Popup
+                id={selectedEvent.id}
+                name={selectedEvent.name}
+                startTime={selectedEvent.startTime}
+                endTime={selectedEvent.endTime}
+                latitude={selectedEvent.latitude}
+                longitude={selectedEvent.longitude}
+                busyness={selectedEvent.busyness}
+                category={selectedEvent.category}
+                address={selectedEvent.address}
+                website={selectedEvent.website}
+                description={selectedEvent.description}
+                rating={selectedEvent.rating}
+                attraction_phone_number={selectedEvent.attraction_phone_number}
+                international_phone_number={selectedEvent.international_phone_number}
+                event_image={selectedEvent.event_image}
+                event={selectedEvent.event}
+                free={selectedEvent.free}
+                userRatings_total={selectedEvent.userRatings_total}
+                index={events.findIndex(e => e.id === selectedEvent.id) + 1}
+                onStartTimeClick={(startTime) => console.log('Start time clicked:', startTime)}
+                onClose={() => setSelectedEvent(null)}
+              />
+            </div>
+          </OverlayView>
+        )}
+
       </GoogleMap>
-
-      {clickedZone && (
-        <div id="zone-info" style={popupPosition}>
-          <h4>{clickedZone.name}</h4>
-          <p>Busyness: {clickedZone.busyness}</p>
-        </div>
-      )}
-
-      {selectedEvent && (
-        <div style={popupPosition}>
-          <ScheduleCard_Popup
-            id={selectedEvent.id}
-            name={selectedEvent.name}
-            startTime={selectedEvent.startTime}
-            endTime={selectedEvent.endTime}
-            latitude={selectedEvent.latitude}
-            longitude={selectedEvent.longitude}
-            busyness={selectedEvent.busyness}
-            category={selectedEvent.category}
-            address={selectedEvent.address}
-            website={selectedEvent.website}
-            description={selectedEvent.description}
-            rating={selectedEvent.rating}
-            attraction_phone_number={selectedEvent.attraction_phone_number}
-            international_phone_number={selectedEvent.international_phone_number}
-            event_image={selectedEvent.event_image}
-            event={selectedEvent.event}
-            free={selectedEvent.free}
-            userRatings_total={selectedEvent.userRatings_total}
-            index={events.findIndex(e => e.id === selectedEvent.id) + 1}
-            onStartTimeClick={(startTime) => console.log('Start time clicked:', startTime)}
-            onClose={() => setSelectedEvent(null)}
-          />
-        </div>
-      )}
 
       {showLegend && <Legend />}
 

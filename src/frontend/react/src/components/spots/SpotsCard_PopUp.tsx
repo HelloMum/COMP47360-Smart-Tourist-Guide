@@ -5,7 +5,7 @@ import Btn_Add from '../Btn_Add';
 import Btn_Like from '../Btn_Like';
 import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
-import theme from '../../theme';
+import theme from '../../utils/theme';
 import { ListContext } from '../../contexts/ListContext';
 
 interface SpotCardPopUpProps {

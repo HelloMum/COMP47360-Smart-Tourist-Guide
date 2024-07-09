@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CardMedia, Typography, Box, Paper, Stack, IconButton } from '@mui/material';
+import { CardMedia, Typography, Box, Stack, IconButton } from '@mui/material';
 import { PublicRounded, Close } from '@mui/icons-material';
 import moment from 'moment';
 import Tag_IsFree from '../Tag_IsFree';
@@ -94,29 +94,33 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
   };
 
   return (
-    <Box sx={{ marginBottom: 3, display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
-      <Paper variant="outlined" sx={{
-        borderRadius: '8px',
-        overflow: 'hidden',
-        paddingY: 2,
-        paddingLeft: 2,
-        position: 'relative',
-        display: 'flex',
-        width: '450px',
-        backgroundColor: 'white',
-      }}>
+    <Box sx={{ display: 'flex', alignItems: 'flex-start', position: 'relative', width: '460px', padding: '6px' }}>
+      <Stack
+        direction="row"
+        sx={{
+          borderRadius: '8px',
+          overflow: 'hidden',
+          padding: 1,
+          position: 'relative',
+          display: 'flex',
+          width: '100%',
+          backgroundColor: 'white',
+          // boxShadow: '0 2px 6px rgba(0,0,0,0.3)', // Add shadow for better visibility
+        }}
+      >
         <IconButton
           onClick={onClose}
           sx={{
             position: 'absolute',
-            top: 8,
-            right: 8,
+            top: 0,
+            right: 0,
+            zIndex: 1, // Ensure the close button is above other elements
           }}
         >
           <Close />
         </IconButton>
 
-        <Stack direction='column' gap={1} sx={{ textAlign: 'right', marginRight: 1 }}>
+        <Stack direction="column" gap={1} sx={{ textAlign: 'right', marginRight: 1 }}>
           <Typography
             variant="h6"
             style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1.05rem', cursor: 'pointer' }}
@@ -129,8 +133,8 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
 
         <Box
           sx={{
-            height: 100,
-            width: 100,
+            height: 90,
+            width: 90,
             overflow: 'hidden',
             position: 'relative',
             borderRadius: '2px',
@@ -180,7 +184,7 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
             </Box>
           </Box>
         </Box>
-      </Paper>
+      </Stack>
     </Box>
   );
 };

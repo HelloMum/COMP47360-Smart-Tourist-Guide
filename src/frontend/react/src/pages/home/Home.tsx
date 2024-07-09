@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DateRangePicker from '../../components/DateRangePicker';
-import { NAVBAR_HEIGHT } from '../../constants';
+import { NAVBAR_HEIGHT } from '../../utils/constants';
 import HomeCard from '../../components/HomeCard';
 import { ListContext } from '../../contexts/ListContext';
 
