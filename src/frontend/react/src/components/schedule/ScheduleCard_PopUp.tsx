@@ -105,7 +105,7 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
           display: 'flex',
           width: '100%',
           backgroundColor: 'white',
-          // boxShadow: '0 2px 6px rgba(0,0,0,0.3)', // Add shadow for better visibility
+       
         }}
       >
         <IconButton
@@ -114,7 +114,7 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
             position: 'absolute',
             top: 0,
             right: 0,
-            zIndex: 1, // Ensure the close button is above other elements
+            zIndex: 1, 
           }}
         >
           <Close />
@@ -163,7 +163,24 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
         </Box>
 
         <Box flex={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400, marginBottom: '8px' }}>{name}</Typography>
+
+
+<Typography
+  variant="h6"
+  sx={{
+    fontSize: '1.1rem',
+    fontWeight: 400,
+    marginBottom: '8px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '200px' 
+  }}
+>
+  {name}
+</Typography>
+
+
 
           <Box display="flex" alignItems="center" marginBottom="8px" gap={1}>
             <Tag_IsFree isFree={free} />
