@@ -9,7 +9,7 @@ import Schedule from './pages/schedule/Schedule';
 import About from './pages/about/About';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme';
+import theme from './utils/theme';
 import 'antd/dist/antd.css';
 import { ListProvider } from './contexts/ListContext';
 import Header_Home from './components/Header_Home';

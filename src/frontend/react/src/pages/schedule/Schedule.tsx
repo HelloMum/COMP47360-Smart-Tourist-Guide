@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './schedule.css';
-import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
+import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
 import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
@@ -10,13 +10,15 @@ import { Typography, Button, Stack, Box, CircularProgress } from '@mui/material'
 import moment from 'moment';
 import Map_Schedule from '../../components/schedule/Map_Schedule';
 
-const Schedule = () => {
+const Schedule: React.FC = () => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
   const initialDate = planData ? Object.keys(planData)[0] : null;
-  const [currentDate, setCurrentDate] = useState(initialDate);
-  const [events, setEvents] = useState(initialDate ? planData[initialDate] : []);
-  const [weather, setWeather] = useState(null);
+  const [currentDate, setCurrentDate] = useState<string | null>(initialDate);
+  const [events, setEvents] = useState<any[]>(initialDate ? planData[initialDate] : []);
+  const [weather, setWeather] = useState<any | null>(null);
   const [loadingWeather, setLoadingWeather] = useState(false);
+  const [busynessData, setBusynessData] = useState<any | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   useEffect(() => {
     if (currentDate) {
@@ -25,20 +27,22 @@ const Schedule = () => {
     }
   }, [planData, currentDate]);
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: string) => {
     setCurrentDate(date);
     setEvents(planData[date] || []);
   };
 
-  const formatDate = (date) => {
-    return moment(date).format('MMMM Do YYYY');
+  const handleStartTimeClick = async (startTime: string) => {
+    setSelectedTime(startTime);
+    const date = moment(startTime).format('YYYY-MM-DD');
+    await fetchBusynessData(date);
   };
 
-  const formatDayOfWeek = (date) => {
+  const formatDayOfWeek = (date: string) => {
     return moment(date).format('ddd');
   };
 
-  const fetchWeather = async (date) => {
+  const fetchWeather = async (date: string) => {
     setLoadingWeather(true);
     try {
       const response = await fetch(`/api/weather/by_date/${date}`);
@@ -48,6 +52,32 @@ const Schedule = () => {
       console.error('Failed to fetch weather data:', error);
     }
     setLoadingWeather(false);
+  };
+
+  const fetchBusynessData = async (date: string) => {
+    try {
+      const response = await fetch(`/api/busyness/predict_by_date_range?startDate=${date}&endDate=${date}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startDate: date,
+          endDate: date,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('busyness data', data);
+
+      setBusynessData(data);
+    } catch (error) {
+      console.error('Failed to fetch busyness data:', error);
+    }
   };
 
   if (!planData) {
@@ -79,19 +109,19 @@ const Schedule = () => {
                   <CircularProgress size={24} />
                 ) : weather ? (
                   <Box display="flex" alignItems="center">
-                    <Typography variant="h6" style={{ fontWeight: '300', fontFamily: 'Lexend', marginRight: '0px', fontSize: '20px' }}>
+                    <Typography variant="h6" style={{ fontWeight: 300, fontFamily: 'Lexend', marginRight: 0, fontSize: '20px' }}>
                       {weather.tempDay}°C
                     </Typography>
                     <img
                       src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
                       alt={weather.weather_description}
-                      style={{ marginRight: '0px', height: '70px' }}
+                      style={{ marginRight: 0, height: '70px' }}
                     />
                     <Box>
-                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend', fontSize: '12px' }}>
+                      <Typography variant="body2" style={{ fontWeight: 250, fontFamily: 'Lexend', fontSize: '12px' }}>
                         Wind: {weather.speed.toFixed(1)} m/s
                       </Typography>
-                      <Typography variant="body2" style={{ fontWeight: '250', fontFamily: 'Lexend', fontSize: '12px' }}>
+                      <Typography variant="body2" style={{ fontWeight: 250, fontFamily: 'Lexend', fontSize: '12px' }}>
                         Humidity: {weather.humidity}%
                       </Typography>
                     </Box>
@@ -116,17 +146,17 @@ const Schedule = () => {
                   borderRadius: '20px',
                   padding: '8px 16px',
                   minWidth: '60px',
-                  minHeight: '65px', 
+                  minHeight: '65px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center', 
+                  justifyContent: 'center',
                 }}
               >
                 <Typography variant="caption" style={{ fontWeight: 'normal', fontFamily: 'Lexend', lineHeight: 1 }}>
                   {formatDayOfWeek(date)}
                 </Typography>
-                <Typography variant="body1" style={{ fontWeight: '400', fontFamily: 'Lexend', fontSize: '1.5em', lineHeight: 1 }}>
+                <Typography variant="body1" style={{ fontWeight: 400, fontFamily: 'Lexend', fontSize: '1.5em', lineHeight: 1 }}>
                   {moment(date).format('DD')}
                 </Typography>
               </Button>
@@ -171,6 +201,7 @@ const Schedule = () => {
                 free={item.free}
                 userRatings_total={item.userRatings_total}
                 index={index + 1}
+                onStartTimeClick={handleStartTimeClick} // Pass the callback function
               />
             ))}
           </div>
@@ -187,7 +218,7 @@ const Schedule = () => {
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
-        <Map_Schedule events={events} />
+        <Map_Schedule events={events} busynessData={busynessData} selectedTime={selectedTime} />
       </div>
 
       <Btn_List onClick={toggleList} />

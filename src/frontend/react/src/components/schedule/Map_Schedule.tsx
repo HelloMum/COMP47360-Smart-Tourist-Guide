@@ -1,155 +1,43 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, Marker, OverlayView } from '@react-google-maps/api';
+import moment from 'moment';
+import ScheduleCard_Popup from './ScheduleCard_PopUp';
+import Legend from './Legend';
+import mapOptions from '../../utils/mapStyles';
+import googleMapsConfig from '../../utils/apiConfig';
 
-const libraries = ['places'];
+interface MapScheduleProps {
+  events: any[];
+  busynessData: any;
+  selectedTime: string | null;
+}
 
-const Map_Schedule = ({ events }) => {
+const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, selectedTime }) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
-    libraries,
+    googleMapsApiKey: googleMapsConfig.googleMapsApiKey,
+    libraries: googleMapsConfig.libraries,
   });
 
-  const mapRef = useRef(null);
-  const [filteredGeoJson, setFilteredGeoJson] = useState(null);
-  const [showGeoJson, setShowGeoJson] = useState(true); // State to control GeoJSON visibility
-  const [clickedZone, setClickedZone] = useState(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [filteredGeoJson, setFilteredGeoJson] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [clickedZone, setClickedZone] = useState<{ position: google.maps.LatLng; name: string; busyness: number } | null>(null);
+  const [showGeoJson, setShowGeoJson] = useState(true);
+  const [showLegend, setShowLegend] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
 
   const containerStyle = {
     width: '100%',
     height: '100vh',
-    position: 'relative',
+    position: 'relative' as 'relative',
   };
 
-  const mapOptions = {
-    disableDefaultUI: true,
-    styles: [
-      {
-        featureType: 'poi',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }],
-      },
-      {
-        featureType: 'water',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#abdff0' }],
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#f7f6f6' }],
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'geometry.stroke',
-        stylers: [{ color: '#dddddd' }],
-      },
-      {
-        featureType: 'all',
-        elementType: 'labels.text.fill',
-        stylers: [{ color: '#999999' }],
-      },
-      {
-        featureType: 'all',
-        elementType: 'labels.text.stroke',
-        stylers: [{ color: '#ffffff' }],
-      },
-      {
-        featureType: 'transit.station',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }],
-      },
-      {
-        featureType: 'road',
-        elementType: 'labels.text.fill',
-        stylers: [{ color: '#d5baaa' }, { lightness: 30 }],
-      },
-      {
-        featureType: 'road',
-        elementType: 'labels.text.stroke',
-        stylers: [{ color: '#ffffff' }, { weight: 2 }],
-      },
-      {
-        featureType: 'landscape.man_made',
-        elementType: 'geometry',
-        stylers: [{ color: '#f8f4f1' }],
-      },
-      {
-        featureType: 'landscape.natural',
-        elementType: 'geometry',
-        stylers: [{ color: '#dcf2cd' }],
-      },
-      {
-        featureType: 'landscape.natural.landcover',
-        elementType: 'geometry',
-        stylers: [{ color: '#dcf2cd' }],
-      },
-      {
-        featureType: 'landscape.natural.terrain',
-        elementType: 'geometry',
-        stylers: [{ color: '#dcf2cd' }],
-      },
-      {
-        featureType: 'road',
-        elementType: 'geometry.stroke',
-        stylers: [{ color: '#f2efff' }],
-      },
-      {
-        featureType: 'transit.line',
-        elementType: 'geometry',
-        stylers: [{ visibility: 'off' }],
-      },
-      {
-        featureType: 'poi.government',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#fae6db' }],
-      },
-      {
-        featureType: 'poi.medical',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#fae6db' }],
-      },
-      {
-        featureType: 'poi.school',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#fae6db' }],
-      },
-      {
-        featureType: 'poi.sports_complex',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#fae6db' }],
-      },
-      {
-        featureType: 'poi.business',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#d6ecc7' }],
-      },
-      {
-        featureType: 'poi.business',
-        elementType: 'geometry.stroke',
-        stylers: [{ visibility: 'off' }],
-      },
-      {
-        featureType: 'poi.park',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#dcf2cd' }],
-      },
-      {
-        featureType: 'poi.park',
-        elementType: 'geometry.stroke',
-        stylers: [{ visibility: 'off' }],
-      },
-    ],
-    clickableIcons: false,
-  };
-
-  // filter out only manhattan data
   useEffect(() => {
     fetch('/data/NYC_Taxi_Zones.geojson')
       .then(response => response.json())
       .then(data => {
-        const filteredData = {
+        const filteredData: GeoJSON.FeatureCollection = {
           type: "FeatureCollection",
-          features: data.features.filter(feature => feature.properties.borough === "Manhattan"),
+          features: data.features.filter((feature: any) => feature.properties.borough === "Manhattan"),
         };
         setFilteredGeoJson(filteredData);
       })
@@ -160,65 +48,71 @@ const Map_Schedule = ({ events }) => {
     if (isLoaded && mapRef.current && filteredGeoJson) {
       const map = mapRef.current;
 
-      map.data.forEach((feature) => {
+      map.data.forEach((feature: any) => {
         map.data.remove(feature);
       });
 
-      if (showGeoJson) {
+      if (showGeoJson && filteredGeoJson) {
         map.data.addGeoJson(filteredGeoJson);
 
-        map.data.setStyle((feature) => {
+        map.data.setStyle((feature: any) => {
+          const zoneId = feature.getProperty('objectid');
+          let busyness = 0;
+          if (selectedTime && busynessData) {
+            const formattedSelectedTime = moment(selectedTime).format('YYYY-MM-DDTHH:00');
+            const hourlyData = busynessData[formattedSelectedTime];
+
+            if (hourlyData && hourlyData[zoneId]) {
+              busyness = hourlyData[zoneId][0];
+            }
+          }
+
+          const color = getBusynessColor(busyness);
+
           return {
-            fillColor: '#FFA07A',
-            fillOpacity: 0.4,
+            fillColor: color,
+            fillOpacity: 0.9,
             strokeColor: 'white',
             strokeWeight: 1,
           };
         });
 
-        map.data.addListener('click', (event) => {
+        map.data.addListener('click', (event: any) => {
           const { latLng } = event;
           const zoneName = event.feature.getProperty('zone');
+          const zoneId = event.feature.getProperty('objectid');
+          let busyness = 0;
+
+          if (selectedTime && busynessData) {
+            const formattedSelectedTime = moment(selectedTime).format('YYYY-MM-DDTHH:00');
+            const hourlyData = busynessData[formattedSelectedTime];
+
+            if (hourlyData && hourlyData[zoneId]) {
+              busyness = hourlyData[zoneId][0];
+            }
+          }
 
           setClickedZone({
             position: latLng,
             name: zoneName,
+            busyness: busyness
           });
         });
       }
     }
-  }, [isLoaded, filteredGeoJson, showGeoJson]);
+  }, [isLoaded, filteredGeoJson, busynessData, selectedTime, showGeoJson]);
 
-  const getPositionStyle = () => {
-    if (!clickedZone || !mapRef.current) return { display: 'none' };
-
-    const map = mapRef.current;
-    const scale = Math.pow(2, map.getZoom());
-    const projection = map.getProjection();
-    const bounds = map.getBounds();
-
-    if (projection && bounds) {
-      const nw = projection.fromLatLngToPoint(bounds.getNorthEast());
-      const se = projection.fromLatLngToPoint(bounds.getSouthWest());
-      const worldPoint = projection.fromLatLngToPoint(clickedZone.position);
-
-      const pos = {
-        x: (worldPoint.x - se.x) * scale,
-        y: (worldPoint.y - nw.y) * scale,
-      };
-
-      return {
-        left: `${pos.x}px`,
-        top: `${pos.y - 30}px`, // Adjust the position to be above the clicked point
-        position: 'absolute',
-        background: 'white',
-        padding: '10px',
-        borderRadius: '5px',
-        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
-        zIndex: 10,
-      };
-    }
-    return { display: 'none' };
+  const getBusynessColor = (busyness: number) => {
+    if (busyness <= 1) return '#185394';
+    if (busyness <= 2) return '#276cad';
+    if (busyness <= 3) return '#4e9bc7';
+    if (busyness <= 4) return '#add2e4';
+    if (busyness <= 5) return '#ecf3f5';
+    if (busyness <= 6) return '#fddecc';
+    if (busyness <= 7) return '#f4a886';
+    if (busyness <= 8) return '#e98e6f';
+    if (busyness <= 9) return '#ce5246';
+    return '#c6403d';
   };
 
   if (loadError) return <div>Error loading maps</div>;
@@ -230,6 +124,11 @@ const Map_Schedule = ({ events }) => {
     fillOpacity: 1,
     strokeWeight: 0,
     scale: 1.3,
+  };
+
+  const handleToggleGeoJson = () => {
+    setShowGeoJson(!showGeoJson);
+    setShowLegend(!showLegend);
   };
 
   return (
@@ -256,20 +155,82 @@ const Map_Schedule = ({ events }) => {
               fontFamily: 'Lexend',
             }}
             icon={orangeMarker}
+            onClick={() => {
+              setSelectedEvent(event);
+            }}
           />
         ))}
+
+        {clickedZone && (
+          <OverlayView
+            position={clickedZone.position}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+              padding: '10px',
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              maxWidth: '300px'
+            }}>
+              <h4>{clickedZone.name}</h4>
+              <p>Busyness: {clickedZone.busyness}</p>
+            </div>
+          </OverlayView>
+        )}
+
+        {selectedEvent && (
+          <OverlayView
+            position={{ lat: selectedEvent.latitude, lng: selectedEvent.longitude }}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+              // padding: '10px',
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              // maxWidth: '470px'
+            }}>
+              <ScheduleCard_Popup
+                id={selectedEvent.id}
+                name={selectedEvent.name}
+                startTime={selectedEvent.startTime}
+                endTime={selectedEvent.endTime}
+                latitude={selectedEvent.latitude}
+                longitude={selectedEvent.longitude}
+                busyness={selectedEvent.busyness}
+                category={selectedEvent.category}
+                address={selectedEvent.address}
+                website={selectedEvent.website}
+                description={selectedEvent.description}
+                rating={selectedEvent.rating}
+                attraction_phone_number={selectedEvent.attraction_phone_number}
+                international_phone_number={selectedEvent.international_phone_number}
+                event_image={selectedEvent.event_image}
+                event={selectedEvent.event}
+                free={selectedEvent.free}
+                userRatings_total={selectedEvent.userRatings_total}
+                index={events.findIndex(e => e.id === selectedEvent.id) + 1}
+                onStartTimeClick={(startTime) => console.log('Start time clicked:', startTime)}
+                onClose={() => setSelectedEvent(null)}
+              />
+            </div>
+          </OverlayView>
+        )}
+
       </GoogleMap>
-      {clickedZone && (
-        <div id="zone-info" style={getPositionStyle()}>
-          <h4>{clickedZone.name}</h4>
-        </div>
-      )}
+
+      {showLegend && <Legend />}
+
       <button
-        onClick={() => setShowGeoJson(!showGeoJson)}
+        onClick={handleToggleGeoJson}
         style={{
           position: 'absolute',
           top: 10,
-          
           left: '30%',
           transform: 'translateX(-50%)',
           zIndex: 5,
@@ -278,10 +239,10 @@ const Map_Schedule = ({ events }) => {
           border: '0px solid #ccc',
           borderRadius: '15px',
           cursor: 'pointer',
-          color:'white'
+          color: 'white'
         }}
       >
-        Busyness Data
+        {showGeoJson ? 'Hide Busyness Data' : 'Show Busyness Data'}
       </button>
     </div>
   );

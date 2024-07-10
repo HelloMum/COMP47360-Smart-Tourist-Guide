@@ -1,5 +1,5 @@
 import React from 'react';
-import theme from '../theme';
+import theme from '../utils/theme';
 
 const Tag = ({ isFree }) => {
   return (

@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
-import { NAVBAR_HEIGHT } from '../../constants';
+import { NAVBAR_HEIGHT } from '../../utils/constants';
 import Btn_Close_List from './Btn_Close_List';
 import { ClearRounded } from '@mui/icons-material';
 import AlertModal from '../AlertModal';
