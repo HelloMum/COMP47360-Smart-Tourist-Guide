@@ -123,9 +123,9 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               onClick={handleGeneratePlan}
             >
               Generate Plan
-            </Button> 
+            </Button>
           </Box>
-          
+
           <Box
             sx={{
               display: 'flex',
@@ -134,7 +134,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               marginX: '10px',
             }}
           >
-            <Typography variant="h6">{listItems.length} items</Typography>
+           {   listItems.length != 0 && <Typography variant="h6">{listItems.length} items</Typography>}
 
             {listItems.length > 0 && (
               <Button
@@ -189,15 +189,34 @@ const List: React.FC<ListProps> = ({ onClose }) => {
             },
           }}
         >
-          {listItems.map((item) => (
-            <ListCard
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              image={item.image}
-              onRemove={removeFromList}
-            />
-          ))}
+          {listItems.length === 0 ? (
+    <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-90px', 
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '100%' }} 
+    />
+  </Box>
+  
+          ) : (
+            listItems.map((item) => (
+              <ListCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                image={item.image}
+                onRemove={removeFromList}
+              />
+            ))
+          )}
         </Box>
       </Box>
 
