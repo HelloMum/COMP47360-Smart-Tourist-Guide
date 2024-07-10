@@ -163,6 +163,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               >
                 Clear All
               </Button>
+              
             )}
           </Box>
         </Box>
@@ -189,14 +190,17 @@ const List: React.FC<ListProps> = ({ onClose }) => {
             },
           }}
         >
-          {listItems.length === 0 ? (
-    <Box
+          {listItems.length === 0 ? 
+          (
+            <>
+  <Box
     sx={{
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
-      marginTop: '-90px', 
+      marginTop: '-90px',
     }}
   >
     <img 
@@ -204,9 +208,22 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       alt="Empty list" 
       style={{ width: '100%' }} 
     />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '0.95em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      No item here, please add some items.
+    </Typography>
   </Box>
+</>
+) 
   
-          ) : (
+  : (
             listItems.map((item) => (
               <ListCard
                 key={item.id}
