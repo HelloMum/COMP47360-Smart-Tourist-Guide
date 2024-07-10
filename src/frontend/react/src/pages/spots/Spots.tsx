@@ -171,6 +171,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                       title={spot.attraction_name}
                       rating={spot.attraction_rating}
                       price={spot.price}
+                      isFree={spot.free}
                       category={spot.category}
                       user_ratings_total={spot.user_ratings_total}
                       onExpand={() => handleExpand(spot)}
