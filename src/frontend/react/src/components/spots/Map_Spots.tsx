@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import SpotsCard_PopUp from './SpotsCard_PopUp';
+import mapOptions from '../../utils/mapStyles'; 
+import  googleMapsConfig  from '../../utils/apiConfig'; 
 
 const Map = ({ events, onMarkerClick }) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
-    libraries: ['places'],
+    googleMapsApiKey: googleMapsConfig.googleMapsApiKey,
+    libraries: googleMapsConfig.libraries,
   });
 
   const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
@@ -13,172 +15,11 @@ const Map = ({ events, onMarkerClick }) => {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const mapRef = useRef(null);
 
-
-  
   const containerStyle = {
     width: '100%',
     height: '100vh',
     position: 'fixed',
   };
-
-  const mapOptions = {
-    disableDefaultUI: true,
-    styles: [
-      {
-        featureType: 'poi',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }]
-      },
-      {
-        featureType: 'water',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#abdff0' }]
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'geometry.fill',
-        stylers: [{ color: '#f7f6f6' }]
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'geometry.stroke',
-        stylers: [{ color: '#dddddd' }]
-      },
-      {
-        featureType: 'all',
-        elementType: 'labels.text.fill',
-        stylers: [{ color: '#999999' }]
-      },
-      {
-        featureType: 'all',
-        elementType: 'labels.text.stroke',
-        stylers: [{ color: '#ffffff' }]
-      },
-    
-      {
-        featureType: 'transit.station',
-        elementType: 'labels',
-        stylers: [{ visibility: 'off' }]
-      },
-      // {
-      //   featureType: 'road',
-      //   elementType: 'labels',
-      //   stylers: [{ visibility: 'off' }]
-      // },
-
-      {
-        featureType: 'road',
-        elementType: 'labels.text.fill',
-        stylers: [
-          { color: '#d5baaa' }, 
-          { lightness: 30 }     
-        ]
-      },
-      {
-        featureType: 'road',
-        elementType: 'labels.text.stroke',
-        stylers: [
-          { color: '#ffffff' }, 
-          { weight: 2 }         
-        ]
-      },
-      {
-        featureType: 'landscape.man_made',
-        elementType: 'geometry',
-        stylers: [{ color: '#f8f4f1' }]  //ground color
-      },
-      {
-        featureType: 'landscape.natural',
-        elementType: 'geometry',
-        stylers: [{ color: '#dcf2cd' }]
-      },
-      {
-        featureType: 'landscape.natural.landcover',
-        elementType: 'geometry',
-        stylers: [{ color: '#dcf2cd' }]
-      },
-      {
-        featureType: 'landscape.natural.terrain',
-        elementType: 'geometry',
-        stylers: [{ color: '#dcf2cd' }]
-      },
-      {
-        featureType: 'road',
-        elementType: 'geometry.stroke',
-        stylers: [{ color: '#f2efff' }]
-      },
-      {
-        "featureType": "transit.line",
-        "elementType": "geometry",
-        "stylers": [
-          { "visibility": "off" }
-        ]
-      },
-
-      {
-        featureType: 'poi.government',
-        elementType: 'geometry.fill',
-        stylers: [
-          { color: '#fae6db' }  
-        ]
-      },
-      {
-        featureType: 'poi.medical',
-        elementType: 'geometry.fill',
-        stylers: [
-          { color: '#fae6db' }  
-        ]
-      },
-      {
-        featureType: 'poi.school',
-        elementType: 'geometry.fill',
-        stylers: [
-          { color: '#fae6db' }  
-        ]
-      },
-      {
-        featureType: 'poi.sports_complex',
-        elementType: 'geometry.fill',
-        stylers: [
-          { color: '#fae6db' }  
-        ]
-      },
-      {
-        featureType: 'poi.business',
-        elementType: 'geometry.fill',
-        stylers: [
-          { color: '#d6ecc7' }  
-        ]
-      },
-      {
-        featureType: 'poi.business',
-        elementType: 'geometry.stroke',
-        stylers: [
-          { "visibility": "off" } 
-        ]
-      },
-      {
-        featureType: 'poi.park',
-        elementType: 'geometry.fill',
-        stylers: [
-          { color: '#dcf2cd' }  
-        ]
-      },
-      {
-        featureType: 'poi.park',
-        elementType: 'geometry.stroke',
-        stylers: [
-          { "visibility": "off" }
-        ]
-      },
-
-    ],
-    clickableIcons: false, 
-  };
-
-
-
-
 
   const getIconUrl = (category, isActive = false) => {
     const folder = isActive ? 'marker_spots_active' : 'marker_spots';
@@ -203,9 +44,6 @@ const Map = ({ events, onMarkerClick }) => {
   };
 
   useEffect(() => {
-
-
-
     if (isLoaded && events) {
       const newMarkers = events.map(event => {
         const marker = new window.google.maps.Marker({
@@ -235,14 +73,8 @@ const Map = ({ events, onMarkerClick }) => {
         marker.addListener('click', () => {
           setSelectedMarker(event);
           onMarkerClick(event);
-      
-
-
         });
 
-
-
-        
         return marker;
       });
 
@@ -262,7 +94,7 @@ const Map = ({ events, onMarkerClick }) => {
       mapContainerStyle={containerStyle}
       center={center}
       zoom={14}
-      options={mapOptions}
+      options={mapOptions} 
       onLoad={map => {
         mapRef.current = map;
       }}
@@ -278,7 +110,6 @@ const Map = ({ events, onMarkerClick }) => {
             background: 'white',
             border: '1px solid #ddd',
             borderRadius: '8px',
-            // boxShadow: '0 2px 2px rgba(0,0,0,0.15)',
             maxWidth: '500px'
           }}>
             <SpotsCard_PopUp
