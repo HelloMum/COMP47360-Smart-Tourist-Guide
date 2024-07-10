@@ -56,7 +56,7 @@ const Schedule: React.FC = () => {
 
   const fetchBusynessData = async (date: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/busyness/predict_by_date_range?startDate=${date}&endDate=${date}`, {
+      const response = await fetch(`/api/busyness/predict_by_date_range?startDate=${date}&endDate=${date}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
