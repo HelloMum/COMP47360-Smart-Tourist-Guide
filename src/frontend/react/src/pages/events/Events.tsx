@@ -7,7 +7,7 @@ import Searchbar from '../../components/events/Searchbar';
 import { Stack, Box } from '@mui/material';
 import Switch from '../../components/events/Switch_Events';
 import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
-import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
+import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
 import Btn_List from '../../components/list/Btn_List';
 import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';

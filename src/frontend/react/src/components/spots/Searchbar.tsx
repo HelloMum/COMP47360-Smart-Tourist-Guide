@@ -12,7 +12,15 @@ const Searchbar = ({ onSearch }) => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchText(value);
-    onSearch(value);
+    if (value === '') {
+      onSearch(''); 
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchClick();
+    }
   };
 
   return (
@@ -22,6 +30,7 @@ const Searchbar = ({ onSearch }) => {
         variant="outlined"
         value={searchText}
         onChange={handleInputChange}
+        onKeyPress={handleKeyPress}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -41,15 +50,15 @@ const Searchbar = ({ onSearch }) => {
           '& .MuiOutlinedInput-input': {
             height: '100%',
             padding: '10px 14px',
-            fontSize: '14px', // Adjust input text font size
+            fontSize: '14px', 
           },
           '& .MuiInputLabel-root': {
-            fontSize: '12px', // Adjust placeholder font size
+            fontSize: '12px', 
           },
         }}
         InputLabelProps={{
           sx: {
-            fontSize: '12px', // Adjust placeholder font size
+            fontSize: '12px', 
           },
         }}
       />

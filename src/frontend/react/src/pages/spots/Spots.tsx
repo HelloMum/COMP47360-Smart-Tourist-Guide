@@ -4,7 +4,7 @@ import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
 import SpotDetail from '../../components/spots/SpotDetail';
-import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../constants';
+import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
 import './spots.css';
 import Sort_Spots from '../../components/spots/Sort_Spots';
 import FilterCheckbox from '../../components/spots/FilterCheckbox_Spots';

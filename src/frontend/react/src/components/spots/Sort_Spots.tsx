@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormControl, Select as MuiSelect, MenuItem, Typography, Box } from '@mui/material';
-import theme from '../../theme';
+import theme from '../../utils/theme';
 
 const Sort_Spots = ({ value, onChange }) => {
   return (

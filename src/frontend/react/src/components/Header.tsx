@@ -7,7 +7,7 @@ import { Box, Button, Stack } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
 import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
-import { NAVBAR_HEIGHT } from '../constants';
+import { NAVBAR_HEIGHT } from '../utils/constants';
 import DateRangePicker from './DateRangePicker';
 import { ListContext } from '../contexts/ListContext';
 import AlertModal from './AlertModal';
