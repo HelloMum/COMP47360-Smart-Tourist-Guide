@@ -117,13 +117,22 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
               </Box>
 
               {event.address && (
-                <Box display="flex" alignItems="center">
-                  <LocationOnRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {event.address}
-                  </Typography>
-                </Box>
-              )}
+        <Box display="flex" alignItems="center">
+          <LocationOnRounded sx={{ fontSize: 'large', marginRight: 1 }} />
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              maxWidth: '19vw', 
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {event.address}
+          </Typography>
+        </Box>
+      )}
 
               {isExpanded && (
                 <Typography variant="body2" color="text.secondary" sx={{ marginLeft: '3px' }}>

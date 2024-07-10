@@ -72,7 +72,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
           />
           {/* <Btn_Like /> */}
         </Box>
-        <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }}>
+        <Stack sx={{ paddingTop: '8px', paddingLeft: '12px' }} gap={'2px'}>
           <Typography
             sx={{
               fontSize: '1.1rem',
@@ -81,6 +81,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
               maxWidth: '95%',
+              marginLeft:'2px'
             }}
             component="div"
           >
@@ -89,7 +90,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
 
           <Stack direction={"row"} gap={1}>
             <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly sx={{ fontSize: '1.2rem' }} />
-            {rating}<span style={{ color: '#888' }}>by {user_ratings_total} people</span>
+            {rating}<span style={{ color: '#888',fontSize:'13px' }}>by {user_ratings_total} people</span>
           </Stack>
           <Stack direction="row">
             <Tag_Category category={category} />

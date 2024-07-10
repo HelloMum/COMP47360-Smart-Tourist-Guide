@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import './DateRangePicker.css'; 
+import './DateRangePicker.css';
 import { ListContext } from '../contexts/ListContext';
 
 const { RangePicker } = DatePicker;
