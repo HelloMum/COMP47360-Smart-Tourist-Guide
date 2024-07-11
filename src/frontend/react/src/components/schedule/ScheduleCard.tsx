@@ -5,6 +5,7 @@ import moment from 'moment';
 import Tag_IsFree from '../Tag_IsFree';
 import Tag_Category from '../Tag_Category';
 import BusynessProgressBar from './BusynessProgressBar';
+import Btn_Earth from '../Btn_Earth';
 
 interface ScheduleCardProps {
   id: string | number;
@@ -182,18 +183,17 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           </Typography>
 
           <Box display="flex" alignItems="center" marginBottom="8px" gap={1}>
-            <Tag_IsFree isFree={free} />
+            { free &&   <Tag_IsFree />}
             <Tag_Category category={category} />
-            {website && (
-              <a href={website} target="_blank" rel="noopener noreferrer">
-                <PublicRounded sx={{ fontSize: 'large', color: '#333' }} />
-              </a>
-            )}
+
+            {website &&  <Btn_Earth url={website}/>}
+
+
           </Box>
 
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.secondary">
-              area busyness
+              area busyness :
             </Typography>
             <Box flexGrow={1}>
               <BusynessProgressBar busyness={busyness} />
