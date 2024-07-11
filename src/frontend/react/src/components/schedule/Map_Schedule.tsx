@@ -7,7 +7,8 @@ import mapOptions from '../../utils/mapStyles';
 import googleMapsConfig from '../../utils/apiConfig';
 import ToggleButton from './ToggleButton'; 
 import { getColor } from './colorMappings';  
-import ZoneInfo from './ZoneInfo';  // Import ZoneInfo component
+import ZoneInfo from './ZoneInfo';
+import ZoneBusyness from './ZoneBusyness';
 
 interface MapScheduleProps {
   events: any[];
@@ -24,6 +25,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   const mapRef = useRef<google.maps.Map | null>(null);
   const [filteredGeoJson, setFilteredGeoJson] = useState<GeoJSON.FeatureCollection | null>(null);
   const [hoveredZone, setHoveredZone] = useState<{ position: google.maps.LatLng; name: string; busyness: number } | null>(null);
+  const [selectedZone, setSelectedZone] = useState<{ id: number; position: { lat: number; lng: number } } | null>(null);
   const [showGeoJson, setShowGeoJson] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
@@ -74,7 +76,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
           return {
             fillColor: color,
-            fillOpacity: 1,
+            fillOpacity: 0.8,
             strokeColor: '#fff',
             strokeWeight: 1,
             strokeOpacity: 0.5, 
@@ -101,10 +103,22 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
             name: zoneName,
             busyness: busyness
           });
+
+          map.data.overrideStyle(event.feature, { fillOpacity: 1 });
         });
 
-        map.data.addListener('mouseout', () => {
+        map.data.addListener('mouseout', (event: any) => {
           setHoveredZone(null);
+          map.data.revertStyle(event.feature);
+        });
+
+        map.data.addListener('click', (event: any) => {
+          const zoneId = event.feature.getProperty('objectid');
+          const position = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+          };
+          setSelectedZone({ id: zoneId, position: position });
         });
       }
     }
@@ -130,7 +144,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
     <div style={{ position: 'relative' }}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={hoveredZone ? null : { lat: 40.732, lng: -73.99 }}
+        center={{ lat: 40.732, lng: -73.99 }}  // Initial center position
         zoom={12.5}
         options={mapOptions}
         onLoad={(map) => {
@@ -164,6 +178,26 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
           />
         )}
 
+        {selectedZone && (
+          <OverlayView
+            position={selectedZone.position}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              padding: '10px'
+            }}>
+              <ZoneBusyness
+                zoneId={selectedZone.id}
+              />
+            </div>
+          </OverlayView>
+        )}
+
         {selectedEvent && (
           <OverlayView
             position={{ lat: selectedEvent.latitude, lng: selectedEvent.longitude }}
@@ -172,11 +206,9 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
             <div style={{
               position: 'absolute',
               transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
-              // padding: '10px',
               background: 'white',
               border: '1px solid #ddd',
               borderRadius: '8px',
-              // maxWidth: '470px'
             }}>
               <ScheduleCard_Popup
                 id={selectedEvent.id}
