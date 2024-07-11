@@ -142,7 +142,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             position: 'relative',
             borderRadius: '2px',
             marginRight: 2,
-            boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)'
+            boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
+            minWidth:'120px',
           }}
         >
           {currentImage && (
@@ -157,6 +158,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
                 position: 'absolute',
                 top: 0,
                 left: 0,
+               
                 ...imageStyle
               }}
               onMouseEnter={handleMouseEnter}

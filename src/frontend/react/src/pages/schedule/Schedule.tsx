@@ -56,7 +56,7 @@ const Schedule: React.FC = () => {
 
   const fetchBusynessData = async (date: string) => {
     try {
-      const response = await fetch(`/api/busyness/predict_by_date_range?startDate=${date}&endDate=${date}`, {
+      const response = await fetch(`/api/busyness/predict_all_sort_by_date_range?startDate=${date}&endDate=${date}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const Schedule: React.FC = () => {
           <Box mb={0}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h6" align="left" sx={{ fontFamily: '"Lexend", sans-serif' }}>
-                {moment(currentDate).format('dddd, Do MMMM YYYY')}
+                {moment(currentDate).format('Do MMMM YYYY, dddd')}
               </Typography>
 
               <Box display="flex" alignItems="center" style={{ minHeight: '70px' }}>

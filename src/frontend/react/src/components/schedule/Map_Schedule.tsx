@@ -5,6 +5,9 @@ import ScheduleCard_Popup from './ScheduleCard_PopUp';
 import Legend from './Legend';
 import mapOptions from '../../utils/mapStyles';
 import googleMapsConfig from '../../utils/apiConfig';
+import ToggleButton from './ToggleButton'; 
+import { getColor } from './colorMappings';  
+import ZoneInfo from './ZoneInfo';  // Import ZoneInfo component
 
 interface MapScheduleProps {
   events: any[];
@@ -20,7 +23,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const [filteredGeoJson, setFilteredGeoJson] = useState<GeoJSON.FeatureCollection | null>(null);
-  const [clickedZone, setClickedZone] = useState<{ position: google.maps.LatLng; name: string; busyness: number } | null>(null);
+  const [hoveredZone, setHoveredZone] = useState<{ position: google.maps.LatLng; name: string; busyness: number } | null>(null);
   const [showGeoJson, setShowGeoJson] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
@@ -62,58 +65,50 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
             const formattedSelectedTime = moment(selectedTime).format('YYYY-MM-DDTHH:00');
             const hourlyData = busynessData[formattedSelectedTime];
 
-            if (hourlyData && hourlyData[zoneId]) {
-              busyness = hourlyData[zoneId][0];
+            if (hourlyData && hourlyData[zoneId] !== undefined) {
+              busyness = hourlyData[zoneId];
             }
           }
 
-          const color = getBusynessColor(busyness);
+          const color = getColor(busyness);
 
           return {
             fillColor: color,
-            fillOpacity: 0.9,
-            strokeColor: 'white',
+            fillOpacity: 1,
+            strokeColor: '#fff',
             strokeWeight: 1,
+            strokeOpacity: 0.5, 
           };
         });
 
-        map.data.addListener('click', (event: any) => {
+        map.data.addListener('mouseover', (event: any) => {
           const { latLng } = event;
           const zoneName = event.feature.getProperty('zone');
           const zoneId = event.feature.getProperty('objectid');
           let busyness = 0;
-
+          
           if (selectedTime && busynessData) {
             const formattedSelectedTime = moment(selectedTime).format('YYYY-MM-DDTHH:00');
             const hourlyData = busynessData[formattedSelectedTime];
 
-            if (hourlyData && hourlyData[zoneId]) {
-              busyness = hourlyData[zoneId][0];
+            if (hourlyData && hourlyData[zoneId] !== undefined) {
+              busyness = hourlyData[zoneId];
             }
           }
 
-          setClickedZone({
+          setHoveredZone({
             position: latLng,
             name: zoneName,
             busyness: busyness
           });
         });
+
+        map.data.addListener('mouseout', () => {
+          setHoveredZone(null);
+        });
       }
     }
   }, [isLoaded, filteredGeoJson, busynessData, selectedTime, showGeoJson]);
-
-  const getBusynessColor = (busyness: number) => {
-    if (busyness <= 1) return '#185394';
-    if (busyness <= 2) return '#276cad';
-    if (busyness <= 3) return '#4e9bc7';
-    if (busyness <= 4) return '#add2e4';
-    if (busyness <= 5) return '#ecf3f5';
-    if (busyness <= 6) return '#fddecc';
-    if (busyness <= 7) return '#f4a886';
-    if (busyness <= 8) return '#e98e6f';
-    if (busyness <= 9) return '#ce5246';
-    return '#c6403d';
-  };
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -135,7 +130,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
     <div style={{ position: 'relative' }}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={clickedZone ? null : { lat: 40.732, lng: -73.99 }}
+        center={hoveredZone ? null : { lat: 40.732, lng: -73.99 }}
         zoom={12.5}
         options={mapOptions}
         onLoad={(map) => {
@@ -161,24 +156,12 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
           />
         ))}
 
-        {clickedZone && (
-          <OverlayView
-            position={clickedZone.position}
-            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-          >
-            <div style={{
-              position: 'absolute',
-              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
-              padding: '10px',
-              background: 'white',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              maxWidth: '300px'
-            }}>
-              <h4>{clickedZone.name}</h4>
-              <p>Busyness: {clickedZone.busyness}</p>
-            </div>
-          </OverlayView>
+        {hoveredZone && (
+          <ZoneInfo
+            position={hoveredZone.position}
+            name={hoveredZone.name}
+            busyness={hoveredZone.busyness}
+          />
         )}
 
         {selectedEvent && (
@@ -226,24 +209,10 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
       {showLegend && <Legend />}
 
-      <button
-        onClick={handleToggleGeoJson}
-        style={{
-          position: 'absolute',
-          top: 10,
-          left: '30%',
-          transform: 'translateX(-50%)',
-          zIndex: 5,
-          padding: '5px 10px',
-          background: 'orange',
-          border: '0px solid #ccc',
-          borderRadius: '15px',
-          cursor: 'pointer',
-          color: 'white'
-        }}
-      >
-        {showGeoJson ? 'Hide Busyness Data' : 'Show Busyness Data'}
-      </button>
+      <ToggleButton
+        showGeoJson={showGeoJson}
+        handleToggleGeoJson={handleToggleGeoJson}
+      />
     </div>
   );
 };

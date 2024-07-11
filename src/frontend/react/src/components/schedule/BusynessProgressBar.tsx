@@ -1,16 +1,8 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { getColor } from './colorMappings';  // 引入颜色映射模块
 
 const BusynessProgressBar: React.FC<{ busyness: number }> = ({ busyness }) => {
-
-  const getColor = (value: number) => {
-    if (value <= 20) return 'linear-gradient(90deg, #00008B, #0000FF)'; 
-    if (value <= 40) return 'linear-gradient(90deg, #0000FF, #00BFFF)'; 
-    if (value <= 60) return 'linear-gradient(90deg, #00BFFF, #FFFF00)'; 
-    if (value <= 80) return 'linear-gradient(90deg, #ffcf00, #FFA500)'; 
-    return 'linear-gradient(90deg, #FFA500, #FF0000)'; 
-  };
-
   const color = getColor(busyness);
 
   return (
@@ -23,15 +15,15 @@ const BusynessProgressBar: React.FC<{ busyness: number }> = ({ busyness }) => {
           sx={{
             height: 6,
             width: '60%',
-            backgroundColor: '#eee',
+            backgroundColor: '#f0f0f0',
             borderRadius: 5,
-            overflow: 'hidden', // Ensures that the inner bar respects the rounded corners
+            overflow: 'hidden', 
           }}
         >
           <Box
             sx={{
               height: 6,
-              width: `${busyness}%`, // Adjusted width calculation
+              width: `${busyness}%`, 
               background: color,
               borderRadius: 5,
             }}

@@ -13,7 +13,7 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
   return (
     <Box sx={{ 
       position: 'absolute', display: 'inline-block', 
-      top: '80px', right: '130px' }}>
+      top: '70px', right: '130px' }}>
       <Button
         sx={{
           position: 'absolute',
