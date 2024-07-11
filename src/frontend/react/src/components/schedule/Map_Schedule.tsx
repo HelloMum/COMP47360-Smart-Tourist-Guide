@@ -25,10 +25,15 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   const mapRef = useRef<google.maps.Map | null>(null);
   const [filteredGeoJson, setFilteredGeoJson] = useState<GeoJSON.FeatureCollection | null>(null);
   const [hoveredZone, setHoveredZone] = useState<{ position: google.maps.LatLng; name: string; busyness: number } | null>(null);
-  const [selectedZone, setSelectedZone] = useState<{ id: number; position: { lat: number; lng: number } } | null>(null);
+  const [selectedZone, setSelectedZone] = useState<{ id: number; name: string; position: { lat: number; lng: number } } | null>(null); // Updated state
+  const [highlightedZone, setHighlightedZone] = useState<number | null>(null);
   const [showGeoJson, setShowGeoJson] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
+
+  // New state for map center and zoom level
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 40.732, lng: -73.99 });
+  const [mapZoom, setMapZoom] = useState<number>(12.5);
 
   const containerStyle = {
     width: '100%',
@@ -76,9 +81,9 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
           return {
             fillColor: color,
-            fillOpacity: 0.8,
-            strokeColor: '#fff',
-            strokeWeight: 1,
+            fillOpacity: highlightedZone === zoneId ? 1 : 0.7,
+            strokeColor: '#fff', 
+            strokeWeight: highlightedZone === zoneId ? 3 : 1,
             strokeOpacity: 0.5, 
           };
         });
@@ -88,7 +93,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
           const zoneName = event.feature.getProperty('zone');
           const zoneId = event.feature.getProperty('objectid');
           let busyness = 0;
-          
+
           if (selectedTime && busynessData) {
             const formattedSelectedTime = moment(selectedTime).format('YYYY-MM-DDTHH:00');
             const hourlyData = busynessData[formattedSelectedTime];
@@ -114,15 +119,44 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
         map.data.addListener('click', (event: any) => {
           const zoneId = event.feature.getProperty('objectid');
+          const zoneName = event.feature.getProperty('zone'); // Get zone name
           const position = {
             lat: event.latLng.lat(),
             lng: event.latLng.lng()
           };
-          setSelectedZone({ id: zoneId, position: position });
+          setSelectedZone({ id: zoneId, name: zoneName, position: position }); // Set selected zone with name
+          setHighlightedZone(zoneId); // Highlight the selected zone
         });
       }
     }
-  }, [isLoaded, filteredGeoJson, busynessData, selectedTime, showGeoJson]);
+
+    if (isLoaded && mapRef.current) {
+      const map = mapRef.current;
+
+      map.data.setStyle((feature: any) => {
+        const zoneId = feature.getProperty('objectid');
+        let busyness = 0;
+        if (selectedTime && busynessData) {
+          const formattedSelectedTime = moment(selectedTime).format('YYYY-MM-DDTHH:00');
+          const hourlyData = busynessData[formattedSelectedTime];
+
+          if (hourlyData && hourlyData[zoneId] !== undefined) {
+            busyness = hourlyData[zoneId];
+          }
+        }
+
+        const color = getColor(busyness);
+
+        return {
+          fillColor: color,
+          fillOpacity: highlightedZone === zoneId ? 1 : 0.7,
+          strokeColor: '#fff', 
+          strokeWeight: highlightedZone === zoneId ? 2 : 1,
+          strokeOpacity: 0.5, 
+        };
+      });
+    }
+  }, [isLoaded, filteredGeoJson, showGeoJson, busynessData, selectedTime, highlightedZone]); // Combined dependencies
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -140,16 +174,34 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
     setShowLegend(!showLegend);
   };
 
+  // Handlers for maintaining map center and zoom level
+  const handleDragEnd = () => {
+    if (mapRef.current) {
+      const newCenter = mapRef.current.getCenter();
+      if (newCenter) {
+        setMapCenter({ lat: newCenter.lat(), lng: newCenter.lng() });
+      }
+    }
+  };
+
+  const handleZoomChanged = () => {
+    if (mapRef.current) {
+      setMapZoom(mapRef.current.getZoom()!);
+    }
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={{ lat: 40.732, lng: -73.99 }}  // Initial center position
-        zoom={12.5}
-        options={mapOptions}
+        center={mapCenter}  // Use mapCenter state
+        zoom={mapZoom}      // Use mapZoom state
+        options={mapOptions}  // Add map options here
         onLoad={(map) => {
           mapRef.current = map;
         }}
+        onDragEnd={handleDragEnd}  // Update center on drag end
+        onZoomChanged={handleZoomChanged}  // Update zoom level on zoom change
       >
         {events.map((event, index) => (
           <Marker
@@ -185,7 +237,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
           >
             <div style={{
               position: 'absolute',
-              transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+              transform: 'translate(-50%, -115%)',  
               background: 'white',
               border: '1px solid #ddd',
               borderRadius: '8px',
@@ -193,6 +245,8 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
             }}>
               <ZoneBusyness
                 zoneId={selectedZone.id}
+                zoneName={selectedZone.name} // Pass zone name here
+                onClose={() => setSelectedZone(null)} // Handle close action
               />
             </div>
           </OverlayView>
@@ -247,6 +301,6 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
       />
     </div>
   );
-};
+}
 
 export default Map_Schedule;

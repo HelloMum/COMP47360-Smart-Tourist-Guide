@@ -22,6 +22,7 @@ const ZoneInfo: React.FC<ZoneInfoProps> = ({ position, name, busyness }) => {
         border: '1px solid #ddd',
         borderRadius: '8px',
         whiteSpace: 'nowrap',  
+         
       }}>
         <h4 style={{ margin: 0 }}>{name}</h4>
         <p style={{ margin: 0 }}>Busyness: {busyness}</p>
