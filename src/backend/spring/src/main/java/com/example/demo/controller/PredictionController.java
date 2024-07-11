@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.AttractionService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.example.demo.service.PredictionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @RestController
@@ -34,12 +37,24 @@ public class PredictionController {
         }
     }
 
+    @Autowired
+    private AttractionService attractionService;
+
 
     @PostMapping("/predict_by_attraction_id")
     public float predict(@RequestParam int attractionIndex, @RequestParam String dateTime) {
         try {
-            LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
-            return predictionService.predictByAttractionId(attractionIndex, localDateTime);
+            // Parse the dateTime string to LocalDateTime
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
+
+            // Get the taxi zone of the attraction by its index
+            int attractionZone = attractionService.getAttractionByIndex(attractionIndex).getTaxi_zone();
+
+            // Get busyness value from the JSON data
+            return predictionService.getBusynessByZoneFromJson(attractionZone, localDateTime);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid dateTime format. Please use ISO_LOCAL_DATE_TIME format.", e);
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -49,11 +64,14 @@ public class PredictionController {
     @PostMapping("/predict_by_taxi_zone")
     public float predictByTaxiZone(@RequestParam int taxiZone, @RequestParam String dateTime) {
         try {
-            LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
-            System.out.println("Predict by taxi zone called with taxiZone: " + taxiZone + " and dateTime: " + dateTime);
-            float prediction = predictionService.predictByTaxiZone(taxiZone, localDateTime);
-            System.out.println("Prediction for taxiZone " + taxiZone + ": " + prediction);
-            return prediction;
+            // Parse the dateTime string to LocalDateTime
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
+
+            // Get busyness value from the JSON data
+            return predictionService.getBusynessByZoneFromJson(taxiZone, localDateTime);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid dateTime format. Please use ISO_LOCAL_DATE_TIME format.", e);
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -108,48 +126,6 @@ public class PredictionController {
         }
         return result;
     }
-//    public Map<String, Map<Integer, Float>> predictByDateRange(@RequestParam String startDate, @RequestParam String endDate) {
-//        Map<String, Map<Integer, Float>> result = new TreeMap<>();
-//        try {
-//            LocalDate start = LocalDate.parse(startDate);
-//            LocalDate end = LocalDate.parse(endDate);
-//
-//            // Read taxi zones from CSV
-//            List<Integer> taxiZones = readTaxiZonesFromCSV();
-//
-//            // Loop through each day in the date range
-//            for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
-//                // Loop through each hour of the day
-//                for (int hour = 0; hour < 24; hour++) {
-//                    LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.of(hour, 0));
-//                    String dateTimeKey = dateTime.toString();
-//                    Map<Integer, Float> hourlyPredictions = new TreeMap<>();
-//
-//                    // Loop through each taxi zone
-//                    for (int taxiZone : taxiZones) {
-//                        try {
-//                            System.out.println("Predicting for dateTime: " + dateTimeKey + " taxiZone: " + taxiZone);
-//
-//                            float prediction = predictionService.predictByTaxiZone(taxiZone, dateTime);
-//                            System.out.println("Prediction for taxiZone " + taxiZone + ": " + prediction);
-//
-//                            hourlyPredictions.put(taxiZone, prediction);
-//                        } catch (IllegalArgumentException e) {
-//                            System.err.println("Mean or standard deviation not found for key: " + taxiZone + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour());
-//                            hourlyPredictions.put(taxiZone, -1.0f);
-//                        } catch (XGBoostError e) {
-//                            e.printStackTrace();
-//                            hourlyPredictions.put(taxiZone, -1.0f);
-//                        }
-//                    }
-//                    result.put(dateTimeKey, hourlyPredictions);
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
 
     @PostMapping("/predict_all_sort_by_zone")
     public Map<Integer, Map<String, Map<String, Float>>> predictAllSortByDateRange(@RequestParam String startDate, @RequestParam String endDate) {
@@ -188,15 +164,4 @@ public class PredictionController {
         return result;
     }
 
-    private List<Integer> readTaxiZonesFromCSV() throws IOException {
-        List<Integer> taxiZones = new ArrayList<>();
-        ClassPathResource resource = new ClassPathResource("manhattan_taxi_zones_id.csv");
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-            String line = reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                taxiZones.add(Integer.parseInt(line.trim()));
-            }
-        }
-        return taxiZones;
-    }
 }
