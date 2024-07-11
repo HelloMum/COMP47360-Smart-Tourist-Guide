@@ -16,12 +16,12 @@ const ZoneInfo: React.FC<ZoneInfoProps> = ({ position, name, busyness }) => {
     >
       <div style={{
         position: 'absolute',
-        transform: 'translate(-50%, -115%)',  // Adjust the position of the info window
+        transform: 'translate(-50%, -115%)',  
         padding: '5px',
         background: 'white',
         border: '1px solid #ddd',
         borderRadius: '8px',
-        whiteSpace: 'nowrap',  // Ensure content does not wrap
+        whiteSpace: 'nowrap',  
       }}>
         <h4 style={{ margin: 0 }}>{name}</h4>
         <p style={{ margin: 0 }}>Busyness: {busyness}</p>
