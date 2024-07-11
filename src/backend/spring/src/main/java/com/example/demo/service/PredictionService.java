@@ -245,12 +245,6 @@ public class PredictionService {
         int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
         features[getFeatureIndex("quarter_" + quarter)] = 1;
 
-        // Print all feature values
-        System.out.println("Feature values:");
-        for (int i = 0; i < features.length; i++) {
-            System.out.println(expected_features.get(i) + ": " + features[i]);
-        }
-
         // Predict passenger count
         float[] floatFeatures = new float[features.length];
         for (int i = 0; i < features.length; i++) {
@@ -272,8 +266,6 @@ public class PredictionService {
             String key = attraction.getTaxi_zone() + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
             Double mean = meanMap.get(key);
             Double std = stdMap.get(key);
-            System.out.println("mean: " + mean);
-            System.out.println("std: " + std);
 
             if (mean == null || std == null) {
                 throw new IllegalArgumentException("Mean or standard deviation not found for key: " + key);
@@ -283,17 +275,8 @@ public class PredictionService {
             int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);
             System.out.println("busynessIndex100: " + busynessIndex100);
 
-            if (busynessIndex100 <= 20) {
-                return 1;
-            } else if (busynessIndex100 <= 40) {
-                return 2;
-            } else if (busynessIndex100 <= 60) {
-                return 3;
-            } else if (busynessIndex100 <= 80) {
-                return 4;
-            } else {
-                return 5;
-            }
+            // Range : 1 - 100
+            return busynessIndex100;
         } catch (XGBoostError e) {
             throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
         }
@@ -359,12 +342,6 @@ public class PredictionService {
         int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
         features[getFeatureIndex("quarter_" + quarter)] = 1;
 
-        // Print all feature values
-        System.out.println("Feature values:");
-        for (int i = 0; i < features.length; i++) {
-            System.out.println(expected_features.get(i) + ": " + features[i]);
-        }
-
         // Predict passenger count
         float[] floatFeatures = new float[features.length];
         for (int i = 0; i < features.length; i++) {
@@ -395,19 +372,9 @@ public class PredictionService {
 
             double zScore = (passengerCount - mean) / std;
             int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);
-            System.out.println("busynessIndex100: " + busynessIndex100);
 
-            if (busynessIndex100 <= 20) {
-                return 1;
-            } else if (busynessIndex100 <= 40) {
-                return 2;
-            } else if (busynessIndex100 <= 60) {
-                return 3;
-            } else if (busynessIndex100 <= 80) {
-                return 4;
-            } else {
-                return 5;
-            }
+            // Range : 1 - 100
+            return busynessIndex100;
         } catch (XGBoostError e) {
             throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
         }

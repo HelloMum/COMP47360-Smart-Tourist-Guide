@@ -20,8 +20,7 @@ public class ItineraryService {
 
     private List<Event> events = new ArrayList<>();
 
-    private List<TimeSlot> availableTimeSlots; // List of available time slots, each containing a start and end time
-    private List<Attraction> attractions; // List of attractions
+    private List<TimeSlot> availableTimeSlots;
 
     @Autowired
     private AttractionService attractionService;
