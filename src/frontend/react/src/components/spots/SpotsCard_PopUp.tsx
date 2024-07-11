@@ -110,7 +110,7 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
 
         <Stack direction="row" gap={1} sx={{ margin: 0 }}>
           <Tag_Category category={category} />
-          <Tag_IsFree isFree={isFree} />
+          {isFree && <Tag_IsFree />}
         </Stack>
 
         <Box display="flex" alignItems="center" sx={{ margin: 0 }}></Box>

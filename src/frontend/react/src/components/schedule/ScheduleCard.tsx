@@ -135,7 +135,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       }}>
         <Box
           sx={{
-            height: 100,
+            height: isExpanded ? 200 : 100,
             width: 120,
             overflow: 'hidden',
             position: 'relative',
@@ -164,7 +164,22 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           )}
         </Box>
         <Box flex={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 400, marginBottom: '8px' }}>{name}</Typography>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontSize: '1.1rem', 
+              fontWeight: 400, 
+              marginBottom: '8px', 
+              maxWidth: '20vw', 
+              whiteSpace: isExpanded ? 'normal' : 'nowrap', 
+              overflow: 'hidden', 
+              textOverflow: isExpanded ? 'clip' : 'ellipsis',
+              cursor: isExpanded ? 'default' : 'pointer'
+            }}
+            onClick={!isExpanded ? toggleExpand : undefined}
+          >
+            {name}
+          </Typography>
 
           <Box display="flex" alignItems="center" marginBottom="8px" gap={1}>
             <Tag_IsFree isFree={free} />

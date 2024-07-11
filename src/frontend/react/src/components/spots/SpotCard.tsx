@@ -21,7 +21,7 @@ interface SpotCardProps {
   onExpand: () => void;
 }
 
-const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, category, user_ratings_total, onExpand }) => {
+const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, isFree,rating, category, user_ratings_total, onExpand }) => {
   const [currentImage, setCurrentImage] = useState(image1);
   const [imageStyle, setImageStyle] = useState({});
   const { addItemWithDateCheck, isItemInList } = useContext(ListContext);
@@ -94,7 +94,10 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, rating, 
           </Stack>
           <Stack direction="row">
             <Tag_Category category={category} />
-            <Tag_IsFree isFree={true} />
+           
+            {isFree && <Tag_IsFree />}
+
+
           </Stack>
           <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5 }}>
             <Btn_Add onClick={handleAdd} isAdded={isAdded} />
