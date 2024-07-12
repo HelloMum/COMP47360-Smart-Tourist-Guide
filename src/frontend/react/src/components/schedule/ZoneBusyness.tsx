@@ -194,11 +194,11 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
                   color: '#000',
                 },
               },
-              animation: {
-                duration: 1000,
-                easing: 'out',
-                startup: true,
-              },
+              // animation: {
+              //   duration: 400,
+              //   easing: 'out',
+              //   startup: true,
+              // },
               isStacked: true,
               tooltip: { isHtml: true },
             }}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
@@ -150,7 +150,44 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                 <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
                 <Sort_Spots value={sortOption} onChange={handleSortChange} />
               </Stack>
-              <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
+             
+             
+            { spots.length>0 &&<h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>}
+
+
+            { spots.length===0 && (
+            <>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-180px',
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '50%' }} 
+    />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '1em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      Sorry, no result here.
+    </Typography>
+
+  </Box>
+</>
+) }
+              
             </>
           )}
 
@@ -181,6 +218,8 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
               </Box>
             )}
           </div>
+
+         
         </div>
       )}
 
@@ -229,8 +268,16 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             message="Please set the start and end dates before adding items to the list."
           />
         </Box>
+        
       )}
+
+
+
     </div>
+
+
+
+
   );
 };
 

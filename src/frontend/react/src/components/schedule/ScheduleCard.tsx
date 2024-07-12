@@ -136,7 +136,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       }}>
         <Box
           sx={{
-            height: isExpanded ? 200 : 100,
+            height: isExpanded ? 160 : 100,
             width: 120,
             overflow: 'hidden',
             position: 'relative',

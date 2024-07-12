@@ -16,7 +16,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({ showGeoJson, handleToggleGe
         transform: 'translateX(-50%)',
         zIndex: 5,
         padding: '2px 10px',
-        background: 'rgba(255, 165, 0, 0.7)',
+        background: 'rgba(255, 165, 0, 0.9)',
         border: '1px solid #fff',
         borderRadius: '15px',
         cursor: 'pointer',

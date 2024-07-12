@@ -4,7 +4,7 @@ import './events.css';
 import EventCard from '../../components/events/EventCard';
 import EventCard_PopUp from '../../components/events/EventCard_PopUp';
 import Searchbar from '../../components/events/Searchbar';
-import { Stack, Box } from '@mui/material';
+import { Stack, Box, Typography } from '@mui/material';
 import Switch from '../../components/events/Switch_Events';
 import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
@@ -110,7 +110,43 @@ const Events = ({ selectedDates }) => {
             <Switch checked={isFree} onChange={handleSwitchChange} />
           </Stack>
 
-          <h2 style={{ marginLeft: 6, marginTop: 5 }}>{events.length} events</h2>
+       {events.length>0  && <h2 style={{ marginLeft: 6, marginTop: 5 }}>{events.length} events</h2>}
+
+
+       { events.length===0 && (
+            <>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-180px',
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '50%' }} 
+    />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '1em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      Sorry, no result here.
+    </Typography>
+
+  </Box>
+</>
+) }
+
+
 
           <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
             <Stack>
