@@ -7,7 +7,7 @@ import { getColor } from './colorMappings';
 import { Close } from '@mui/icons-material';
 import styled from 'styled-components';
 
-// Define the custom tooltip CSS class styles here
+
 const tooltipStyles = `
   .google-visualization-tooltip {
     background-color: #ffffff;
@@ -21,7 +21,7 @@ const tooltipStyles = `
   }
 `;
 
-// Inject the tooltip styles into the document
+
 const injectTooltipStyles = () => {
   const styleElement = document.createElement('style');
   styleElement.textContent = tooltipStyles;
@@ -62,7 +62,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
       const endDate = selectedDates[1].format('YYYY-MM-DD');
 
       try {
-        const response = await fetch(`http://localhost:8080/busyness/predict_all_sort_by_zone?startDate=${startDate}&endDate=${endDate}`, {
+        const response = await fetch(`/api/busyness/predict_all_sort_by_zone?startDate=${startDate}&endDate=${endDate}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
