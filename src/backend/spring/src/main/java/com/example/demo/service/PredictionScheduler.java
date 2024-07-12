@@ -38,7 +38,7 @@ public class PredictionScheduler {
     @Scheduled(fixedRate = 3600000)
     public void calculateAndSaveBusyness() {
         LocalDate startDate = LocalDate.now();
-        LocalDate endDate = startDate.plusDays(31);
+        LocalDate endDate = startDate.plusDays(29);
         Map<Integer, Map<String, Map<String, Float>>> result = new TreeMap<>();
 
         try {
@@ -59,9 +59,7 @@ public class PredictionScheduler {
                         LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.of(hour, 0));
                         String timeKey = dateTime.toString();
                         try {
-                            System.out.println("Predicting for dateTime: " + timeKey + " taxiZone: " + taxiZone);
                             float prediction = predictionService.predictByTaxiZone(taxiZone, dateTime);
-                            System.out.println("Prediction for taxiZone " + taxiZone + ": " + prediction);
                             hourlyPredictions.put(timeKey, prediction);
                         } catch (IllegalArgumentException e) {
                             hourlyPredictions.put(timeKey, -1.0f);
