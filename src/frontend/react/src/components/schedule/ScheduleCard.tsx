@@ -28,6 +28,7 @@ interface ScheduleCardProps {
   userRatings_total: number;
   index: number;
   onStartTimeClick: (startTime: string) => void;
+  highlightedStartTime: string; // 新增的属性
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
@@ -50,7 +51,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   free,
   userRatings_total,
   index,
-  onStartTimeClick
+  onStartTimeClick,
+  highlightedStartTime, // 新增的属性
 }) => {
   const formattedStartTime = moment(startTime).format('hh:mm A');
   const formattedEndTime = moment(endTime).format('hh:mm A');
@@ -62,8 +64,9 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const [currentImage, setCurrentImage] = useState(imageSrc);
   const [imageStyle, setImageStyle] = useState({});
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // 新增的状态
 
-  const handleMouseEnter = () => {
+  const handleMouseEnterImage = () => {
     if (event) {
       setImageStyle({
         transition: 'transform 7s ease',
@@ -78,7 +81,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeaveImage = () => {
     if (event) {
       setImageStyle({
         transition: 'none',
@@ -91,6 +94,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         transform: 'scale(1)',
       });
     }
+  };
+
+  const handleMouseEnterTime = () => {
+    setIsHovered(true); // 鼠标悬停时设置为true
+  };
+
+  const handleMouseLeaveTime = () => {
+    setIsHovered(false); // 鼠标离开时设置为false
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -115,11 +126,19 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         </Box>
       </Box>
 
-      <Stack direction='column' gap={1} sx={{ minWidth: '5vw', textAlign: 'right', marginX: 1 }}>
+      <Stack direction='column' gap={1} sx={{ minWidth: '6vw', textAlign: 'right', marginX: 1 }}>
         <Typography
           variant="h6"
-          style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1.05rem', cursor: 'pointer' }}
+          style={{
+            fontWeight: startTime === highlightedStartTime ? '600' : 'normal',
+            fontFamily: 'Lexend',
+            color: startTime === highlightedStartTime || isHovered ? 'darkorange' : '#707070',
+            fontSize: startTime === highlightedStartTime ? '1.15rem' : '1.05rem',
+            cursor: 'pointer',
+          }}
           onClick={() => onStartTimeClick(startTime)}
+          onMouseEnter={handleMouseEnterTime}
+          onMouseLeave={handleMouseLeaveTime}
         >
           {formattedStartTime}
         </Typography>
@@ -143,7 +162,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             borderRadius: '2px',
             marginRight: 2,
             boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
-            minWidth:'120px',
+            minWidth: '120px',
           }}
         >
           {currentImage && (
@@ -158,24 +177,23 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
                 position: 'absolute',
                 top: 0,
                 left: 0,
-               
                 ...imageStyle
               }}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={handleMouseEnterImage}
+              onMouseLeave={handleMouseLeaveImage}
             />
           )}
         </Box>
         <Box flex={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontSize: '1.1rem', 
-              fontWeight: 400, 
-              marginBottom: '8px', 
-              maxWidth: '20vw', 
-              whiteSpace: isExpanded ? 'normal' : 'nowrap', 
-              overflow: 'hidden', 
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: '1.1rem',
+              fontWeight: 400,
+              marginBottom: '8px',
+              maxWidth: '16vw',
+              whiteSpace: isExpanded ? 'normal' : 'nowrap',
+              overflow: 'hidden',
               textOverflow: isExpanded ? 'clip' : 'ellipsis',
               cursor: isExpanded ? 'default' : 'pointer'
             }}
@@ -185,12 +203,10 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           </Typography>
 
           <Box display="flex" alignItems="center" marginBottom="8px" gap={1}>
-            { free &&   <Tag_IsFree />}
+            {free && <Tag_IsFree />}
             <Tag_Category category={category} />
 
-            {website &&  <Btn_Earth url={website}/>}
-
-
+            {website && <Btn_Earth url={website} />}
           </Box>
 
           <Box display="flex" alignItems="center" gap={1}>

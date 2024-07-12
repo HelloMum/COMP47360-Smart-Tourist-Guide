@@ -81,7 +81,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
           return {
             fillColor: color,
-            fillOpacity: highlightedZone === zoneId ? 1 : 0.8,
+            fillOpacity: highlightedZone === zoneId ? 1 : 0.9,
             strokeColor: '#fff', 
             strokeWeight: highlightedZone === zoneId ? 3 : 1,
             strokeOpacity: 0.8, 
@@ -149,7 +149,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
         return {
           fillColor: color,
-          fillOpacity: highlightedZone === zoneId ? 1 : 0.7,
+          fillOpacity: highlightedZone === zoneId ? 1 : 0.8,
           strokeColor: '#fff', 
           strokeWeight: highlightedZone === zoneId ? 2 : 1,
           strokeOpacity: 0.5, 
@@ -172,6 +172,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   const handleToggleGeoJson = () => {
     setShowGeoJson(!showGeoJson);
     setShowLegend(!showLegend);
+    setSelectedZone(null); // Hide ZoneBusyness component when hiding data
   };
 
   // Handlers for maintaining map center and zoom level
@@ -222,15 +223,15 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
           />
         ))}
 
-        {hoveredZone && (
+        {/* {hoveredZone && (
           <ZoneInfo
             position={hoveredZone.position}
             name={hoveredZone.name}
             busyness={hoveredZone.busyness}
           />
-        )}
+        )} */}
 
-        {selectedZone && (
+        {selectedZone && showGeoJson && (
           <OverlayView
             position={selectedZone.position}
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
@@ -247,6 +248,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
                 zoneId={selectedZone.id}
                 zoneName={selectedZone.name} // Pass zone name here
                 onClose={() => setSelectedZone(null)} // Handle close action
+                selectedTime={selectedTime} 
               />
             </div>
           </OverlayView>
