@@ -81,10 +81,10 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
 
           return {
             fillColor: color,
-            fillOpacity: highlightedZone === zoneId ? 1 : 0.7,
+            fillOpacity: highlightedZone === zoneId ? 1 : 0.8,
             strokeColor: '#fff', 
             strokeWeight: highlightedZone === zoneId ? 3 : 1,
-            strokeOpacity: 0.5, 
+            strokeOpacity: 0.8, 
           };
         });
 
