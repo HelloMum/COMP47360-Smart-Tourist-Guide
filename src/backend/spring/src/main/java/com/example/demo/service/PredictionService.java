@@ -34,9 +34,6 @@ public class PredictionService {
     private static final String BUSYNESS_JSON_FILE = "src/main/resources/busyness_predictions.json";
 
     @Autowired
-    private AttractionService attractionService;
-
-    @Autowired
     private DailyWeatherDataService dailyWeatherDataService;
 
 
