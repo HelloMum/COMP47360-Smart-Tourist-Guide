@@ -24,7 +24,11 @@ const Logo: React.FC = () => {
         marginRight: '0px',
       }}
     >
-      <PublicRounded sx={{ fontSize: '32px', marginRight: '4px' }} />
+          <img 
+      src="images/logo.png" 
+      alt="logo" 
+      style={{ width: '28px',marginRight: '6px'}} 
+    />
       TourWise
     </Link>
   );
