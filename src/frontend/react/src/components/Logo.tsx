@@ -25,7 +25,7 @@ const Logo: React.FC = () => {
       }}
     >
           <img 
-      src="images/logo.png" 
+      src="images/logo2.png" 
       alt="logo" 
       style={{ width: '28px',marginRight: '6px'}} 
     />

@@ -9,7 +9,7 @@ import theme from '../../utils/theme';
 import { ListContext } from '../../contexts/ListContext';
 
 interface SpotCardPopUpProps {
-  id: string;
+  id: number;
   image1: string;
   image3: string;
   title: string;
@@ -52,7 +52,8 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
 
   const handleAdd = () => {
     console.log('pop up add button clicked  with id:', id);
-    
+    console.log('pop up add button clicked  with isfree:', isFree);
+    console.log('pop up add button clicked  with title:', title);
     const spotData = { id, title, image: image1 };
     addItemWithDateCheck(spotData, () => setAlertOpen(true), 'SpotCard_PopUp');
   };
@@ -85,10 +86,10 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         />
-        <Btn_Like />
+        {/* <Btn_Like /> */}
       </Box>
 
-      <Stack sx={{ paddingTop: '7px', paddingLeft: '12px', margin: 0 }}>
+      <Stack sx={{ paddingTop: '7px', paddingLeft: '12px', margin: 0 }} gap='2px'>
         <Typography
           sx={{
             ...theme.typography.cardTitle,
@@ -96,19 +97,21 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
             maxWidth: '95%',
-            margin: 0
+            margin: 0,
+            fontWeight: 400,
           }}
           component="div"
         >
           {title}
         </Typography>
 
-        <Stack direction={"row"} gap={1} sx={{ margin: 0 }}>
-          <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly sx={{ fontSize: '1.2rem' }} />
-          {rating}<span style={{ color: '#888' }}>by {user_ratings_total} people</span>
-        </Stack>
+        <Stack direction={"row"} gap={1} sx={{ margin: 0, alignItems: 'center' }}>
+  <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly sx={{ fontSize: '1.2rem' }} />
+  <span style={{ fontSize: '14px' }}>{rating}</span>
+  <span style={{ color: '#999', fontSize: '13px',fontWeight:400 }}>by {user_ratings_total} people</span>
+</Stack>
 
-        <Stack direction="row" gap={1} sx={{ margin: 0 }}>
+        <Stack direction="row" gap={1} sx={{ marginTop: '3px' }}>
           <Tag_Category category={category} />
           {isFree && <Tag_IsFree />}
         </Stack>

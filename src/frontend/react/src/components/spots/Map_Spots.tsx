@@ -113,12 +113,13 @@ const Map = ({ events, onMarkerClick }) => {
             maxWidth: '500px'
           }}>
             <SpotsCard_PopUp
+              id={selectedMarker.index}
               image1={`/images/spots_small/${selectedMarker.index}_1.webp`}
               image3={`/images/spots_small/${selectedMarker.index}_3.webp`}
               title={selectedMarker.attraction_name}
               rating={selectedMarker.attraction_rating}
               category={selectedMarker.category}
-              isFree={selectedMarker.isFree}
+              isFree={selectedMarker.free}
               user_ratings_total={selectedMarker.user_ratings_total}
               onClose={() => setSelectedMarker(null)}
             />
