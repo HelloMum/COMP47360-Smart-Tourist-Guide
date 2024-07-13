@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.model.Attraction;
 import com.example.demo.model.DailyForecastData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.annotation.PostConstruct;
 import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
@@ -16,22 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-
-import java.io.*;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
     private Booster booster;
-    private static final String BUSYNESS_JSON_FILE = "src/main/resources/busyness_predictions.json";
+    private static final String BUSYNESS_JSON_FILE = "busyness_predictions.json";
 
     @Autowired
     private DailyWeatherDataService dailyWeatherDataService;
@@ -43,6 +40,7 @@ public class PredictionService {
     @PostConstruct
     public void init() {
         loadMeanStdData();
+        loadHolidaysData();
     }
 
     private void loadMeanStdData() {
@@ -61,27 +59,27 @@ public class PredictionService {
             }
             reader.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to load mean and standard deviation data", e);
         }
     }
 
     private static final Map<LocalDate, String> usHolidays = new HashMap<>();
 
-    static {
+    private void loadHolidaysData() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            InputStream inputStream = PredictionService.class.getResourceAsStream("/us_holidays.json");
+            InputStream inputStream = new ClassPathResource("us_holidays.json").getInputStream();
             Map<String, String> holidays = objectMapper.readValue(inputStream, HashMap.class);
             holidays.forEach((key, value) -> usHolidays.put(LocalDate.parse(key), value));
 
-            InputStream geoJsonStream = PredictionService.class.getResourceAsStream("/manhattan_taxi_zones.geojson");
+            InputStream geoJsonStream = new ClassPathResource("manhattan_taxi_zones.geojson").getInputStream();
             JsonNode geoJson = objectMapper.readTree(geoJsonStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load holiday or geoJSON data", e);
         }
     }
 
-    private final List<String> expected_features = Arrays.asList(
+    private final List<String> expectedFeatures = Arrays.asList(
             "taxi_zone",
             "temperature_2m (°C)",
             "rain (mm)",
@@ -175,7 +173,7 @@ public class PredictionService {
     }
 
     public int getFeatureIndex(String featureName) {
-        return expected_features.indexOf(featureName);
+        return expectedFeatures.indexOf(featureName);
     }
 
     public float predictByTaxiZone(int taxiZone, LocalDateTime dateTime) throws XGBoostError {
@@ -187,7 +185,7 @@ public class PredictionService {
         DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
 
         // Create features
-        double[] features = new double[expected_features.size()];
+        double[] features = new double[expectedFeatures.size()];
         Arrays.fill(features, 0.0);
 
         features[getFeatureIndex("taxi_zone")] = taxiZone;
@@ -276,8 +274,9 @@ public class PredictionService {
 
     public float getBusynessByZoneFromJson(int taxiZone, LocalDateTime dateTime) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File jsonFile = new File(BUSYNESS_JSON_FILE);
-        JsonNode rootNode = mapper.readTree(jsonFile);
+        ClassPathResource resource = new ClassPathResource(BUSYNESS_JSON_FILE);
+        InputStream inputStream = resource.getInputStream();
+        JsonNode rootNode = mapper.readTree(inputStream);
 
         LocalDateTime roundedDateTime = dateTime.withMinute(0).withSecond(0).withNano(0);
 
