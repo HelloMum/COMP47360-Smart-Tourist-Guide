@@ -87,7 +87,7 @@ public class PredictionController {
 
             // Load predictions from JSON file
             ObjectMapper mapper = new ObjectMapper();
-            String path = "src/main/resources/busyness_predictions.json";
+            String path = "busyness_predictions.json";
             TypeReference<Map<Integer, Map<String, Map<String, Float>>>> typeRef = new TypeReference<>() {};
             Map<Integer, Map<String, Map<String, Float>>> predictions = mapper.readValue(new File(path), typeRef);
 
@@ -136,7 +136,7 @@ public class PredictionController {
 
             // Load predictions from JSON file
             ObjectMapper mapper = new ObjectMapper();
-            String path = "src/main/resources/busyness_predictions.json";
+            String path = "busyness_predictions.json";
             TypeReference<Map<Integer, Map<String, Map<String, Float>>>> typeRef = new TypeReference<>() {};
             Map<Integer, Map<String, Map<String, Float>>> predictions = mapper.readValue(new File(path), typeRef);
 
