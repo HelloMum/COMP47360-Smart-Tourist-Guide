@@ -39,3 +39,4 @@ build/
 /src/backend/scrappers/gradle/
 /src/backend/scrappers/gradle/
 /src/deployment/config/
+/src/backend/spring/src/main/resources/busyness_predictions.json
