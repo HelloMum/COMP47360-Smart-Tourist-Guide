@@ -32,7 +32,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
 
   // New state for map center and zoom level
-  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 40.732, lng: -73.99 });
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 40.732, lng: -73.965 });
   const [mapZoom, setMapZoom] = useState<number>(12.5);
 
   const containerStyle = {
@@ -195,14 +195,14 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
     <div style={{ position: 'relative' }}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={mapCenter}  // Use mapCenter state
-        zoom={mapZoom}      // Use mapZoom state
-        options={mapOptions}  // Add map options here
+        center={mapCenter}  
+        zoom={mapZoom}      
+        options={mapOptions}  
         onLoad={(map) => {
           mapRef.current = map;
         }}
-        onDragEnd={handleDragEnd}  // Update center on drag end
-        onZoomChanged={handleZoomChanged}  // Update zoom level on zoom change
+        onDragEnd={handleDragEnd}  
+        onZoomChanged={handleZoomChanged}  
       >
         {events.map((event, index) => (
           <Marker

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import SpotsCard_PopUp from './SpotsCard_PopUp';
 import mapOptions from '../../utils/mapStyles';
@@ -12,6 +12,7 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
 
   const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [hoveredMarker, setHoveredMarker] = useState(null);
   const mapRef = useRef(null);
 
   const containerStyle = {
@@ -53,6 +54,14 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
     }
   }, [popupSpot]);
 
+  const handleMouseOver = (event) => {
+    setHoveredMarker(event);
+  };
+
+  const handleMouseOut = () => {
+    setHoveredMarker(null);
+  };
+
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
 
@@ -67,8 +76,9 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
       }}
     >
       {events.map(event => {
-        const isActive = activeSpot?.index === event.index || hoveredSpot?.index === event.index || selectedMarker?.index === event.index;
+        const isActive = activeSpot?.index === event.index || hoveredSpot?.index === event.index || selectedMarker?.index === event.index || hoveredMarker?.index === event.index;
         const iconUrl = getIconUrl(event.category, isActive);
+        const iconSize = isActive ? 45 : 38;
         return (
           <Marker
             key={event.index}
@@ -76,11 +86,12 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
             title={event.attraction_name}
             icon={{
               url: iconUrl,
-              scaledSize: new window.google.maps.Size(isActive ? 48 : 38, isActive ? 48 : 38),
+              scaledSize: new window.google.maps.Size(iconSize, iconSize),
+              anchor: new window.google.maps.Point(iconSize / 2, iconSize / 2),
             }}
             zIndex={isActive ? 999 : 1}
-            onMouseOver={() => onMarkerClick(event)}
-            onMouseOut={() => {}}
+            onMouseOver={() => handleMouseOver(event)}
+            onMouseOut={handleMouseOut}
             onClick={() => handleMarkerClick(event)}
           />
         );
