@@ -10,7 +10,7 @@ const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; 
     <Box
       sx={{
         position: 'fixed',
-        top: 0,
+        top: '-5vh',
         left: 0,
         width: '100vw',
         height: '100vh',
@@ -34,16 +34,14 @@ const AlertModal: React.FC<{ open: boolean; onClose: () => void; title: string; 
         }}
         icon={false} 
       >
-        <div style={{ display: 'flex', alignItems: 'center', color: 'black' }}>
-          {/* <InfoRounded
-            sx={{
-              fontSize: 20,
-              color: amber[700],
-              marginRight: 2,
-            }}
-          /> */}
+        <div style={{ display: 'flex', alignItems: 'center', color: '#555' }}>
+
+   
           <span style={{padding:'5px'}}>{message}</span>
         </div>
+
+
+
         <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center', width: '100%' }}>
         <Button 
             variant="contained" 

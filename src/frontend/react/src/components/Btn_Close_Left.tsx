@@ -10,7 +10,7 @@ const Btn_List: React.FC = () => {
     <Box
       sx={{
         position: 'absolute',
-        top: '80px',
+        top: '70px',
         left: isLeftPanelVisible ? '42vw' : '20px',
         zIndex: 10,
         boxShadow: 2,

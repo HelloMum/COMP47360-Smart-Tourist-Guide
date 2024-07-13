@@ -1,14 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import './DateRangePicker.css'; 
+import './DateRangePicker.css';
 import { ListContext } from '../contexts/ListContext';
 
 const { RangePicker } = DatePicker;
 
 const disabled7DaysDate = (fromDate) => (current) => {
   const tomorrow = moment().add(1, 'days').startOf('day');
-  const thirtyDaysFromTomorrow = moment().add(30, 'days').endOf('day');
+  const thirtyDaysFromTomorrow = moment().add(29, 'days').endOf('day');
 
   if (!current) {
     return false;
@@ -22,7 +22,7 @@ const disabled7DaysDate = (fromDate) => (current) => {
 
 const DateRangePicker = ({ onDateChange, className, value }) => {
   const [fromDate, setFromDate] = useState(value ? value[0] : null);
-  const { setSelectedDates } = useContext(ListContext);
+  const { setSelectedDates, clearList } = useContext(ListContext);
 
   const handleCalendarChange = (dates) => {
     setFromDate(dates ? dates[0] : null);
@@ -31,6 +31,7 @@ const DateRangePicker = ({ onDateChange, className, value }) => {
   const handleChange = (dates) => {
     setSelectedDates(dates); // Update context with selected dates
     onDateChange(dates);
+    clearList(); // Clear the list when dates are changed
   };
 
   return (
