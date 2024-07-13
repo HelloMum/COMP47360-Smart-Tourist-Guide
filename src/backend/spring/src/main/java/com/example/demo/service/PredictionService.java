@@ -257,8 +257,6 @@ public class PredictionService {
             String key = taxiZone + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
             Double mean = meanMap.get(key);
             Double std = stdMap.get(key);
-            System.out.println("mean: " + mean);
-            System.out.println("std: " + std);
 
             if (mean == null || std == null) {
                 throw new IllegalArgumentException("Mean or standard deviation not found for key: " + key);
