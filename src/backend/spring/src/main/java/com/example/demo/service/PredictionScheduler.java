@@ -103,7 +103,7 @@ public class PredictionScheduler {
     private void saveResultToJson(Map<Integer, Map<String, Map<String, Float>>> result) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.writeValue(new File("src//main/resources/busyness_predictions.json"), result);
+            mapper.writeValue(new File("busyness_predictions.json"), result);
         } catch (IOException e) {
             e.printStackTrace();
         }
