@@ -123,9 +123,9 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               onClick={handleGeneratePlan}
             >
               Generate Plan
-            </Button> 
+            </Button>
           </Box>
-          
+
           <Box
             sx={{
               display: 'flex',
@@ -134,7 +134,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               marginX: '10px',
             }}
           >
-            <Typography variant="h6">{listItems.length} items</Typography>
+           {   listItems.length != 0 && <Typography variant="h6">{listItems.length} items</Typography>}
 
             {listItems.length > 0 && (
               <Button
@@ -163,6 +163,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
               >
                 Clear All
               </Button>
+              
             )}
           </Box>
         </Box>
@@ -189,15 +190,50 @@ const List: React.FC<ListProps> = ({ onClose }) => {
             },
           }}
         >
-          {listItems.map((item) => (
-            <ListCard
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              image={item.image}
-              onRemove={removeFromList}
-            />
-          ))}
+          {listItems.length === 0 ? 
+          (
+            <>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-90px',
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '100%' }} 
+    />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '0.95em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      No item here, please add some items.
+    </Typography>
+  </Box>
+</>
+) 
+  
+  : (
+            listItems.map((item) => (
+              <ListCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                image={item.image}
+                onRemove={removeFromList}
+              />
+            ))
+          )}
         </Box>
       </Box>
 

@@ -6,6 +6,7 @@ import Btn_Add from '../Btn_Add';
 import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
 import { ListContext } from '../../contexts/ListContext';
+import Btn_Earth from '../Btn_Earth';
 
 const formatDateTime = (dateTime) => {
   if (!dateTime) {
@@ -80,8 +81,12 @@ const EventCard_PopUp = ({ event, onClose }) => {
         {/*------------------ category & isFree  -------------------- */}
         <Stack direction='row' spacing={1}>
           <Tag_Category category={event.combined_category} />
-          {event.is_free && <Tag_IsFree isFree={event.is_free} />}
-          <PublicRounded sx={{ fontSize: 'large', marginRight: 1, cursor: 'pointer' }} onClick={() => window.open(event.event_site_url, '_blank')} />
+          {event.is_free && <Tag_IsFree />}
+
+
+          <Btn_Earth url={event.event_site_url} />
+
+
         </Stack>
 
         {/*------------------ date & time & address-------------------- */}

@@ -17,12 +17,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -33,9 +31,7 @@ public class PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
     private Booster booster;
-
-    @Autowired
-    private AttractionService attractionService;
+    private static final String BUSYNESS_JSON_FILE = "src/main/resources/busyness_predictions.json";
 
     @Autowired
     private DailyWeatherDataService dailyWeatherDataService;
@@ -182,123 +178,6 @@ public class PredictionService {
         return expected_features.indexOf(featureName);
     }
 
-    public float predictByAttractionId(int attractionId, LocalDateTime dateTime) throws XGBoostError {
-        Attraction attraction = attractionService.getAttractionByIndex(attractionId);
-        LocalDate date = dateTime.toLocalDate();
-
-        List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
-        if (dailyForecastDataList.isEmpty()) {
-            throw new IllegalArgumentException("Weather data not found for the given date.");
-        }
-        DailyForecastData dailyForecastData = dailyForecastDataList.get(0);
-
-        // Create features
-        double[] features = new double[expected_features.size()];
-        Arrays.fill(features, 0.0);
-
-        features[getFeatureIndex("taxi_zone")] = attraction.getTaxi_zone();
-        features[getFeatureIndex("temperature_2m (°C)")] = dailyForecastData.getTempDay();
-        features[getFeatureIndex("rain (mm)")] = dailyForecastData.getRain();
-        features[getFeatureIndex("snowfall (cm)")] = dailyForecastData.getSnow();
-        features[getFeatureIndex("wind_speed_10m (km/h)")] = dailyForecastData.getSpeed();
-
-        features[getFeatureIndex("day")] = dateTime.getDayOfMonth();
-
-        for (String day : new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}) {
-            features[getFeatureIndex("week_" + day)] = (dateTime.getDayOfWeek().toString().equalsIgnoreCase(day)) ? 1 : 0;
-        }
-
-        for (int i = 1; i <= 12; i++) {
-            features[getFeatureIndex("month_" + i)] = (dateTime.getMonthValue() == i) ? 1 : 0;
-        }
-
-        for (int i = 0; i < 24; i++) {
-            features[getFeatureIndex("hour_" + i)] = (dateTime.getHour() == i) ? 1 : 0;
-        }
-
-        String holiday = usHolidays.getOrDefault(date, "No");
-
-        for (String holidayFeature : new String[]{
-                "holiday_Christmas Day", "holiday_Christmas Day (observed)", "holiday_Columbus Day",
-                "holiday_Independence Day", "holiday_Juneteenth National Independence Day",
-                "holiday_Juneteenth National Independence Day (observed)", "holiday_Labor Day",
-                "holiday_Martin Luther King Jr. Day", "holiday_Memorial Day", "holiday_New Year's Day",
-                "holiday_New Year's Day (observed)", "holiday_No", "holiday_Thanksgiving",
-                "holiday_Veterans Day", "holiday_Veterans Day (observed)", "holiday_Washington's Birthday"}) {
-            features[getFeatureIndex(holidayFeature)] = 0;
-        }
-
-        if (!holiday.equals("No")) {
-            features[getFeatureIndex("holiday_" + holiday)] = 1;
-        } else {
-            features[getFeatureIndex("holiday_No")] = 1;
-        }
-
-        int dayOfWeekIndex = dateTime.getDayOfWeek().getValue() - 1;
-        features[getFeatureIndex("day_of_week_" + dayOfWeekIndex)] = 1;
-        features[getFeatureIndex("is_weekend_1")] = (dateTime.getDayOfWeek().getValue() == 6 || dateTime.getDayOfWeek().getValue() == 7) ? 1 : 0;
-        features[getFeatureIndex("is_weekend_0")] = (dateTime.getDayOfWeek().getValue() >= 1 && dateTime.getDayOfWeek().getValue() <= 5) ? 1 : 0;
-
-        for (String quarterFeature : new String[]{"quarter_1", "quarter_2", "quarter_3", "quarter_4"}) {
-            features[getFeatureIndex(quarterFeature)] = 0;
-        }
-        int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
-        features[getFeatureIndex("quarter_" + quarter)] = 1;
-
-        // Print all feature values
-        System.out.println("Feature values:");
-        for (int i = 0; i < features.length; i++) {
-            System.out.println(expected_features.get(i) + ": " + features[i]);
-        }
-
-        // Predict passenger count
-        float[] floatFeatures = new float[features.length];
-        for (int i = 0; i < features.length; i++) {
-            floatFeatures[i] = (float) features[i];
-        }
-
-        DMatrix dmatrix;
-        try {
-            dmatrix = new DMatrix(floatFeatures, 1, features.length, Float.NaN);
-        } catch (XGBoostError e) {
-            throw new RuntimeException("Failed to create DMatrix for prediction.", e);
-        }
-
-        try {
-            float[][] predictions = booster.predict(dmatrix);
-            float passengerCount = (float) Math.expm1(predictions[0][0]);
-
-            // Calculate busyness index
-            String key = attraction.getTaxi_zone() + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
-            Double mean = meanMap.get(key);
-            Double std = stdMap.get(key);
-            System.out.println("mean: " + mean);
-            System.out.println("std: " + std);
-
-            if (mean == null || std == null) {
-                throw new IllegalArgumentException("Mean or standard deviation not found for key: " + key);
-            }
-
-            double zScore = (passengerCount - mean) / std;
-            int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);
-            System.out.println("busynessIndex100: " + busynessIndex100);
-
-            if (busynessIndex100 <= 20) {
-                return 1;
-            } else if (busynessIndex100 <= 40) {
-                return 2;
-            } else if (busynessIndex100 <= 60) {
-                return 3;
-            } else if (busynessIndex100 <= 80) {
-                return 4;
-            } else {
-                return 5;
-            }
-        } catch (XGBoostError e) {
-            throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
-        }
-    }
-
     public float predictByTaxiZone(int taxiZone, LocalDateTime dateTime) throws XGBoostError {
         LocalDate date = dateTime.toLocalDate();
         List<DailyForecastData> dailyForecastDataList = dailyWeatherDataService.getForecastByDate(date);
@@ -359,12 +238,6 @@ public class PredictionService {
         int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
         features[getFeatureIndex("quarter_" + quarter)] = 1;
 
-        // Print all feature values
-        System.out.println("Feature values:");
-        for (int i = 0; i < features.length; i++) {
-            System.out.println(expected_features.get(i) + ": " + features[i]);
-        }
-
         // Predict passenger count
         float[] floatFeatures = new float[features.length];
         for (int i = 0; i < features.length; i++) {
@@ -395,22 +268,43 @@ public class PredictionService {
 
             double zScore = (passengerCount - mean) / std;
             int busynessIndex100 = (int) Math.min(Math.max((zScore + 4) / 8 * 100, 1), 100);
-            System.out.println("busynessIndex100: " + busynessIndex100);
 
-            if (busynessIndex100 <= 20) {
-                return 1;
-            } else if (busynessIndex100 <= 40) {
-                return 2;
-            } else if (busynessIndex100 <= 60) {
-                return 3;
-            } else if (busynessIndex100 <= 80) {
-                return 4;
-            } else {
-                return 5;
-            }
+            // Range : 1 - 100
+            return busynessIndex100;
         } catch (XGBoostError e) {
             throw new XGBoostError("Failed to make predictions with XGBoost model.", e);
         }
+    }
+
+    public float getBusynessByZoneFromJson(int taxiZone, LocalDateTime dateTime) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        File jsonFile = new File(BUSYNESS_JSON_FILE);
+        JsonNode rootNode = mapper.readTree(jsonFile);
+
+        LocalDateTime roundedDateTime = dateTime.withMinute(0).withSecond(0).withNano(0);
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        String dateKey = dateFormatter.format(roundedDateTime.toLocalDate());
+        String timeKey = timeFormatter.format(roundedDateTime);
+
+        JsonNode zoneNode = rootNode.path(String.valueOf(taxiZone));
+        if (zoneNode.isMissingNode()) {
+            throw new IllegalArgumentException("Taxi zone not found in JSON: " + taxiZone);
+        }
+
+        JsonNode dateNode = zoneNode.path(dateKey);
+        if (dateNode.isMissingNode()) {
+            throw new IllegalArgumentException("Date not found in JSON: " + dateKey);
+        }
+
+        JsonNode timeNode = dateNode.path(timeKey);
+        if (timeNode.isMissingNode()) {
+            throw new IllegalArgumentException("Time not found in JSON: " + timeKey);
+        }
+
+        return timeNode.floatValue();
     }
 
 }

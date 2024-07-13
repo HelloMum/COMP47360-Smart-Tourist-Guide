@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
@@ -15,6 +15,7 @@ import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import AlertModal from '../../components/AlertModal';
 import Map_Spots from '../../components/spots/Map_Spots';
+import SkeletonSpotCard from '../../components/spots/SkeletonSpotCard';
 
 const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -150,7 +151,49 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                 <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
                 <Sort_Spots value={sortOption} onChange={handleSortChange} />
               </Stack>
-              <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
+             
+              {loading ? (
+                
+  <Skeleton variant="text" width="80px" height="80px" animation="wave" style={{ marginLeft: 12, marginTop: 10 }} />
+) : (
+  spots.length > 0 && <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
+)}
+
+
+
+            { spots.length === 0 && !loading && (
+            <>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-180px',
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '50%' }} 
+    />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '1em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      Sorry, no result here.
+    </Typography>
+
+  </Box>
+</>
+) }
+              
             </>
           )}
 
@@ -159,27 +202,33 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
               <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
             ) : (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 1.5, paddingX: '12px' }}>
-                {loading ? (
-                  <div>Loading...</div>
-                ) : (
-                  displayedSpots.map((spot) => (
-                    <SpotCard
-                      key={spot.id}
-                      id={spot.index}
-                      image1={`/images/spots_small/${spot.index}_1.webp`}
-                      image3={`/images/spots_small/${spot.index}_3.webp`}
-                      title={spot.attraction_name}
-                      rating={spot.attraction_rating}
-                      price={spot.price}
-                      category={spot.category}
-                      user_ratings_total={spot.user_ratings_total}
-                      onExpand={() => handleExpand(spot)}
-                    />
-                  ))
-                )}
-              </Box>
+              {loading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <SkeletonSpotCard key={index} />
+                ))
+              ) : (
+                displayedSpots.map((spot) => (
+                  <SpotCard
+                    key={spot.id}
+                    id={spot.index}
+                    image1={`/images/spots_small/${spot.index}_1.webp`}
+                    image3={`/images/spots_small/${spot.index}_3.webp`}
+                    title={spot.attraction_name}
+                    rating={spot.attraction_rating}
+                    price={spot.price}
+                    isFree={spot.free}
+                    category={spot.category}
+                    user_ratings_total={spot.user_ratings_total}
+                    onExpand={() => handleExpand(spot)}
+                  />
+                ))
+              )}
+            </Box>
+            
             )}
           </div>
+
+         
         </div>
       )}
 
@@ -228,7 +277,11 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             message="Please set the start and end dates before adding items to the list."
           />
         </Box>
+        
       )}
+
+
+
     </div>
   );
 };
