@@ -228,18 +228,14 @@ public class ItineraryService {
                         .filter(attraction -> {
                             double distance = calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude());
                             boolean withinRadius = distance <= searchRadiusFinal;
-                            System.out.println("Checking distance for attraction " + attraction.getAttraction_name() + ": " + distance + " km (within radius: " + withinRadius + ")");
                             return withinRadius;
                         })
                         .filter(attraction -> {
                             boolean openDuring = isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime());
-                            System.out.println("Checking opening hours for attraction " + attraction.getAttraction_name() + ": " + (openDuring ? "Open" : "Closed"));
                             return openDuring;
                         })
                         .sorted(Comparator.comparingInt(attraction -> calculateOpenDaysInRange(attraction, startDate, endDate)))
                         .collect(Collectors.toList());
-
-                System.out.println("Filtered attractions count: " + filteredAttractions.size());
 
                 Attraction bestAttraction = null;
                 double minBusyness = Double.MAX_VALUE;
@@ -252,8 +248,6 @@ public class ItineraryService {
                         double busyness = prediction;
 
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
-
-                        System.out.println("Attraction " + attraction.getAttraction_name() + " busyness prediction: " + busyness);
 
                         if (busyness < minBusyness) {
                             minBusyness = busyness;
@@ -278,9 +272,7 @@ public class ItineraryService {
                     found = true;
                 } else {
                     searchRadius += 1.0;
-                    System.out.println("Increasing search radius to " + searchRadius);
                     if (filteredAttractions.isEmpty() && searchRadius > 100.0) {
-                        System.out.println("No suitable attraction found within a reasonable distance. Skipping time slot: " + slotStart + " - " + slotEnd);
                         break;
                     }
                 }
