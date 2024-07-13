@@ -12,19 +12,19 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({ showGeoJson, handleToggleGe
       style={{
         position: 'absolute',
         top: 20,
-        left: '35%',
+        left: '40%',
         transform: 'translateX(-50%)',
         zIndex: 5,
-        padding: '2px 10px',
+        padding: '1px 10px',
         background: 'rgba(255, 165, 0, 0.9)',
         border: '1px solid #fff',
         borderRadius: '15px',
         cursor: 'pointer',
         color: 'white',
-        width: '100px',
+        width: '70px',
       }}
     >
-      {showGeoJson ? 'Hide Data' : 'Show Data'}
+      {showGeoJson ? 'data on' : 'data off'}
     </button>
   );
 };

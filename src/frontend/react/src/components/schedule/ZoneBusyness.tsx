@@ -1,24 +1,54 @@
 import React, { useEffect, useState, useContext } from 'react';
 import moment from 'moment';
 import { ListContext } from '../../contexts/ListContext';
-import { Stack, Select, MenuItem, FormControl, CircularProgress, Button, Box } from '@mui/material';
+import { Stack, Select, MenuItem, FormControl, CircularProgress, Box } from '@mui/material';
 import { Chart } from 'react-google-charts';
 import { getColor } from './colorMappings';
 import { Close } from '@mui/icons-material';
+import styled from 'styled-components';
+
+
+const tooltipStyles = `
+  .google-visualization-tooltip {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    font-size: 12px;
+    color: #333;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+`;
+
+
+const injectTooltipStyles = () => {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = tooltipStyles;
+  document.head.appendChild(styleElement);
+};
 
 interface ZoneBusynessProps {
   zoneId: number | null;
   zoneName: string;
   onClose: () => void;
+  selectedTime: string | null; 
 }
 
-const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }) => {
+const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, selectedTime }) => {
   const { selectedDates } = useContext(ListContext);
   const [busynessData, setBusynessData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedTime) {
+      const date = moment(selectedTime).format('YYYY-MM-DD');
+      setSelectedDate(date);
+    }
+  }, [selectedTime]);
 
   useEffect(() => {
     const fetchBusynessData = async () => {
@@ -32,7 +62,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
       const endDate = selectedDates[1].format('YYYY-MM-DD');
 
       try {
-        const response = await fetch(`http://localhost:8080/busyness/predict_all_sort_by_zone?startDate=${startDate}&endDate=${endDate}`, {
+        const response = await fetch(`/api/busyness/predict_all_sort_by_zone?startDate=${startDate}&endDate=${endDate}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -61,6 +91,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
     };
 
     fetchBusynessData();
+    injectTooltipStyles(); // Inject the tooltip styles
   }, [zoneId, selectedDates]);
 
   const handleDateChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -68,11 +99,14 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
   };
 
   const formatDataForChart = (data: any) => {
-    const chartData = [['Time', 'Busyness', { role: 'style' }]];  // Add a style role for custom color
+    const chartData = [['Time', 'Busyness', { role: 'style' }, { role: 'tooltip', type: 'string', p: { html: true } }]];
     Object.keys(data).forEach((time) => {
       const value = data[time];
-      const color = getColor(value);  // Get color based on the value
-      chartData.push([time.split('T')[1], value, color]);
+      const color = getColor(value);
+      const tooltipContent = `<div class="custom-tooltip">
+                                ${time.split('T')[1]} Busyness: ${value}
+                              </div>`;
+      chartData.push([time.split('T')[1], value, color, tooltipContent]);
     });
     return chartData;
   };
@@ -95,7 +129,6 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
       p: 1,
     }}>
 
-
       <Close 
         sx={{
           position: 'absolute',
@@ -114,7 +147,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
         
       </Close>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',marginTop:'10px',marginBottom:'0px' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '10px', marginBottom: '0px' }}>
         <h3>{zoneName}</h3>
         <FormControl sx={{ ml: 2 }}>
           <Select
@@ -172,15 +205,14 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
             height="100%"
             data={formatDataForChart(busynessData[selectedDate])}
             options={{
-              // title: 'Zone Busyness',
-              legend: { position: 'none' }, 
+              legend: { position: 'none' },
               chartArea: {
                 left: 30,    
                 right: 20,  
                 top: 20,     
-                bottom: 30   
+                bottom: 30,
               },
-              bar: { groupWidth: '50%' }, // barwidth
+              bar: { groupWidth: '50%' },
               series: {
                 0: {
                   dataOpacity: 0.8,
@@ -194,13 +226,24 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose }
                   color: '#000',
                 },
               },
-              // animation: {
-              //   duration: 400,
-              //   easing: 'out',
-              //   startup: true,
-              // },
               isStacked: true,
-              tooltip: { isHtml: true },
+              tooltip: {
+                isHtml: true,
+                textStyle: {
+                  fontSize: 12, // Tooltip text size
+                  color: '#333', // Tooltip text color
+                },
+                showColorCode: true, // Show the color box
+                trigger: 'focus', // Trigger on focus
+                ignoreBounds: true, // Ignore bounds for the tooltip
+                boxStyle: {
+                  stroke: '#ccc', // Border color
+                  strokeWidth: 1, // Border width
+                  shadow: true, // Enable shadow
+                  padding: '10px', // Add padding here
+                },
+                cssClass: 'custom-tooltip', // Custom CSS class for further styling
+              },
             }}
           />
         </Box>

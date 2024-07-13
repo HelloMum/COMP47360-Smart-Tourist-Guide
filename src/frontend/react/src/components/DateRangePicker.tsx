@@ -8,7 +8,7 @@ const { RangePicker } = DatePicker;
 
 const disabled7DaysDate = (fromDate) => (current) => {
   const tomorrow = moment().add(1, 'days').startOf('day');
-  const thirtyDaysFromTomorrow = moment().add(30, 'days').endOf('day');
+  const thirtyDaysFromTomorrow = moment().add(29, 'days').endOf('day');
 
   if (!current) {
     return false;

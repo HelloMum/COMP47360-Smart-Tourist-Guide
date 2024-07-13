@@ -27,6 +27,13 @@ const Schedule: React.FC = () => {
     }
   }, [planData, currentDate]);
 
+  useEffect(() => {
+    if (events.length > 0) {
+      const firstEventStartTime = events[0].startTime;
+      handleStartTimeClick(firstEventStartTime);
+    }
+  }, [events]);
+
   const handleDateChange = (date: string) => {
     setCurrentDate(date);
     setEvents(planData[date] || []);
@@ -201,7 +208,8 @@ const Schedule: React.FC = () => {
                 free={item.free}
                 userRatings_total={item.userRatings_total}
                 index={index + 1}
-                onStartTimeClick={handleStartTimeClick} // Pass the callback function
+                onStartTimeClick={handleStartTimeClick} 
+                highlightedStartTime={selectedTime}  
               />
             ))}
           </div>
