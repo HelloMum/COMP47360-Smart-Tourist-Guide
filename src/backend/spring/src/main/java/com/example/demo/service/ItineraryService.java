@@ -244,7 +244,6 @@ public class ItineraryService {
                     try {
                         int attractionZone = attraction.getTaxi_zone();
                         float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
-                        //float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
                         double busyness = prediction;
 
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
@@ -259,7 +258,6 @@ public class ItineraryService {
                 }
 
                 if (bestAttraction != null) {
-                    System.out.println("Adding attraction: " + bestAttraction.getAttraction_name() + " with busyness: " + minBusyness);
                     ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false, bestAttraction.isFree(), bestAttraction.getCategory(), bestAttraction.getAttraction_vicinity(), bestAttraction.getAttractionWebsite(), bestAttraction.getDescription(), bestAttraction.getAttraction_rating(), bestAttraction.getUser_ratings_total(), bestAttraction.getAttraction_phone_number(), bestAttraction.getInternational_phone_number());
 
                     timeSlot.setOccupied(true);
@@ -291,7 +289,6 @@ public class ItineraryService {
         // 0-Sunday 1-Monday ... 6-Saturday
         dayOfWeek = (dayOfWeek + 6) % 7;
 
-        //System.out.println("Checking opening hours for day " + dayOfWeek + " between " + startTime + " and " + endTime);
         String[] hoursArray = formattedHours.split(", ");
         for (String hours : hoursArray) {
             String[] parts = hours.split(": ");
@@ -312,8 +309,6 @@ public class ItineraryService {
             if (closeTime.equals(LocalTime.MIDNIGHT)) {
                 closeTime = LocalTime.of(23, 59);
             }
-
-            //System.out.println("Parsed day: " + parsedDayOfWeek + ", Open time: " + openTime + ", Close time: " + closeTime);
 
             if (dayOfWeek == parsedDayOfWeek &&
                     !startTime.isBefore(openTime) &&
