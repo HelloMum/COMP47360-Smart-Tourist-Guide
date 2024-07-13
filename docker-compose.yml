@@ -29,6 +29,11 @@ services:
       - db
     networks:
       - "${NETWORK_NAME}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   scrappers:
     build:
