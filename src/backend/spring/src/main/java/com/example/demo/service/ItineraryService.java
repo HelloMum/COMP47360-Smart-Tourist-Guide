@@ -20,8 +20,7 @@ public class ItineraryService {
 
     private List<Event> events = new ArrayList<>();
 
-    private List<TimeSlot> availableTimeSlots; // List of available time slots, each containing a start and end time
-    private List<Attraction> attractions; // List of attractions
+    private List<TimeSlot> availableTimeSlots;
 
     @Autowired
     private AttractionService attractionService;
@@ -55,7 +54,6 @@ public class ItineraryService {
                         selectedEvents.add(event);
                     }
                 } catch (IllegalArgumentException ex) {
-                    // Handle exception
                 }
             }
         }
@@ -109,7 +107,8 @@ public class ItineraryService {
                     double busyness = 0;
                     if (taxiZone != -1) {
                         try {
-                            float prediction = predictionService.predictByTaxiZone(taxiZone, eventStart);
+                            float prediction = predictionService.getBusynessByZoneFromJson(taxiZone, eventStart);
+                            //float prediction = predictionService.predictByTaxiZone(taxiZone, eventStart);
                             busyness = prediction;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -175,7 +174,9 @@ public class ItineraryService {
 
                     for (Attraction attraction : openAttractions) {
                         try {
-                            float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
+                            int attractionZone = attraction.getTaxi_zone();
+                            //float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
+                            float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
                             double busyness = prediction;
                             if (busyness < minBusyness) {
                                 minBusyness = busyness;
@@ -245,7 +246,9 @@ public class ItineraryService {
 
                 for (Attraction attraction : filteredAttractions) {
                     try {
-                        float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
+                        int attractionZone = attraction.getTaxi_zone();
+                        float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
+                        //float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
                         double busyness = prediction;
 
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
