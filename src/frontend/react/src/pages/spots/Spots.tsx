@@ -28,6 +28,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
+  const [hoveredSpot, setHoveredSpot] = useState(null);
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, selectedDates: contextSelectedDates } = useContext(ListContext);
   const batchSize = 10;
 
@@ -121,6 +122,10 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
     console.log("spots.tsx marker clicked", spot);
     setPopupSpot(spot);
   }, []);
+
+  const handlePopupClose = () => {
+    setPopupSpot(null);
+  };
 
   useEffect(() => {
     if (popupSpot) {
@@ -232,6 +237,8 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                     category={spot.category}
                     user_ratings_total={spot.user_ratings_total}
                     onExpand={() => handleExpand(spot)}
+                    onHover={() => setHoveredSpot(spot)}
+                    onLeave={() => setHoveredSpot(null)}
                   />
                 ))
               )}
@@ -248,13 +255,14 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
 
 
 
-        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} />
+        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} activeSpot={activeSpot} popupSpot={popupSpot} onPopupClose={handlePopupClose} hoveredSpot={hoveredSpot} />
 
      {/* ---------------   popup card on map ----------------------------- */}
 
 
         {popupSpot && (
           <SpotCard_PopUp
+            key={popupSpot.index}
             id={popupSpot.index}
             image1={`/images/spots_small/${popupSpot.index}_1.webp`}
             image3={`/images/spots_small/${popupSpot.index}_3.webp`}
@@ -263,7 +271,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             category={popupSpot.category}
             isFree={popupSpot.free}
             user_ratings_total={popupSpot.user_ratings_total}
-            onClose={() => setPopupSpot(null)}
+            onClose={handlePopupClose}
           />
         )}
       </div>
@@ -294,7 +302,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
+           	alignItems: 'center',
             zIndex: 1300
           }}
           onClick={() => setAlertOpen(false)}
