@@ -1,11 +1,11 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +20,13 @@ public class DailyForecastData {
     private double rain;
     private double snow;
     private double speed;
+    private double humidity;
+    private double pressure;
+    private String weather_description;
+    private String weather_icon;
+    private String weather_main;
+    @Transient
+    private LocalDate date;
 
     public UUID getId() {
         return id;
@@ -75,5 +82,36 @@ public class DailyForecastData {
 
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    public double getHumidity() { return humidity; }
+
+    public void setHumidity(double humidity) { this.humidity = humidity; }
+
+    public double getPressure() { return pressure; }
+
+    public void setPressure(double pressure) { this.pressure = pressure; }
+
+    public String getWeather_description() { return weather_description; }
+
+    public void setWeather_description(String weather_description) { this.weather_description = weather_description; }
+
+    public String getWeather_icon() { return weather_icon; }
+
+    public void setWeather_icon(String weather_icon) { this.weather_icon = weather_icon; }
+
+    public String getWeather_main() { return weather_main; }
+
+    public void setWeather_main(String weather_main) { this.weather_main = weather_main; }
+
+    public LocalDate getDate() { return date; }
+
+    public void setDate(LocalDate date) { this.date = date; }
+
+    // Convert dt to LocalDate and set it
+    public void convertDtToDate() {
+        this.date = Instant.ofEpochSecond(this.dt)
+                .atZone(ZoneId.of("America/New_York"))
+                .toLocalDate();
     }
 }

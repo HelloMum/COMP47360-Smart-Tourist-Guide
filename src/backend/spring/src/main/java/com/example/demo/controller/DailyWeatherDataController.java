@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/latest-weather")
+@RequestMapping("/weather")
 public class DailyWeatherDataController {
 
     private final DailyWeatherDataService service;
@@ -31,5 +31,12 @@ public class DailyWeatherDataController {
     public List<DailyForecastData> getForecastByDate(@PathVariable String date) {
         LocalDate localDate = LocalDate.parse(date);
         return service.getForecastByDate(localDate);
+    }
+
+    @GetMapping("/by_date_range/{startDate}/{endDate}")
+    public List<DailyForecastData> getForecastByDateRange(@PathVariable String startDate, @PathVariable String endDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+        return service.getForecastByDateRange(start, end);
     }
 }

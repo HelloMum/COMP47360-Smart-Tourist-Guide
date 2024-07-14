@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { AccessTimeRounded, ConfirmationNumber, DateRangeRounded, ExpandLessRounded, LocationOnRounded, PhoneEnabledRounded, PublicRounded, Close } from '@mui/icons-material';
 import { Box, Card, CardMedia, Rating, Stack, Typography, Modal, IconButton } from '@mui/material';
 import Btn_Add from './../Btn_Add';
 import Tag_Category from './../Tag_Category';
 import Tag_IsFree from './../Tag_IsFree';
+import { ListContext } from '../../contexts/ListContext';
+import AlertModal from '../AlertModal';
 
 const SpotDetail = ({ spot, onCollapse }) => {
+  const { addItemWithDateCheck, isItemInList } = useContext(ListContext);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+  const handleMouseDown = () => setIsClicked(true);
+  const handleMouseUp = () => setIsClicked(false);
 
   const handleOpen = (image) => {
     setSelectedImage(image);
@@ -18,6 +29,17 @@ const SpotDetail = ({ spot, onCollapse }) => {
     setOpen(false);
     setSelectedImage(null);
   };
+
+  const handleAdd = () => {
+    const spotData = {
+      id: spot.index, 
+      title: spot.attraction_name,
+      image: `/images/spots_small/${spot.index}_1.webp`,
+    };
+    addItemWithDateCheck(spotData, () => setAlertOpen(true), 'SpotDetail');
+  };
+
+  const isAdded = isItemInList(spot.attraction_name);
 
   return (
     <Card sx={{
@@ -47,7 +69,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         }}>
           <CardMedia
             component="img"
-            image={`/images/spots_small/${spot.index}_2.webp`}
+            image={`/images/spots/${spot.index}_2.webp`}
             alt={spot.attraction_name}
             sx={{
               objectFit: 'cover',
@@ -56,13 +78,10 @@ const SpotDetail = ({ spot, onCollapse }) => {
               transition: 'transform 3s ease-in-out',
               '&:hover': {
                 transform: 'scale(1.4)'
-                
               },
-
               '&:not(:hover)': {
                 transition: 'transform 0.01s ease-in-out'
               }
-            
             }}
             onClick={() => handleOpen(`/images/spots/${spot.index}_2.webp`)}
           />
@@ -79,7 +98,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         }}>
           <CardMedia
             component="img"
-            image={`/images/spots_small/${spot.index}_3.webp`}
+            image={`/images/spots/${spot.index}_3.webp`}
             alt={spot.attraction_name}
             sx={{
               objectFit: 'cover',
@@ -99,25 +118,20 @@ const SpotDetail = ({ spot, onCollapse }) => {
       </Box>
       {/*------------------ content below pictures -------------------*/}
       <Stack sx={{ p: 3, px: 5 }}>
-
-
-
         {/*--------------- title & two tags -------------------------- */}
-      
-        <h2 style={{ marginBottom:4 }}>{spot.attraction_name}</h2>
-            <Stack marginBottom={1}>
-
-
-              <span  >
+        <h2 style={{ marginBottom: 4 }}>{spot.attraction_name}</h2>
+        <Stack marginBottom={1}>
+          <span>
             <Tag_Category category={spot.category} />
-            <Tag_IsFree isFree={true} />
+            {spot.free && <Tag_IsFree />}
           </span>
         </Stack>
 
         {/*-------------------- rating ---------------------- */}
         <Stack direction={"row"} gap={1}>
           <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly />
-          {spot.attraction_rating} by {spot.user_ratings_total} people
+          {spot.attraction_rating} 
+          <span style={{ color: '#888',fontSize:'14px' }}>by {spot.user_ratings_total} people</span>
         </Stack>
 
         <Typography variant="body2" marginTop={2}>
@@ -126,7 +140,6 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
         {/*------------------ Address, price, website, phone -------------------- */}
         <Stack gap={1.5} marginTop={2}>
-
           {/* Address */}
           <Box display="flex" alignItems="center">
             <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
@@ -147,8 +160,17 @@ const SpotDetail = ({ spot, onCollapse }) => {
           <Box display="flex" alignItems="center">
             <PublicRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
             {spot.attractionWebsite ? (
-              <a href={spot.attractionWebsite} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                <Typography variant="body2" color="text.secondary">
+              <a
+                href={spot.attractionWebsite}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+              >
+                <Typography variant="body2" color={isHovered || isClicked ? 'orange' : 'text.secondary'}>
                   {spot.attractionWebsite}
                 </Typography>
               </a>
@@ -168,12 +190,11 @@ const SpotDetail = ({ spot, onCollapse }) => {
             </Typography>
           </Box>
 
-
-        {/*------------------------------------- two buttons ------------------------- */}
-
+          {/*------------------------------------- two buttons ------------------------- */}
           <Box display="flex" alignItems="center" justifyContent="space-between" marginTop={2}>
-            <Btn_Add />
-            <ExpandLessRounded onClick={onCollapse} sx={{ cursor: 'pointer' }} />
+            <Btn_Add onClick={handleAdd} isAdded={isAdded} />
+
+            <IconButton onClick={onCollapse}><ExpandLessRounded /></IconButton>
           </Box>
         </Stack>
       </Stack>
@@ -188,31 +209,55 @@ const SpotDetail = ({ spot, onCollapse }) => {
           style: { backgroundColor: 'transparent' }
         }}
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '50%',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 0,
-          outline: 0
-        }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'background.paper',
+            boxShadow: 0,
+            textAlign: 'center',
+          }}
+        >
           <IconButton
-            sx={{ position: 'absolute', top: 8, right: 8 }}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              borderRadius: '50%',
+              padding: '6px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+              },
+              '&:active': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+              },
+            }}
             onClick={handleClose}
           >
-            <Close />
+            <Close sx={{ fontSize: '18px' }} />
           </IconButton>
+
           <CardMedia
             component="img"
             image={selectedImage}
             alt="Selected image"
-            sx={{ width: '100%', height: 'auto' }}
+            sx={{
+              maxHeight: '70vh',
+              objectFit: 'cover',
+            }}
           />
         </Box>
       </Modal>
+
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title="Warning"
+        message="Please set the start and end dates before adding items to the list."
+      />
     </Card>
   );
 };

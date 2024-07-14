@@ -56,7 +56,7 @@ const FilterCheckbox = ({ onChange, selectedCategories }) => {
 
       {/*------------------------ checkbox----------------------- */}
       {open && (
-        <Box ref={ref} sx={{ boxShadow: 1, p: 1, borderRadius: 1, backgroundColor: '#fff', top: '145px', left: '15px', position: 'absolute', zIndex: 1000 }}>
+        <Box ref={ref} sx={{ boxShadow: 4, p: 1, borderRadius: 1, backgroundColor: '#fff', top: '145px', left: '8px', position: 'absolute', zIndex: 1000 }}>
           <FormGroup
             sx={{
               display: 'grid',
