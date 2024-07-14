@@ -1,7 +1,7 @@
 import React from 'react';
-import theme from '../theme';
+import theme from '../utils/theme';
 
-const Tag = ({ isFree }) => {
+const Tag = () => {
   return (
     <span style={{
       backgroundColor: '#4CAF50', 
@@ -14,7 +14,7 @@ const Tag = ({ isFree }) => {
       boxSizing: 'border-box',
 
     }}>
-      free
+    free
     </span>
   );
 }
