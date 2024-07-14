@@ -98,34 +98,49 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
       })}
 
       {selectedMarker && (
-        <OverlayView
-          position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }}
-          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-        >
-          <div style={{
-            position: 'absolute',
-            transform: 'translate(-50%, -115%)',
-            background: 'white',
-            border: '1px solid #ddd',
-            borderRadius: '8px',
-            maxWidth: '500px',
-          }}>
-            <SpotsCard_PopUp
-              id={selectedMarker.index}
-              image1={`/images/spots_small/${selectedMarker.index}_1.webp`}
-              image3={`/images/spots_small/${selectedMarker.index}_3.webp`}
-              title={selectedMarker.attraction_name}
-              rating={selectedMarker.attraction_rating}
-              category={selectedMarker.category}
-              isFree={selectedMarker.free}
-              user_ratings_total={selectedMarker.user_ratings_total}
-              onClose={() => {
-                setSelectedMarker(null);
-                onPopupClose();
-              }}
-            />
-          </div>
-        </OverlayView>
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'transparent',
+              zIndex: 998,
+              pointerEvents: 'none', // Make sure this layer does not block clicks
+            }}
+          />
+          <OverlayView
+            position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -115%)',
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              maxWidth: '500px',
+              pointerEvents: 'auto' // Ensure the card itself is still clickable
+            }}>
+              <SpotsCard_PopUp
+                id={selectedMarker.index}
+                image1={`/images/spots_small/${selectedMarker.index}_1.webp`}
+                image3={`/images/spots_small/${selectedMarker.index}_3.webp`}
+                title={selectedMarker.attraction_name}
+                rating={selectedMarker.attraction_rating}
+                category={selectedMarker.category}
+                isFree={selectedMarker.free}
+                user_ratings_total={selectedMarker.user_ratings_total}
+                onClose={() => {
+                  setSelectedMarker(null);
+                  onPopupClose();
+                }}
+              />
+            </div>
+          </OverlayView>
+        </>
       )}
     </GoogleMap>
   );

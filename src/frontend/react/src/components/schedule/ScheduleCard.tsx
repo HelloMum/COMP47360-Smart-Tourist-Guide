@@ -28,7 +28,7 @@ interface ScheduleCardProps {
   userRatings_total: number;
   index: number;
   onStartTimeClick: (startTime: string) => void;
-  highlightedStartTime: string; // 新增的属性
+  highlightedStartTime: string; 
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
@@ -129,7 +129,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       <Stack direction='column' gap={1} sx={{ minWidth: '6vw', textAlign: 'right', marginX: 1 }}>
         <Typography
           variant="h6"
-          style={{
+          style={{height:'30px',
             fontWeight: startTime === highlightedStartTime ? '600' : 'normal',
             fontFamily: 'Lexend',
             color: startTime === highlightedStartTime || isHovered ? 'darkorange' : '#707070',

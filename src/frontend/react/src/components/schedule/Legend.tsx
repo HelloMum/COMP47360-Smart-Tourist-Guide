@@ -16,7 +16,7 @@ const Legend: React.FC = () => {
         position: 'absolute',
         bottom: 70,
         left: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
         padding: '10px',
         borderRadius: '10px',
         color:'grey',

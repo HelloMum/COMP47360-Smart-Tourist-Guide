@@ -63,7 +63,7 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
       <div style={{
         borderRadius: '8px',
         overflow: 'hidden',
-        width: '270px',
+        width: '17.5vw',
         background: 'white',
         marginBottom: 15,
         padding: 0
@@ -118,7 +118,7 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
           <Box display="flex" alignItems="center" sx={{ margin: 0 }}></Box>
           <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5, margin: 0 }}>
             <Btn_Add onClick={handleAdd} isAdded={isAdded} />
-            <IconButton onClick={onClose} sx={{ margin: 0, padding: 0 }}>
+            <IconButton onClick={onClose} sx={{ margin: 0, padding: 0, cursor: 'pointer' }}>
               <CloseRounded />
             </IconButton>
           </Stack>
