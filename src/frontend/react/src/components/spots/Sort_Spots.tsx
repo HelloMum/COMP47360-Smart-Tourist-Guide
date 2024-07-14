@@ -1,28 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormControl, Select as MuiSelect, MenuItem, Typography, Box } from '@mui/material';
-import theme from '../../theme';
+import theme from '../../utils/theme';
 
-
-const Sort_Spots = () => {
- 
-  const handleChange = (event) => {
-   
-  };
-
+const Sort_Spots = ({ value, onChange }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-     <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}> sort by  </Typography>
+      <Typography sx={{ ...theme.typography.smallText, marginRight: 1 }}>sort by</Typography>
       <FormControl sx={{ minWidth: 100 }}>
         <MuiSelect
-          value={5}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
           displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
-          sx={{ height: 26,...theme.typography.smallText }}
+          sx={{ height: 26, ...theme.typography.smallText }}
         >
-        <MenuItem value={5} sx={{ height: 26,...theme.typography.smallText }}>popularity</MenuItem>
-          <MenuItem value={10} sx={{ height: 26,...theme.typography.smallText }}>rating</MenuItem>
-          <MenuItem value={20} sx={{ height: 26,...theme.typography.smallText }}>price</MenuItem>
+          <MenuItem value="user_ratings_total" sx={{ height: 26, ...theme.typography.smallText }}>popularity</MenuItem>
+          <MenuItem value="attraction_rating" sx={{ height: 26, ...theme.typography.smallText }}>rating</MenuItem>
+          {/* <MenuItem value="price" sx={{ height: 26, ...theme.typography.smallText }}>price</MenuItem> */}
         </MuiSelect>
       </FormControl>
     </Box>

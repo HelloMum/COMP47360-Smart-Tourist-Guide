@@ -1,28 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { DatePicker } from 'antd';
-import moment, { Moment } from 'moment';
-import './DateRangePicker.css';  // 导入自定义 CSS
+import moment from 'moment';
+import './DateRangePicker.css';
+import { ListContext } from '../contexts/ListContext';
 
 const { RangePicker } = DatePicker;
 
-// Disabled 7 days from the selected date
-const disabled7DaysDate = (fromDate: moment.Moment | null) => (current: moment.Moment) => {
-  if (!fromDate) return false;
-  return Math.abs(current.diff(fromDate, 'days')) >= 7;
+const disabled7DaysDate = (fromDate) => (current) => {
+  const tomorrow = moment().add(1, 'days').startOf('day');
+  const thirtyDaysFromTomorrow = moment().add(29, 'days').endOf('day');
+
+  if (!current) {
+    return false;
+  }
+
+  const isOutsideThirtyDaysRange = current.isBefore(tomorrow) || current.isAfter(thirtyDaysFromTomorrow);
+  const isOutsideSevenDaysRange = fromDate && Math.abs(current.diff(fromDate, 'days')) >= 7;
+
+  return isOutsideThirtyDaysRange || isOutsideSevenDaysRange;
 };
 
-const DateRangePicker: React.FC = () => {
-  const [fromDate, setFromDate] = useState<moment.Moment | null>(null);
+const DateRangePicker = ({ onDateChange, className, value }) => {
+  const [fromDate, setFromDate] = useState(value ? value[0] : null);
+  const { setSelectedDates, clearList } = useContext(ListContext);
 
-  const handleCalendarChange = (dates: [moment.Moment | null, moment.Moment | null] | null) => {
+  const handleCalendarChange = (dates) => {
     setFromDate(dates ? dates[0] : null);
   };
 
+  const handleChange = (dates) => {
+    setSelectedDates(dates); // Update context with selected dates
+    onDateChange(dates);
+    clearList(); // Clear the list when dates are changed
+  };
+
   return (
-    <div className="custom-range-picker">
+    <div className={`custom-range-picker ${className}`}>
       <RangePicker
         disabledDate={disabled7DaysDate(fromDate)}
         onCalendarChange={handleCalendarChange}
+        onChange={handleChange}
+        value={value}
       />
     </div>
   );

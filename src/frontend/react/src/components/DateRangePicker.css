@@ -1,15 +1,34 @@
-
 .custom-range-picker .ant-picker {
   border-radius: 20px;
   width: 220px;
-  border-color: #ef9930; 
+  border-color: #ef9930;
+  activeBorderColor: #ef9930;
 }
 
 .custom-range-picker .ant-picker-focused {
-  border-color: #ef9930; 
+  border-color: #ef9930;
   box-shadow: 0 0 0 0px white;
+  activeBorderColor: #ef9930;
+  hoverBorderColor: #ef9930;
+  
 }
 
 .custom-range-picker .ant-picker:hover {
-  border-color: #ef9930; 
+  border-color: #ef9930;
+  activeBorderColor: #ef9930;
+}
+
+.custom-range-picker .ant-picker-input > input {
+  font-size: 12px; 
+}
+
+/* Home page */
+.home-date-picker .ant-picker {
+  width: 14vw;
+  height: 38px;
+  border-width: 1px;
+}
+
+.home-date-picker .ant-picker-input > input {
+  font-size: 12px; 
 }

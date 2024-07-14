@@ -18,4 +18,7 @@ public interface DailyWeatherDataRepository extends JpaRepository<DailyForecastD
 
     @Query("SELECT f FROM DailyForecastData f ORDER BY f.dt ASC")
     List<DailyForecastData> findLatestForecast(Pageable pageable);
+
+    @Query("SELECT d FROM DailyForecastData d WHERE d.dt BETWEEN ?1 AND ?2 ORDER BY d.dt ASC")
+    List<DailyForecastData> findForecastsByDateRange(long startDt, long endDt);
 }
