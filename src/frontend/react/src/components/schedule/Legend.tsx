@@ -14,15 +14,15 @@ const Legend: React.FC = () => {
     <Box
       sx={{
         position: 'absolute',
-        bottom: 70,
+        bottom: 60,
         left: 20,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         padding: '10px',
         borderRadius: '10px',
         color:'grey',
         width: 180,
-      }}
-    >
+        border: '1px solid rgba(0, 0, 0, 0.15)'}}
+            >
       <Grid container spacing={1}>
         <Grid item xs={6}>
           {leftColumnColors.map((color, index) => (

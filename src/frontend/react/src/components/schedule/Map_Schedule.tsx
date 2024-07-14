@@ -282,8 +282,8 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
       {selectedZone && showLegend && isZoneBusynessVisible && (
         <div style={{
           position: 'absolute',
-          bottom: '70px',
-          right: '370px',
+          bottom: '60px',
+          right: '19vw',
           background: 'white',
           border: '1px solid #ddd',
           borderRadius: '8px',
