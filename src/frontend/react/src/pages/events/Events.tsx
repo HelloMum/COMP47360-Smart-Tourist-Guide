@@ -120,7 +120,7 @@ const Events = ({ selectedDates }) => {
 
        {loading? (
                 
-                <Skeleton variant="text" width="80px" height="100px" animation="wave" style={{ 
+                <Skeleton variant="text" width="80px" height="80px" animation="wave" style={{ 
                   marginLeft: 5, 
                   marginTop: 10 ,
                   // marginBottom: 10

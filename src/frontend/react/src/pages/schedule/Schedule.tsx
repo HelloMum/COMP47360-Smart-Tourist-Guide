@@ -19,11 +19,13 @@ const Schedule: React.FC = () => {
   const [loadingWeather, setLoadingWeather] = useState(false);
   const [busynessData, setBusynessData] = useState<any | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
 
   useEffect(() => {
     if (currentDate) {
       setEvents(planData[currentDate] || []);
       fetchWeather(currentDate);
+      setSelectedEvent(null); // Reset selected event when date changes
     }
   }, [planData, currentDate]);
 
@@ -37,6 +39,7 @@ const Schedule: React.FC = () => {
   const handleDateChange = (date: string) => {
     setCurrentDate(date);
     setEvents(planData[date] || []);
+    setSelectedEvent(null); // Reset selected event when date changes
   };
 
   const handleStartTimeClick = async (startTime: string) => {
@@ -175,14 +178,14 @@ const Schedule: React.FC = () => {
             style={{
               flexGrow: 1,
               overflowY: 'scroll',
-              msOverflowStyle: 'none', // IE and Edge
-              scrollbarWidth: 'none', // Firefox
+              msOverflowStyle: 'none', 
+              scrollbarWidth: 'none', 
             }}
           >
             <style>
               {`
                 .card-container::-webkit-scrollbar {
-                  display: none; // Hide scrollbar for Chrome, Safari, and Opera
+                  display: none; 
                 }
               `}
             </style>
@@ -226,7 +229,13 @@ const Schedule: React.FC = () => {
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
-        <Map_Schedule events={events} busynessData={busynessData} selectedTime={selectedTime} />
+        <Map_Schedule 
+          events={events} 
+          busynessData={busynessData} 
+          selectedTime={selectedTime} 
+          selectedEvent={selectedEvent} // Pass the selectedEvent state
+          setSelectedEvent={setSelectedEvent} // Pass the setSelectedEvent function
+        />
       </div>
 
       <Btn_List onClick={toggleList} />

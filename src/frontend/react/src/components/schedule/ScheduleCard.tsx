@@ -28,7 +28,7 @@ interface ScheduleCardProps {
   userRatings_total: number;
   index: number;
   onStartTimeClick: (startTime: string) => void;
-  highlightedStartTime: string; // 新增的属性
+  highlightedStartTime: string; 
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
@@ -52,7 +52,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   userRatings_total,
   index,
   onStartTimeClick,
-  highlightedStartTime, // 新增的属性
+  highlightedStartTime, 
 }) => {
   const formattedStartTime = moment(startTime).format('hh:mm A');
   const formattedEndTime = moment(endTime).format('hh:mm A');
@@ -64,7 +64,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const [currentImage, setCurrentImage] = useState(imageSrc);
   const [imageStyle, setImageStyle] = useState({});
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false); // 新增的状态
+  const [isHovered, setIsHovered] = useState(false); 
 
   const handleMouseEnterImage = () => {
     if (event) {
@@ -97,11 +97,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   };
 
   const handleMouseEnterTime = () => {
-    setIsHovered(true); // 鼠标悬停时设置为true
+    setIsHovered(true); 
   };
 
   const handleMouseLeaveTime = () => {
-    setIsHovered(false); // 鼠标离开时设置为false
+    setIsHovered(false); 
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -129,11 +129,12 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       <Stack direction='column' gap={1} sx={{ minWidth: '6vw', textAlign: 'right', marginX: 1 }}>
         <Typography
           variant="h6"
-          style={{
+          style={{height:'30px',
             fontWeight: startTime === highlightedStartTime ? '600' : 'normal',
             fontFamily: 'Lexend',
             color: startTime === highlightedStartTime || isHovered ? 'darkorange' : '#707070',
             fontSize: startTime === highlightedStartTime ? '1.15rem' : '1.05rem',
+            textDecoration: startTime === highlightedStartTime || isHovered ? 'underline' : 'none',
             cursor: 'pointer',
           }}
           onClick={() => onStartTimeClick(startTime)}

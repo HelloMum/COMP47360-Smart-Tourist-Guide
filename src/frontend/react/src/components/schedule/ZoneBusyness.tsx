@@ -230,19 +230,19 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
               tooltip: {
                 isHtml: true,
                 textStyle: {
-                  fontSize: 12, // Tooltip text size
-                  color: '#333', // Tooltip text color
+                  fontSize: 12, 
+                  color: '#333', 
                 },
-                showColorCode: true, // Show the color box
-                trigger: 'focus', // Trigger on focus
-                ignoreBounds: true, // Ignore bounds for the tooltip
+                showColorCode: true, 
+                trigger: 'focus', 
+                ignoreBounds: true, 
                 boxStyle: {
-                  stroke: '#ccc', // Border color
-                  strokeWidth: 1, // Border width
-                  shadow: true, // Enable shadow
-                  padding: '10px', // Add padding here
+                  stroke: '#ccc', 
+                  strokeWidth: 1, 
+                  shadow: true, 
+                  padding: '10px',
                 },
-                cssClass: 'custom-tooltip', // Custom CSS class for further styling
+                cssClass: 'custom-tooltip', 
               },
             }}
           />

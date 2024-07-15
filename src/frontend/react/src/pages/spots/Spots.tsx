@@ -28,8 +28,9 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
+  const [hoveredSpot, setHoveredSpot] = useState(null);
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, selectedDates: contextSelectedDates } = useContext(ListContext);
-  const batchSize = 6;
+  const batchSize = 10;
 
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -118,9 +119,20 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   };
 
   const handleMarkerClick = useCallback((spot) => {
-    console.log("marker clicked and popup card:", spot);
+    console.log("spots.tsx marker clicked", spot);
     setPopupSpot(spot);
   }, []);
+
+  const handlePopupClose = () => {
+    setPopupSpot(null);
+  };
+
+  useEffect(() => {
+    if (popupSpot) {
+      console.log("data of popupSpot", popupSpot);
+      console.log("data of popupSpot index", popupSpot.index);
+    }
+  }, [popupSpot]);
 
   const handleMissingDates = () => {
     setAlertOpen(true);
@@ -140,6 +152,8 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             overflowY: 'hidden'
           }}
         >
+
+          {/* ---------------   search bar & filter & sort   ----------------------------- */}
           {!activeSpot && (
             <>
               <Stack direction="row" justifyContent="center">
@@ -152,14 +166,17 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                 <Sort_Spots value={sortOption} onChange={handleSortChange} />
               </Stack>
              
+
+           {/* ---------------   number count   ----------------------------- */}
+
               {loading ? (
                 
-  <Skeleton variant="text" width="80px" height="80px" animation="wave" style={{ marginLeft: 12, marginTop: 10 }} />
+  <Skeleton variant="text" width="80px" height="60px" animation="wave" style={{ marginLeft: 12, marginTop: 10 }} />
 ) : (
   spots.length > 0 && <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
 )}
 
-
+          {/* ---------------   empty image   ----------------------------- */}
 
             { spots.length === 0 && !loading && (
             <>
@@ -220,6 +237,8 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                     category={spot.category}
                     user_ratings_total={spot.user_ratings_total}
                     onExpand={() => handleExpand(spot)}
+                    onHover={() => setHoveredSpot(spot)}
+                    onLeave={() => setHoveredSpot(null)}
                   />
                 ))
               )}
@@ -233,26 +252,44 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
       )}
 
       <div className="map hide-scrollbar" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
-        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} />
+
+
+
+        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} activeSpot={activeSpot} popupSpot={popupSpot} onPopupClose={handlePopupClose} hoveredSpot={hoveredSpot} />
+
+     {/* ---------------   popup card on map ----------------------------- */}
+
+
         {popupSpot && (
           <SpotCard_PopUp
+            key={popupSpot.index}
             id={popupSpot.index}
             image1={`/images/spots_small/${popupSpot.index}_1.webp`}
             image3={`/images/spots_small/${popupSpot.index}_3.webp`}
             title={popupSpot.attraction_name}
             rating={popupSpot.attraction_rating}
             category={popupSpot.category}
-            isFree={popupSpot.isFree}
+            isFree={popupSpot.free}
             user_ratings_total={popupSpot.user_ratings_total}
-            onClose={() => setPopupSpot(null)}
+            onClose={handlePopupClose}
           />
         )}
       </div>
 
+
+   {/* ---------------   3 buttons ----------------------------- */}
+
       <Btn_List onClick={toggleList} />
+
+
+
       {showList && <List onClose={closeList} selectedDates={contextSelectedDates} />}
 
       <Btn_Close_Left onClick={toggleLeftPanel} />
+
+
+
+ {/* ---------------   alert modal ----------------------------- */}
 
       {alertOpen && (
         <Box
@@ -265,7 +302,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
+           	alignItems: 'center',
             zIndex: 1300
           }}
           onClick={() => setAlertOpen(false)}
