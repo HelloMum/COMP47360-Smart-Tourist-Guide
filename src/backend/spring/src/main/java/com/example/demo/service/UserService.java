@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.auth0.jwt.JWT;
@@ -75,6 +78,16 @@ public class UserService {
                 .withSubject(email)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 864_000_000)) // 10 days
                 .sign(Algorithm.HMAC512(SECRET_KEY));
+    }
+
+    public boolean verifyToken(String token) {
+        try {
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC512(SECRET_KEY)).build();
+            DecodedJWT jwt = verifier.verify(token.replace("Bearer ", ""));
+            return true;
+        } catch (JWTVerificationException exception) {
+            return false;
+        }
     }
 
     /**
