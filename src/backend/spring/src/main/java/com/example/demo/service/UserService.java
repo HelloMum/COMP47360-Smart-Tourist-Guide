@@ -16,6 +16,9 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
 
+/**
+ * Service class for user-related operations.
+ */
 @Service
 public class UserService {
 
@@ -28,6 +31,13 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private SecureRandom secureRandom = new SecureRandom();
 
+    /**
+     * Registers a new user with the given email and password.
+     *
+     * @param email The email of the new user.
+     * @param password The password of the new user.
+     * @return true if registration is successful, false if the email is already in use.
+     */
     public boolean registerUser(String email, String password) {
         if (userRepository.findByEmail(email) != null) {
             return false;
@@ -45,6 +55,13 @@ public class UserService {
         return true;
     }
 
+    /**
+     * Authenticates a user with the given email and password.
+     *
+     * @param email The email of the user attempting to authenticate.
+     * @param password The password of the user attempting to authenticate.
+     * @return true if authentication is successful, false otherwise.
+     */
     public boolean authenticateUser(String email, String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -55,6 +72,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Generates a JWT token for the user with the given email.
+     *
+     * @param email The email of the user for whom to generate the token.
+     * @return A JWT token string.
+     */
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
@@ -63,6 +86,11 @@ public class UserService {
                 .compact();
     }
 
+    /**
+     * Generates a random salt for use in password hashing.
+     *
+     * @return A base64 encoded salt string.
+     */
     private String generateSalt() {
         byte[] salt = new byte[16];
         secureRandom.nextBytes(salt);
