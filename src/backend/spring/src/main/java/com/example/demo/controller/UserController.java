@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller class for user-related operations.
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -18,6 +21,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Endpoint for user registration.
+     * Accepts a POST request containing a JSON object with "email" and "password" fields.
+     * Returns a JSON object with a "message" field indicating the result of the registration attempt.
+     *
+     * @param request A map containing the "email" and "password" of the user to register.
+     * @return ResponseEntity containing a map with a "message" key. The message is either
+     * "Registration successful!" if the registration was successful, or "Email already registered."
+     * if the email is already in use. Returns a 500 status code with an error message in case of exceptions.
+     */
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -34,6 +47,17 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint for user login.
+     * Accepts a POST request containing a JSON object with "email" and "password" fields.
+     * Returns a JSON object with either a "token" field containing the JWT token if authentication is successful,
+     * or a "message" field indicating the reason for authentication failure.
+     *
+     * @param request A map containing the "email" and "password" of the user attempting to log in.
+     * @return ResponseEntity containing either a map with a "token" key if authentication is successful,
+     * or a map with a "message" key indicating the reason for failure ("Invalid email or password.").
+     * Returns a 401 status code for authentication failures, or a 500 status code with an error message in case of exceptions.
+     */
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
