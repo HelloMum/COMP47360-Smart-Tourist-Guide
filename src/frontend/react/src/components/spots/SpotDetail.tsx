@@ -47,6 +47,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
       overflow: 'hidden',
       boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
       width: "94%",
+      // height:"105%",
       margin: "5px auto",
     }}>
       {/*------------------ picture -------------------- */}
@@ -134,7 +135,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           <span style={{ color: '#888',fontSize:'14px' }}>by {spot.user_ratings_total} people</span>
         </Stack>
 
-        <Typography variant="body2" marginTop={2}>
+        <Typography variant="body2" marginTop={2} sx={{ color:"#444" }}   >
           {spot.description}
         </Typography>
 
