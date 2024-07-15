@@ -2,14 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -25,11 +21,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private SecureRandom secureRandom = new SecureRandom();
+    private static final String SECRET_KEY = "SecretKeyToGenJWTs";
 
     /**
      * Registers a new user with the given email and password.
@@ -49,7 +42,7 @@ public class UserService {
         user.setSalt(salt);
 
         String saltedPassword = salt + password;
-        user.setPassword(passwordEncoder.encode(saltedPassword));
+        user.setPassword(hashPassword(saltedPassword));
 
         userRepository.save(user);
         return true;
@@ -63,13 +56,12 @@ public class UserService {
      * @return true if authentication is successful, false otherwise.
      */
     public boolean authenticateUser(String email, String password) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password));
-            return authentication.isAuthenticated();
-        } catch (AuthenticationException e) {
-            return false;
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            String saltedPassword = user.getSalt() + password;
+            return hashPassword(saltedPassword).equals(user.getPassword());
         }
+        return false;
     }
 
     /**
@@ -79,11 +71,10 @@ public class UserService {
      * @return A JWT token string.
      */
     public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject(email)
-                .setExpiration(new Date(System.currentTimeMillis() + 864_000_000)) // 10 days
-                .signWith(SignatureAlgorithm.HS512, "SecretKeyToGenJWTs")
-                .compact();
+        return JWT.create()
+                .withSubject(email)
+                .withExpiresAt(new Date(System.currentTimeMillis() + 864_000_000)) // 10 days
+                .sign(Algorithm.HMAC512(SECRET_KEY));
     }
 
     /**
@@ -95,5 +86,15 @@ public class UserService {
         byte[] salt = new byte[16];
         secureRandom.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
+    }
+
+    /**
+     * Hashes the given password using SHA-256.
+     *
+     * @param password The password to hash.
+     * @return The hashed password.
+     */
+    private String hashPassword(String password) {
+        return DigestUtils.sha256Hex(password);
     }
 }
