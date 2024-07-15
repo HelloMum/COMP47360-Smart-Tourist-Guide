@@ -76,6 +76,18 @@ public class UserController {
         }
     }
 
+    /**
+     * Handles GET requests to the "/protected" endpoint.
+     * This endpoint is designed to demonstrate access control to a protected resource using JWT tokens.
+     * <p>
+     * The method checks the validity of the JWT token provided in the "Authorization" header of the request.
+     * If the token is valid, it grants access to the protected resource by returning a success message.
+     * If the token is invalid or expired, it denies access and returns an error message along with a 401 status code.
+     *
+     * @param token The JWT token provided in the "Authorization" header of the request.
+     * @return ResponseEntity containing either a success message and a 200 status code if the token is valid,
+     *         or an error message and a 401 status code if the token is invalid or expired.
+     */
     @GetMapping("/protected")
     public ResponseEntity<Map<String, String>> protectedEndpoint(@RequestHeader("Authorization") String token) {
         Map<String, String> response = new HashMap<>();
