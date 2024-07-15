@@ -6,6 +6,8 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    environment:
+      - REACT_APP_GOOGLE_MAPS_API_KEY=${REACT_APP_GOOGLE_MAPS_API_KEY}
     networks:
       - myapp-network
 
