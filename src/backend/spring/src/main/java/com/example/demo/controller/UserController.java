@@ -3,10 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +73,18 @@ public class UserController {
         } catch (Exception e) {
             response.put("message", "Login failed: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @GetMapping("/protected")
+    public ResponseEntity<Map<String, String>> protectedEndpoint(@RequestHeader("Authorization") String token) {
+        Map<String, String> response = new HashMap<>();
+        if (userService.verifyToken(token)) {
+            response.put("message", "Access to protected resource granted.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Invalid or expired token.");
+            return ResponseEntity.status(401).body(response);
         }
     }
 }
