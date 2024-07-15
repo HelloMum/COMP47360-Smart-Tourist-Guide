@@ -80,6 +80,15 @@ public class UserService {
                 .sign(Algorithm.HMAC512(SECRET_KEY));
     }
 
+    /**
+     * Verifies the validity of a JWT token.
+     * This method attempts to verify the provided JWT token using the HMAC512 algorithm and the secret key.
+     * It removes the "Bearer " prefix from the token before verification.
+     *
+     * @param token The JWT token to be verified, typically provided in the "Authorization" header of a request.
+     * @return true if the token is successfully verified, false if the token is invalid or verification fails.
+     * @throws JWTVerificationException if token verification fails due to token being invalid, expired, or not correctly signed.
+     */
     public boolean verifyToken(String token) {
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC512(SECRET_KEY)).build();
