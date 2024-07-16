@@ -20,8 +20,7 @@ public class ItineraryService {
 
     private List<Event> events = new ArrayList<>();
 
-    private List<TimeSlot> availableTimeSlots; // List of available time slots, each containing a start and end time
-    private List<Attraction> attractions; // List of attractions
+    private List<TimeSlot> availableTimeSlots;
 
     @Autowired
     private AttractionService attractionService;
@@ -55,7 +54,6 @@ public class ItineraryService {
                         selectedEvents.add(event);
                     }
                 } catch (IllegalArgumentException ex) {
-                    // Handle exception
                 }
             }
         }
@@ -109,7 +107,8 @@ public class ItineraryService {
                     double busyness = 0;
                     if (taxiZone != -1) {
                         try {
-                            float prediction = predictionService.predictByTaxiZone(taxiZone, eventStart);
+                            float prediction = predictionService.getBusynessByZoneFromJson(taxiZone, eventStart);
+                            //float prediction = predictionService.predictByTaxiZone(taxiZone, eventStart);
                             busyness = prediction;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -175,7 +174,9 @@ public class ItineraryService {
 
                     for (Attraction attraction : openAttractions) {
                         try {
-                            float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
+                            int attractionZone = attraction.getTaxi_zone();
+                            //float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
+                            float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
                             double busyness = prediction;
                             if (busyness < minBusyness) {
                                 minBusyness = busyness;
@@ -227,30 +228,25 @@ public class ItineraryService {
                         .filter(attraction -> {
                             double distance = calculateDistance(currentLatLon[0], currentLatLon[1], attraction.getAttraction_latitude(), attraction.getAttraction_longitude());
                             boolean withinRadius = distance <= searchRadiusFinal;
-                            System.out.println("Checking distance for attraction " + attraction.getAttraction_name() + ": " + distance + " km (within radius: " + withinRadius + ")");
                             return withinRadius;
                         })
                         .filter(attraction -> {
                             boolean openDuring = isAttractionOpenDuring(attraction.getFormatted_hours(), dayOfWeek, slotStart.toLocalTime(), slotEnd.toLocalTime());
-                            System.out.println("Checking opening hours for attraction " + attraction.getAttraction_name() + ": " + (openDuring ? "Open" : "Closed"));
                             return openDuring;
                         })
                         .sorted(Comparator.comparingInt(attraction -> calculateOpenDaysInRange(attraction, startDate, endDate)))
                         .collect(Collectors.toList());
-
-                System.out.println("Filtered attractions count: " + filteredAttractions.size());
 
                 Attraction bestAttraction = null;
                 double minBusyness = Double.MAX_VALUE;
 
                 for (Attraction attraction : filteredAttractions) {
                     try {
-                        float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
+                        int attractionZone = attraction.getTaxi_zone();
+                        float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
                         double busyness = prediction;
 
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
-
-                        System.out.println("Attraction " + attraction.getAttraction_name() + " busyness prediction: " + busyness);
 
                         if (busyness < minBusyness) {
                             minBusyness = busyness;
@@ -262,7 +258,6 @@ public class ItineraryService {
                 }
 
                 if (bestAttraction != null) {
-                    System.out.println("Adding attraction: " + bestAttraction.getAttraction_name() + " with busyness: " + minBusyness);
                     ItineraryItem item = new ItineraryItem(bestAttraction.getIndex(), bestAttraction.getAttraction_name(), slotStart, slotEnd, bestAttraction.getAttraction_latitude(), bestAttraction.getAttraction_longitude(), false, bestAttraction.isFree(), bestAttraction.getCategory(), bestAttraction.getAttraction_vicinity(), bestAttraction.getAttractionWebsite(), bestAttraction.getDescription(), bestAttraction.getAttraction_rating(), bestAttraction.getUser_ratings_total(), bestAttraction.getAttraction_phone_number(), bestAttraction.getInternational_phone_number());
 
                     timeSlot.setOccupied(true);
@@ -275,9 +270,7 @@ public class ItineraryService {
                     found = true;
                 } else {
                     searchRadius += 1.0;
-                    System.out.println("Increasing search radius to " + searchRadius);
                     if (filteredAttractions.isEmpty() && searchRadius > 100.0) {
-                        System.out.println("No suitable attraction found within a reasonable distance. Skipping time slot: " + slotStart + " - " + slotEnd);
                         break;
                     }
                 }
@@ -296,7 +289,6 @@ public class ItineraryService {
         // 0-Sunday 1-Monday ... 6-Saturday
         dayOfWeek = (dayOfWeek + 6) % 7;
 
-        //System.out.println("Checking opening hours for day " + dayOfWeek + " between " + startTime + " and " + endTime);
         String[] hoursArray = formattedHours.split(", ");
         for (String hours : hoursArray) {
             String[] parts = hours.split(": ");
@@ -317,8 +309,6 @@ public class ItineraryService {
             if (closeTime.equals(LocalTime.MIDNIGHT)) {
                 closeTime = LocalTime.of(23, 59);
             }
-
-            //System.out.println("Parsed day: " + parsedDayOfWeek + ", Open time: " + openTime + ", Close time: " + closeTime);
 
             if (dayOfWeek == parsedDayOfWeek &&
                     !startTime.isBefore(openTime) &&

@@ -30,7 +30,7 @@ const Home: React.FC = () => {
       <Stack 
         direction='column' 
         gap='2vh' 
-        width='22vw' 
+        width='23vw' 
         paddingTop='8vh'      
         height='65vh'  
       >
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
       {/*------------------------------ right part----------------------------- */}
       <Stack direction='row' gap={4}
         sx={{
-          width: '65vw',
+          width: '63vw',
           height:'85vh'
         }}
       >

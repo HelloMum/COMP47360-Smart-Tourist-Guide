@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import Searchbar from '../../components/spots/Searchbar';
 import FreeSwitch from '../../components/spots/Switch_Spots';
 import SpotCard from '../../components/spots/SpotCard';
@@ -15,6 +15,7 @@ import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import AlertModal from '../../components/AlertModal';
 import Map_Spots from '../../components/spots/Map_Spots';
+import SkeletonSpotCard from '../../components/spots/SkeletonSpotCard';
 
 const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -27,8 +28,9 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSpot, setPopupSpot] = useState(null);
+  const [hoveredSpot, setHoveredSpot] = useState(null);
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, selectedDates: contextSelectedDates } = useContext(ListContext);
-  const batchSize = 6;
+  const batchSize = 10;
 
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -117,9 +119,20 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   };
 
   const handleMarkerClick = useCallback((spot) => {
-    console.log("marker clicked and popup card:", spot);
+    console.log("spots.tsx marker clicked", spot);
     setPopupSpot(spot);
   }, []);
+
+  const handlePopupClose = () => {
+    setPopupSpot(null);
+  };
+
+  useEffect(() => {
+    if (popupSpot) {
+      console.log("data of popupSpot", popupSpot);
+      console.log("data of popupSpot index", popupSpot.index);
+    }
+  }, [popupSpot]);
 
   const handleMissingDates = () => {
     setAlertOpen(true);
@@ -139,6 +152,8 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             overflowY: 'hidden'
           }}
         >
+
+          {/* ---------------   search bar & filter & sort   ----------------------------- */}
           {!activeSpot && (
             <>
               <Stack direction="row" justifyContent="center">
@@ -150,7 +165,52 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
                 <FreeSwitch checked={isFree} onChange={handleSwitchChange} />
                 <Sort_Spots value={sortOption} onChange={handleSortChange} />
               </Stack>
-              <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
+             
+
+           {/* ---------------   number count   ----------------------------- */}
+
+              {loading ? (
+                
+  <Skeleton variant="text" width="80px" height="60px" animation="wave" style={{ marginLeft: 12, marginTop: 10 }} />
+) : (
+  spots.length > 0 && <h2 style={{ marginLeft: 10, marginTop: 10 }}>{spots.length} spots</h2>
+)}
+
+          {/* ---------------   empty image   ----------------------------- */}
+
+            { spots.length === 0 && !loading && (
+            <>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-180px',
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '50%' }} 
+    />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '1em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      Sorry, no result here.
+    </Typography>
+
+  </Box>
+</>
+) }
+              
             </>
           )}
 
@@ -159,51 +219,77 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
               <SpotDetail spot={activeSpot} onCollapse={handleCollapse} />
             ) : (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 1.5, paddingX: '12px' }}>
-                {loading ? (
-                  <div>Loading...</div>
-                ) : (
-                  displayedSpots.map((spot) => (
-                    <SpotCard
-                      key={spot.id}
-                      id={spot.index}
-                      image1={`/images/spots_small/${spot.index}_1.webp`}
-                      image3={`/images/spots_small/${spot.index}_3.webp`}
-                      title={spot.attraction_name}
-                      rating={spot.attraction_rating}
-                      price={spot.price}
-                      category={spot.category}
-                      user_ratings_total={spot.user_ratings_total}
-                      onExpand={() => handleExpand(spot)}
-                    />
-                  ))
-                )}
-              </Box>
+              {loading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <SkeletonSpotCard key={index} />
+                ))
+              ) : (
+                displayedSpots.map((spot) => (
+                  <SpotCard
+                    key={spot.id}
+                    id={spot.index}
+                    image1={`/images/spots_small/${spot.index}_1.webp`}
+                    image3={`/images/spots_small/${spot.index}_3.webp`}
+                    title={spot.attraction_name}
+                    rating={spot.attraction_rating}
+                    price={spot.price}
+                    isFree={spot.free}
+                    category={spot.category}
+                    user_ratings_total={spot.user_ratings_total}
+                    onExpand={() => handleExpand(spot)}
+                    onHover={() => setHoveredSpot(spot)}
+                    onLeave={() => setHoveredSpot(null)}
+                  />
+                ))
+              )}
+            </Box>
+            
             )}
           </div>
+
+         
         </div>
       )}
 
       <div className="map hide-scrollbar" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})`, overflowY: 'auto' }}>
-        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} />
+
+
+
+        <Map_Spots events={spots} onMarkerClick={handleMarkerClick} activeSpot={activeSpot} popupSpot={popupSpot} onPopupClose={handlePopupClose} hoveredSpot={hoveredSpot} />
+
+     {/* ---------------   popup card on map ----------------------------- */}
+
+
         {popupSpot && (
           <SpotCard_PopUp
+            key={popupSpot.index}
             id={popupSpot.index}
             image1={`/images/spots_small/${popupSpot.index}_1.webp`}
             image3={`/images/spots_small/${popupSpot.index}_3.webp`}
             title={popupSpot.attraction_name}
             rating={popupSpot.attraction_rating}
             category={popupSpot.category}
-            isFree={popupSpot.isFree}
+            isFree={popupSpot.free}
             user_ratings_total={popupSpot.user_ratings_total}
-            onClose={() => setPopupSpot(null)}
+            onClose={handlePopupClose}
           />
         )}
       </div>
 
+
+   {/* ---------------   3 buttons ----------------------------- */}
+
       <Btn_List onClick={toggleList} />
+
+
+
       {showList && <List onClose={closeList} selectedDates={contextSelectedDates} />}
 
       <Btn_Close_Left onClick={toggleLeftPanel} />
+
+
+
+ {/* ---------------   alert modal ----------------------------- */}
 
       {alertOpen && (
         <Box
@@ -216,7 +302,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
+           	alignItems: 'center',
             zIndex: 1300
           }}
           onClick={() => setAlertOpen(false)}
@@ -228,7 +314,11 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
             message="Please set the start and end dates before adding items to the list."
           />
         </Box>
+        
       )}
+
+
+
     </div>
   );
 };

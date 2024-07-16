@@ -3,7 +3,7 @@ name: Deploy to ArgoCD
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:

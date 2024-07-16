@@ -34,7 +34,7 @@ const Searchbar = ({ onSearch }) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={handleSearchClick}>
+              <IconButton onClick={handleSearchClick} sx={{ color: 'orange' }}>
                 <SearchRoundedIcon />
               </IconButton>
             </InputAdornment>

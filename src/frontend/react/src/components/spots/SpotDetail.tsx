@@ -12,6 +12,13 @@ const SpotDetail = ({ spot, onCollapse }) => {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+  const handleMouseDown = () => setIsClicked(true);
+  const handleMouseUp = () => setIsClicked(false);
 
   const handleOpen = (image) => {
     setSelectedImage(image);
@@ -40,6 +47,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
       overflow: 'hidden',
       boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
       width: "94%",
+      // height:"105%",
       margin: "5px auto",
     }}>
       {/*------------------ picture -------------------- */}
@@ -116,17 +124,18 @@ const SpotDetail = ({ spot, onCollapse }) => {
         <Stack marginBottom={1}>
           <span>
             <Tag_Category category={spot.category} />
-            <Tag_IsFree isFree={true} />
+            {spot.free && <Tag_IsFree />}
           </span>
         </Stack>
 
         {/*-------------------- rating ---------------------- */}
         <Stack direction={"row"} gap={1}>
           <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly />
-          {spot.attraction_rating} by {spot.user_ratings_total} people
+          {spot.attraction_rating} 
+          <span style={{ color: '#888',fontSize:'14px' }}>by {spot.user_ratings_total} people</span>
         </Stack>
 
-        <Typography variant="body2" marginTop={2}>
+        <Typography variant="body2" marginTop={2} sx={{ color:"#444" }}   >
           {spot.description}
         </Typography>
 
@@ -152,8 +161,17 @@ const SpotDetail = ({ spot, onCollapse }) => {
           <Box display="flex" alignItems="center">
             <PublicRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
             {spot.attractionWebsite ? (
-              <a href={spot.attractionWebsite} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                <Typography variant="body2" color="text.secondary">
+              <a
+                href={spot.attractionWebsite}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+              >
+                <Typography variant="body2" color={isHovered || isClicked ? 'orange' : 'text.secondary'}>
                   {spot.attractionWebsite}
                 </Typography>
               </a>

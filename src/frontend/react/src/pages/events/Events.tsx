@@ -4,7 +4,7 @@ import './events.css';
 import EventCard from '../../components/events/EventCard';
 import EventCard_PopUp from '../../components/events/EventCard_PopUp';
 import Searchbar from '../../components/events/Searchbar';
-import { Stack, Box } from '@mui/material';
+import { Stack, Box, Typography, Skeleton } from '@mui/material';
 import Switch from '../../components/events/Switch_Events';
 import FilterCheckbox from '../../components/events/FilterCheckbox_Events';
 import { LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
@@ -13,10 +13,12 @@ import List from '../../components/list/List';
 import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import AlertModal from '../../components/AlertModal';
+import SkeletonEventCard from '../../components/events/SkeletonEventCard';
 
 const Events = ({ selectedDates }) => {
   const [events, setEvents] = useState([]);
   const [isFree, setIsFree] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [hoveredEventId, setHoveredEventId] = useState(null);
@@ -24,6 +26,9 @@ const Events = ({ selectedDates }) => {
   const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, addItemWithDateCheck, selectedDates: contextSelectedDates } = useContext(ListContext);
 
   const fetchEvents = useCallback(() => {
+
+    setLoading(true); 
+
     let url = contextSelectedDates
       ? '/api/events/filter_within_date'
       : '/api/events/filter';
@@ -60,6 +65,9 @@ const Events = ({ selectedDates }) => {
       .catch(error => {
         console.error('Error fetching data:', error);
         setEvents([]);
+      })
+      .finally(() => {
+        setLoading(false); 
       });
   }, [isFree, selectedCategories, searchText, contextSelectedDates]);
 
@@ -110,19 +118,69 @@ const Events = ({ selectedDates }) => {
             <Switch checked={isFree} onChange={handleSwitchChange} />
           </Stack>
 
-          <h2 style={{ marginLeft: 6, marginTop: 5 }}>{events.length} events</h2>
+       {loading? (
+                
+                <Skeleton variant="text" width="80px" height="80px" animation="wave" style={{ 
+                  marginLeft: 5, 
+                  marginTop: 10 ,
+                  // marginBottom: 10
 
-          <div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
+                  
+                }} />
+              ) : (events.length>0  && <h2 style={{ marginLeft: 6, marginTop: 5 }}>{events.length} events</h2>)}
+
+
+       { events.length===0 &&  !loading && (
+            <>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      marginTop: '-180px',
+    }}
+  >
+    <img 
+      src="images/empty.png" 
+      alt="Empty list" 
+      style={{ width: '50%' }} 
+    />
+    <Typography 
+      variant="body2" 
+      sx={{
+        color: '#999', 
+        fontSize: '1em', 
+        marginTop: '8px', 
+        textAlign: 'center'
+      }}
+    >
+      Sorry, no result here.
+    </Typography>
+
+  </Box>
+</>
+) }
+
+
+<div className="event-card-container" style={{ flexGrow: 1, overflowY: 'auto' }}>
             <Stack>
-              {Array.isArray(events) && events.map(event => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  onMouseEnter={() => setHoveredEventId(event.id)}
-                  onMouseLeave={() => setHoveredEventId(null)}
-                  onAdd={handleAdd}
-                />
-              ))}
+              {loading ? (
+                Array.from({ length: 8 }).map((_, index) => (
+                  <SkeletonEventCard key={index} />
+                ))
+              ) : (
+                Array.isArray(events) && events.map(event => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onMouseEnter={() => setHoveredEventId(event.id)}
+                    onMouseLeave={() => setHoveredEventId(null)}
+                    onAdd={handleAdd}
+                  />
+                ))
+              )}
             </Stack>
           </div>
         </div>

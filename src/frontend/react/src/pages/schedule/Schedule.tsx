@@ -19,17 +19,27 @@ const Schedule: React.FC = () => {
   const [loadingWeather, setLoadingWeather] = useState(false);
   const [busynessData, setBusynessData] = useState<any | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
 
   useEffect(() => {
     if (currentDate) {
       setEvents(planData[currentDate] || []);
       fetchWeather(currentDate);
+      setSelectedEvent(null); // Reset selected event when date changes
     }
   }, [planData, currentDate]);
+
+  useEffect(() => {
+    if (events.length > 0) {
+      const firstEventStartTime = events[0].startTime;
+      handleStartTimeClick(firstEventStartTime);
+    }
+  }, [events]);
 
   const handleDateChange = (date: string) => {
     setCurrentDate(date);
     setEvents(planData[date] || []);
+    setSelectedEvent(null); // Reset selected event when date changes
   };
 
   const handleStartTimeClick = async (startTime: string) => {
@@ -56,7 +66,7 @@ const Schedule: React.FC = () => {
 
   const fetchBusynessData = async (date: string) => {
     try {
-      const response = await fetch(`/api/busyness/predict_by_date_range?startDate=${date}&endDate=${date}`, {
+      const response = await fetch(`/api/busyness/predict_all_sort_by_date_range?startDate=${date}&endDate=${date}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +111,7 @@ const Schedule: React.FC = () => {
           <Box mb={0}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h6" align="left" sx={{ fontFamily: '"Lexend", sans-serif' }}>
-                {moment(currentDate).format('dddd, Do MMMM YYYY')}
+                {moment(currentDate).format('Do MMMM YYYY, dddd')}
               </Typography>
 
               <Box display="flex" alignItems="center" style={{ minHeight: '70px' }}>
@@ -168,14 +178,14 @@ const Schedule: React.FC = () => {
             style={{
               flexGrow: 1,
               overflowY: 'scroll',
-              msOverflowStyle: 'none', // IE and Edge
-              scrollbarWidth: 'none', // Firefox
+              msOverflowStyle: 'none', 
+              scrollbarWidth: 'none', 
             }}
           >
             <style>
               {`
                 .card-container::-webkit-scrollbar {
-                  display: none; // Hide scrollbar for Chrome, Safari, and Opera
+                  display: none; 
                 }
               `}
             </style>
@@ -201,7 +211,8 @@ const Schedule: React.FC = () => {
                 free={item.free}
                 userRatings_total={item.userRatings_total}
                 index={index + 1}
-                onStartTimeClick={handleStartTimeClick} // Pass the callback function
+                onStartTimeClick={handleStartTimeClick} 
+                highlightedStartTime={selectedTime}  
               />
             ))}
           </div>
@@ -218,7 +229,13 @@ const Schedule: React.FC = () => {
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
-        <Map_Schedule events={events} busynessData={busynessData} selectedTime={selectedTime} />
+        <Map_Schedule 
+          events={events} 
+          busynessData={busynessData} 
+          selectedTime={selectedTime} 
+          selectedEvent={selectedEvent} // Pass the selectedEvent state
+          setSelectedEvent={setSelectedEvent} // Pass the setSelectedEvent function
+        />
       </div>
 
       <Btn_List onClick={toggleList} />

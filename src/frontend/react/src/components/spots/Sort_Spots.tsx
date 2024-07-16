@@ -16,7 +16,7 @@ const Sort_Spots = ({ value, onChange }) => {
         >
           <MenuItem value="user_ratings_total" sx={{ height: 26, ...theme.typography.smallText }}>popularity</MenuItem>
           <MenuItem value="attraction_rating" sx={{ height: 26, ...theme.typography.smallText }}>rating</MenuItem>
-          <MenuItem value="price" sx={{ height: 26, ...theme.typography.smallText }}>price</MenuItem>
+          {/* <MenuItem value="price" sx={{ height: 26, ...theme.typography.smallText }}>price</MenuItem> */}
         </MuiSelect>
       </FormControl>
     </Box>
