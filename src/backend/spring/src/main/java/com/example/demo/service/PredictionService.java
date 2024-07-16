@@ -28,7 +28,6 @@ public class PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
     private Booster booster;
-    private static final String BUSYNESS_JSON_FILE = "busyness_predictions.json";
 
     @Autowired
     private DailyWeatherDataService dailyWeatherDataService;
