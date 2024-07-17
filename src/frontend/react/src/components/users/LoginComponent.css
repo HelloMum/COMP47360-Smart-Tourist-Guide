@@ -9,6 +9,16 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   z-index: 1300;
+  animation: glowAnimation 1.5s infinite alternate;
+}
+
+@keyframes glowAnimation {
+  from {
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.265);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 166, 0, 0.537);
+  }
 }
 
 .login-modal * {
