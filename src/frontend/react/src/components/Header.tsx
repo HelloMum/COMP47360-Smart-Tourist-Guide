@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import './Header.css';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack, IconButton } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
 import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
@@ -12,6 +12,8 @@ import DateRangePicker from './DateRangePicker';
 import { ListContext } from '../contexts/ListContext';
 import AlertModal from './AlertModal';
 import Logo from './Logo';
+import LoginComponent from "./users/LoginComponent";
+import RegisterComponent from "./users/RegisterComponent";
 
 const Header = () => {
   const theme = useTheme();
@@ -20,46 +22,67 @@ const Header = () => {
   const { planData, selectedDates, setSelectedDates } = useContext(ListContext);
   const [alertOpen, setAlertOpen] = useState(false);
 
+  // ----------------------- Login modal Start -----------------------
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [isLoginMode, setIsLoginMode] = useState(true);
+
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
+  // ----------------------- Login modal End -----------------------
+
   const isActive = (path) => location.pathname === path;
 
   const buttonStyle = (path) => ({
     color: theme.palette.primary.dark,
-    borderColor: isActive(path) ? theme.palette.primary.main : 'transparent',
+    borderColor: isActive(path) ? theme.palette.primary.main : "transparent",
     borderRadius: 20,
-    padding: '5px 15px',
-    fontSize: '0.875rem',
-    height: '32px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    transition: 'border-color 0.2s ease-in-out',
+    padding: "5px 15px",
+    fontSize: "0.875rem",
+    height: "32px",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    transition: "border-color 0.2s ease-in-out",
   });
 
   const handlePlanClick = () => {
     if (!planData) {
       setAlertOpen(true);
     } else {
-      navigate('/schedule');
+      navigate("/schedule");
     }
   };
 
-  const handleDateChange = (dates: [moment.Moment | null, moment.Moment | null] | null) => {
+  const handleDateChange = (
+    dates: [moment.Moment | null, moment.Moment | null] | null
+  ) => {
     setSelectedDates(dates);
   };
+
+  // ----------------------- Login modal Start -----------------------
+  const handleAvatarClick = () => {
+    if (!isLoggedIn) {
+      setLoginOpen(true);
+    }
+  };
+
+  const handleSwitch = () => {
+    setIsLoginMode(!isLoginMode);
+  };
+  // ----------------------- Login modal End -----------------------
 
   return (
     <Box
       className="header"
       style={{
-        backgroundColor: 'white',
+        backgroundColor: "white",
         height: NAVBAR_HEIGHT,
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
-        width: '100%',
-        boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.2)',
+        width: "100%",
+        boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
-        paddingRight: '2%',
-        paddingLeft: '2%',
+        paddingRight: "2%",
+        paddingLeft: "2%",
       }}
     >
       <Logo />
@@ -67,8 +90,8 @@ const Header = () => {
       <Stack direction="row" spacing={3} alignItems="center">
         <Button
           variant="text"
-          onClick={() => navigate('/spots')}
-          style={buttonStyle('/spots')}
+          onClick={() => navigate("/spots")}
+          style={buttonStyle("/spots")}
           startIcon={<AddLocationRounded />}
         >
           SPOTS
@@ -76,8 +99,8 @@ const Header = () => {
 
         <Button
           variant="text"
-          onClick={() => navigate('/events')}
-          style={buttonStyle('/events')}
+          onClick={() => navigate("/events")}
+          style={buttonStyle("/events")}
           startIcon={<LocalActivityRoundedIcon />}
         >
           Events
@@ -86,7 +109,7 @@ const Header = () => {
         <Button
           variant="text"
           onClick={handlePlanClick}
-          style={buttonStyle('/schedule')}
+          style={buttonStyle("/schedule")}
           startIcon={<CalendarMonthRoundedIcon />}
         >
           Plan
@@ -94,11 +117,32 @@ const Header = () => {
 
         <DateRangePicker
           onDateChange={handleDateChange}
-          value={selectedDates} 
+          value={selectedDates}
         />
       </Stack>
 
-      <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
+      {/* ----------------------- Login modal Start ----------------------- */}
+      <Box position="relative">
+        <IconButton onClick={handleAvatarClick}>
+          <AccountCircleRoundedIcon
+            style={{ color: theme.palette.primary.dark, fontSize: 28 }}
+          />
+        </IconButton>
+        {isLoginMode ? (
+          <LoginComponent
+            open={loginOpen}
+            onClose={() => setLoginOpen(false)}
+            onSwitch={handleSwitch}
+          />
+        ) : (
+          <RegisterComponent
+            open={loginOpen}
+            onClose={() => setLoginOpen(false)}
+            onSwitch={handleSwitch}
+          />
+        )}
+      </Box>
+      {/* ----------------------- Login modal End ----------------------- */}
 
       <AlertModal
         open={alertOpen}
