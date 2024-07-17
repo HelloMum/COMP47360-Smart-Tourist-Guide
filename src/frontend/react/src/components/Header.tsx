@@ -98,7 +98,13 @@ const Header = () => {
         />
       </Stack>
 
+      <Button
+        variant="text"
+        onClick={() => navigate('/dashboard')}
+        style={{ minWidth: 'auto', padding: 0 }}
+      >
       <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
+      </Button>
 
       <AlertModal
         open={alertOpen}

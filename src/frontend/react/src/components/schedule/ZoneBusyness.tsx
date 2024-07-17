@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import moment from 'moment';
 import { ListContext } from '../../contexts/ListContext';
 import { Stack, Select, MenuItem, FormControl, CircularProgress, Box } from '@mui/material';
-import { Chart } from 'react-google-charts';
+//import { Chart } from 'react-google-charts';
 import { getColor } from './colorMappings';
 import { Close } from '@mui/icons-material';
 import styled from 'styled-components';
