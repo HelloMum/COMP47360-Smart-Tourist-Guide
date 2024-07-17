@@ -32,12 +32,15 @@ dependencies {
 	implementation 'org.locationtech.jts:jts-core:1.18.0'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
 
+	// Dependencies for Spring Security and JWT
+	// Other dependencies
+	implementation 'commons-codec:commons-codec:1.15'
+	implementation 'com.auth0:java-jwt:4.0.0'
 	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 	implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
 	implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
 	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'
 	implementation 'org.hibernate.orm:hibernate-core:6.2.6.Final'
-
 	implementation 'org.antlr:antlr4-runtime:4.10.1'
 
 	// XGBoost4J dependencies

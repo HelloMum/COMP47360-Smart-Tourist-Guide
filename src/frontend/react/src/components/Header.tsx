@@ -12,6 +12,7 @@ import DateRangePicker from './DateRangePicker';
 import { ListContext } from '../contexts/ListContext';
 import AlertModal from './AlertModal';
 import Logo from './Logo';
+import LogoutComponent from './user/LogoutComponent'; // Import the LogoutComponent
 
 const Header = () => {
   const theme = useTheme();
@@ -98,7 +99,7 @@ const Header = () => {
         />
       </Stack>
 
-      <AccountCircleRoundedIcon style={{ color: theme.palette.primary.dark, fontSize: 28 }} />
+      <LogoutComponent /> {/* Use the LogoutComponent here */}
 
       <AlertModal
         open={alertOpen}
