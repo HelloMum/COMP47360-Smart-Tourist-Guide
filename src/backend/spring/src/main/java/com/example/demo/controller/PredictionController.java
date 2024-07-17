@@ -1,21 +1,22 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.AttractionService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.example.demo.service.PredictionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ml.dmlc.xgboost4j.java.XGBoostError;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.service.PredictionScheduler;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/busyness")
@@ -52,7 +53,7 @@ public class PredictionController {
             int attractionZone = attractionService.getAttractionByIndex(attractionIndex).getTaxi_zone();
 
             // Get busyness value from the JSON data
-            return predictionService.getBusynessByZoneFromJson(attractionZone, localDateTime);
+            return predictionService.getBusynessByZoneFromMemory(attractionZone, localDateTime);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid dateTime format. Please use ISO_LOCAL_DATE_TIME format.", e);
         } catch (Exception e) {
@@ -69,7 +70,7 @@ public class PredictionController {
             LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
 
             // Get busyness value from the JSON data
-            return predictionService.getBusynessByZoneFromJson(taxiZone, localDateTime);
+            return predictionService.getBusynessByZoneFromMemory(taxiZone, localDateTime);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid dateTime format. Please use ISO_LOCAL_DATE_TIME format.", e);
         } catch (Exception e) {
@@ -85,11 +86,8 @@ public class PredictionController {
             LocalDate start = LocalDate.parse(startDate);
             LocalDate end = LocalDate.parse(endDate);
 
-            // Load predictions from JSON file
-            ObjectMapper mapper = new ObjectMapper();
-            String path = "busyness_predictions.json";
-            TypeReference<Map<Integer, Map<String, Map<String, Float>>>> typeRef = new TypeReference<>() {};
-            Map<Integer, Map<String, Map<String, Float>>> predictions = mapper.readValue(new File(path), typeRef);
+            // Retrieve predictions from savedResult in PredictionScheduler
+            Map<Integer, Map<String, Map<String, Float>>> predictions = PredictionScheduler.getSavedResult();
 
             // Loop through each day in the date range
             for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
@@ -133,12 +131,7 @@ public class PredictionController {
         try {
             LocalDate start = LocalDate.parse(startDate);
             LocalDate end = LocalDate.parse(endDate);
-
-            // Load predictions from JSON file
-            ObjectMapper mapper = new ObjectMapper();
-            String path = "busyness_predictions.json";
-            TypeReference<Map<Integer, Map<String, Map<String, Float>>>> typeRef = new TypeReference<>() {};
-            Map<Integer, Map<String, Map<String, Float>>> predictions = mapper.readValue(new File(path), typeRef);
+            Map<Integer, Map<String, Map<String, Float>>> predictions = PredictionScheduler.getSavedResult();
 
             // Loop through each day in the date range
             for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
