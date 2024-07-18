@@ -10,8 +10,8 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Grid container spacing={4}>
+    <Box sx={{ p: 4, overflow: 'auto' }}>
+      <Grid container spacing={4} justifyContent="center">
         <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Avatar sx={{ width: 100, height: 100 }} src="profile pic" />
@@ -23,32 +23,33 @@ const Dashboard: React.FC = () => {
             <Typography variant="h4">125</Typography>
             <Button variant="contained" sx={{ mt: 2 }}>CLAIM</Button>
           </Box>
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h6">Statistics</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
+                  <Typography variant="body2">Landmarks seen:</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
+                  <Typography variant="body2">Total Points:</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
+                  <Typography variant="body2">Most popular category:</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
         </Grid>
-        <Grid item xs={12} md={8}>
-          <Typography variant="h6">Statistics</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
-                <Typography variant="body2">Landmarks seen:</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
-                <Typography variant="body2">Total Points:</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
-                <Typography variant="body2">Most popular category:</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
-              </Box>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={1}></Grid>
+        <Grid item xs={12} md={5}>
           <Typography variant="h6">My journeys</Typography>
           {['NYC 04.07.24-05.07.24', 'NYC 04.07.24-05.07.24', 'NYC 04.07.24-05.07.24'].map((journey, index) => (
             <Box
