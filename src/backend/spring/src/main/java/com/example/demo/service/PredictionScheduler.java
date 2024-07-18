@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import lombok.Getter;
 import ml.dmlc.xgboost4j.java.XGBoostError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
@@ -25,6 +25,10 @@ public class PredictionScheduler {
 
     private static final Map<String, List<Integer>> HARDCODED_BUSINESS_VALUES = new HashMap<>();
 
+    // Method to retrieve the saved result (getter)
+    @Getter
+    private static Map<Integer, Map<String, Map<String, Float>>> savedResult; // Store the computed result here
+
     static {
         HARDCODED_BUSINESS_VALUES.put("MONDAY", Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 63, 83, 92, 91, 80, 59, 34, 0, 0, 0, 0, 0, 0, 0));
         HARDCODED_BUSINESS_VALUES.put("TUESDAY", Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 58, 75, 82, 79, 69, 51, 30, 0, 0, 0, 0, 0, 0, 0));
@@ -35,7 +39,7 @@ public class PredictionScheduler {
         HARDCODED_BUSINESS_VALUES.put("SUNDAY", Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 58, 78, 89, 89, 82, 64, 39, 0, 0, 0, 0, 0, 0, 0));
     }
 
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(initialDelay = 5000, fixedRate = 3600000)
     public void calculateAndSaveBusyness() {
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(29);
@@ -74,11 +78,14 @@ public class PredictionScheduler {
                 addHardcodedBusyness(result, date, dateKey);
             }
 
-            // Save result to JSON file
-            saveResultToJson(result);
+            // Save result to memory
+            this.savedResult = result;
+            System.out.println("Successfully saved result to memory.");
 
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Error occurred while calculating and saving busyness.");
+
         }
     }
 
@@ -100,20 +107,11 @@ public class PredictionScheduler {
         }
     }
 
-    private void saveResultToJson(Map<Integer, Map<String, Map<String, Float>>> result) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(new File("busyness_predictions.json"), result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private List<Integer> readTaxiZonesFromCSV() throws IOException {
         List<Integer> taxiZones = new ArrayList<>();
         ClassPathResource resource = new ClassPathResource("manhattan_taxi_zones_id.csv");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-            String line = reader.readLine();
+            String line;
             while ((line = reader.readLine()) != null) {
                 taxiZones.add(Integer.parseInt(line.trim()));
             }

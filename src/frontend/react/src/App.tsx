@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import HeaderHome from './components/Header_Home';
+import Login from "./pages/user/LoginForm"; {/* These are for debugging purposes */}
+import Register from "./pages/user/RegistrationForm"; {/* These are for debugging purposes */}
 import HomePage from './pages/home/Home';
 import Spots from './pages/spots/Spots';
 import Events from './pages/events/Events';
@@ -42,6 +44,8 @@ const App: React.FC = () => {
             <Route path="/events" element={<Events selectedDates={selectedDates} />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/about" element={<About />} />
+            <Route path="/loginpage" element={<Login />} /> {/* These are for debugging purposes */}
+            <Route path="/registerpage" element={<Register />} /> {/* These are for debugging purposes, will be removed */}
           </Routes>
         </div>
       </ListProvider>
