@@ -80,7 +80,12 @@ const List: React.FC<ListProps> = ({ onClose }) => {
     <>
       <Box
         sx={{
-          width: '18vw',
+          width: {            
+            xs:'55vw',
+            sm:'28vw',
+            md:'22vw',
+            lg:'18vw',
+          },
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
           marginTop: '50px',
           backgroundColor: 'white',

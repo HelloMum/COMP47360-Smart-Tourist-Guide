@@ -12,7 +12,12 @@ const Btn_Close_List: React.FC<BtnCloseListProps> = ({ onClose }) => {
       sx={{
         position: 'absolute',
         top: '70px',
-        right: '19vw',
+        right: {            
+          xs:'26vw',
+          sm:'29vw',
+          md:'23vw',
+          lg:'19vw',
+        },
         zIndex: 10,
         boxShadow: 2,
         borderRadius: '6px',

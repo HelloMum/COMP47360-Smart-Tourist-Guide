@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import './Header.css';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { Box, Button, Stack, IconButton } from '@mui/material';
+import { Box, Button, Stack, IconButton, useMediaQuery } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
 import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
@@ -16,7 +16,28 @@ import LoginComponent from "./users/LoginComponent";
 import RegisterComponent from "./users/RegisterComponent";
 
 const Header = () => {
+
   const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
+  const isSm = useMediaQuery(theme.breakpoints.only('sm'));
+  const isMd = useMediaQuery(theme.breakpoints.only('md'));
+  const isLg = useMediaQuery(theme.breakpoints.only('lg'));
+  const isXl = useMediaQuery(theme.breakpoints.only('xl'));
+
+  let spacing;
+  if (isXs) {
+    spacing = 1;
+  } else if (isSm) {
+    spacing = 1;
+  } else if (isMd) {
+    spacing = 3;
+  } else if (isLg) {
+    spacing = 3;
+  } else if (isXl) {
+    spacing = 3;
+  }
+
+
   const navigate = useNavigate();
   const location = useLocation();
   const { planData, selectedDates, setSelectedDates } = useContext(ListContext);
@@ -37,7 +58,7 @@ const Header = () => {
     borderRadius: 20,
     padding: "5px 15px",
     fontSize: "0.875rem",
-    height: "32px",
+    height:{ xs:'20px',sm:"20px",md:'32px'},
     borderWidth: "1px",
     borderStyle: "solid",
     transition: "border-color 0.2s ease-in-out",
@@ -69,6 +90,10 @@ const Header = () => {
   };
   // ----------------------- Login modal End -----------------------
 
+
+
+
+
   return (
     <Box
       className="header"
@@ -87,7 +112,7 @@ const Header = () => {
     >
       <Logo />
 
-      <Stack direction="row" spacing={3} alignItems="center">
+      <Stack direction="row" spacing={spacing} alignItems="center">
         <Button
           variant="text"
           onClick={() => navigate("/spots")}
