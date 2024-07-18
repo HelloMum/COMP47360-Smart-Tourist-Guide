@@ -21,8 +21,14 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
           borderRadius: '20px',
           cursor: 'pointer',
           backgroundColor: '#ffc147',
-          width: '90px',
-          paddingX: '10px',
+          width: {
+            xs: '10px', 
+            sm: '90px', 
+          
+          
+          },
+          paddingX: {xs:'0px',sm:'10px'},
+          
           color: 'white',
           '&:hover': {
             boxShadow: '1',  
@@ -36,7 +42,8 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
         startIcon={<FormatListBulletedRounded />}  
         onClick={onClick}
       >
-        List
+        <Box   sx={{
+        display: { xs: 'none', sm:'inline',md:'inline',lg: 'inline' }}}  >List</Box>
       </Button>
       {listItems.length > 0 && (
         <Box

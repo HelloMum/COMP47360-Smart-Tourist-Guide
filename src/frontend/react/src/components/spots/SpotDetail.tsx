@@ -55,7 +55,14 @@ const SpotDetail = ({ spot, onCollapse }) => {
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        height: '30vh',
+        
+        height: {
+          xs: '20vh', 
+          sm: '24vh', 
+          md: '30vh', 
+          lg: '30vh', 
+          xl: '30vh'  
+        },
         justifyContent: 'space-between'
       }}>
         <Box sx={{ 
@@ -118,7 +125,13 @@ const SpotDetail = ({ spot, onCollapse }) => {
         </Box>
       </Box>
       {/*------------------ content below pictures -------------------*/}
-      <Stack sx={{ p: 3, px: 5 }}>
+      <Stack sx={{ p: 3, px: {
+          xs: '2', 
+          sm: '2', 
+          md: '5', 
+          lg: '5', 
+          xl: '5'  
+        }, }}>
         {/*--------------- title & two tags -------------------------- */}
         <h2 style={{ marginBottom: 4 }}>{spot.attraction_name}</h2>
         <Stack marginBottom={1}>
@@ -132,12 +145,28 @@ const SpotDetail = ({ spot, onCollapse }) => {
         <Stack direction={"row"} gap={1}>
           <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly />
           {spot.attraction_rating} 
-          <span style={{ color: '#888',fontSize:'14px' }}>by {spot.user_ratings_total} people</span>
+          <Box style={{ color: '#888',fontSize:'14px' }}   sx={{
+          display: {
+            xs: 'none',
+            sm: 'none',
+            md: 'inline',
+            lg: 'inline',
+          },
+        }}>by {spot.user_ratings_total} people</Box>
         </Stack>
 
-        <Typography variant="body2" marginTop={2} sx={{ color:"#444" }}   >
-          {spot.description}
-        </Typography>
+        <Typography
+      variant="body2"
+      marginTop={2}
+      sx={{
+        color: "#444",
+        textAlign: 'justify',
+        hyphens: 'auto',
+        wordBreak: 'break-word'
+      }}
+    >
+      {spot.description}
+    </Typography>
 
         {/*------------------ Address, price, website, phone -------------------- */}
         <Stack gap={1.5} marginTop={2}>

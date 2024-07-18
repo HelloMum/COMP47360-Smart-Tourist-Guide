@@ -34,9 +34,9 @@ const Logo: React.FC = () => {
         component="span"
         sx={{
           display: {
-            xs: 'inline',
+            xs: 'none',
             sm: 'none',
-            md: 'none',
+            md: 'inline',
             lg: 'inline',
           },
         }}
