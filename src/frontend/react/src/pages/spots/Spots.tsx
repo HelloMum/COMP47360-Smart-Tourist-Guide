@@ -17,6 +17,8 @@ import AlertModal from '../../components/AlertModal';
 import Map_Spots from '../../components/spots/Map_Spots';
 import SkeletonSpotCard from '../../components/spots/SkeletonSpotCard';
 
+import { useUpdateLeftWidth } from '../../utils/useResponsiveSizes';
+
 const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
   const [spots, setSpots] = useState([]);
@@ -137,6 +139,8 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   const handleMissingDates = () => {
     setAlertOpen(true);
   };
+
+  useUpdateLeftWidth();
 
   return (
     <div style={{ display: 'flex' }}>

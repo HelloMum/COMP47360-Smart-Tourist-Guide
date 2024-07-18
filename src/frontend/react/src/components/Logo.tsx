@@ -1,5 +1,6 @@
 import { useTheme } from '@emotion/react';
 import { PublicRounded } from '@mui/icons-material';
+import { Box } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -29,7 +30,19 @@ const Logo: React.FC = () => {
       alt="logo" 
       style={{ width: '28px',marginRight: '6px'}} 
     />
-      TourWise
+  <Box
+        component="span"
+        sx={{
+          display: {
+            xs: 'inline',
+            sm: 'none',
+            md: 'none',
+            lg: 'inline',
+          },
+        }}
+      >
+        TourWise
+      </Box>
     </Link>
   );
 };
