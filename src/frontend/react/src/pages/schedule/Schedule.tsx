@@ -1,25 +1,56 @@
-import React, { useContext, useState, useEffect } from 'react';
-import './schedule.css';
-import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
-import Btn_List from '../../components/list/Btn_List';
-import List from '../../components/list/List';
-import { ListContext } from '../../contexts/ListContext';
-import Btn_Close_Left from '../../components/Btn_Close_Left';
-import ScheduleCard from '../../components/schedule/ScheduleCard';
-import { Typography, Button, Stack, Box, CircularProgress } from '@mui/material';
-import moment from 'moment';
-import Map_Schedule from '../../components/schedule/Map_Schedule';
+import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./schedule.css";
+import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from "../../utils/constants";
+import Btn_List from "../../components/list/Btn_List";
+import List from "../../components/list/List";
+import { ListContext } from "../../contexts/ListContext";
+import Btn_Close_Left from "../../components/Btn_Close_Left";
+import ScheduleCard from "../../components/schedule/ScheduleCard";
+import {
+  useTheme,
+  Typography,
+  Button,
+  Stack,
+  Box,
+  CircularProgress,
+  IconButton,
+} from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
+import moment from "moment";
+import Map_Schedule from "../../components/schedule/Map_Schedule";
+import LoginComponent from "../../components/users/LoginComponent"; // Import the LoginComponent
+import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
+import { theme } from "antd";
+import RegisterComponent from "../../components/users/RegisterComponent";
 
 const Schedule: React.FC = () => {
-  const { showList, toggleList, closeList, isLeftPanelVisible, toggleLeftPanel, planData } = useContext(ListContext);
+  const {
+    showList,
+    toggleList,
+    closeList,
+    isLeftPanelVisible,
+    toggleLeftPanel,
+    planData,
+  } = useContext(ListContext);
   const initialDate = planData ? Object.keys(planData)[0] : null;
   const [currentDate, setCurrentDate] = useState<string | null>(initialDate);
-  const [events, setEvents] = useState<any[]>(initialDate ? planData[initialDate] : []);
+  const [events, setEvents] = useState<any[]>(
+    initialDate ? planData[initialDate] : []
+  );
   const [weather, setWeather] = useState<any | null>(null);
   const [loadingWeather, setLoadingWeather] = useState(false);
   const [busynessData, setBusynessData] = useState<any | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<null | any>(null);
+
+  // ----------------------- Save feature Start -----------------------
+  const themeOrange = useTheme();
+  const [loginOpen, setLoginOpen] = useState(false); // State for the login modal
+  const [isLoginMode, setIsLoginMode] = useState(true);
+  const isLoggedIn = Boolean(localStorage.getItem("token")); // Check if the user is logged in
+  const navigate = useNavigate();
+  // ----------------------- Save feature End -----------------------
 
   useEffect(() => {
     if (currentDate) {
@@ -44,12 +75,12 @@ const Schedule: React.FC = () => {
 
   const handleStartTimeClick = async (startTime: string) => {
     setSelectedTime(startTime);
-    const date = moment(startTime).format('YYYY-MM-DD');
+    const date = moment(startTime).format("YYYY-MM-DD");
     await fetchBusynessData(date);
   };
 
   const formatDayOfWeek = (date: string) => {
-    return moment(date).format('ddd');
+    return moment(date).format("ddd");
   };
 
   const fetchWeather = async (date: string) => {
@@ -59,34 +90,37 @@ const Schedule: React.FC = () => {
       const data = await response.json();
       setWeather(data[0]);
     } catch (error) {
-      console.error('Failed to fetch weather data:', error);
+      console.error("Failed to fetch weather data:", error);
     }
     setLoadingWeather(false);
   };
 
   const fetchBusynessData = async (date: string) => {
     try {
-      const response = await fetch(`/api/busyness/predict_all_sort_by_date_range?startDate=${date}&endDate=${date}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          startDate: date,
-          endDate: date,
-        }),
-      });
+      const response = await fetch(
+        `/api/busyness/predict_all_sort_by_date_range?startDate=${date}&endDate=${date}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            startDate: date,
+            endDate: date,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      console.log('busyness data', data);
+      console.log("busyness data", data);
 
       setBusynessData(data);
     } catch (error) {
-      console.error('Failed to fetch busyness data:', error);
+      console.error("Failed to fetch busyness data:", error);
     }
   };
 
@@ -94,55 +128,149 @@ const Schedule: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  // ----------------------- Save feature Start -----------------------
+  const handleSaveClick = () => {
+    if (!isLoggedIn) {
+      setLoginOpen(true);
+    } else {
+      // Save the schedule
+    }
+  };
+
+  const handleSwitch = () => {
+    setIsLoginMode(!isLoginMode);
+  };
+  // ----------------------- Save feature End -----------------------
   return (
-    <div className="schedule" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div
+      className="schedule"
+      style={{ display: "flex", flexDirection: "column" }}
+    >
       {isLeftPanelVisible && (
         <div
           className="left"
           style={{
             width: LEFT_WIDTH,
-            padding: '0.5vw 2vw 0vw 2vw',
+            padding: "0.5vw 2vw 0vw 2vw",
             marginTop: NAVBAR_HEIGHT,
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-            display: 'flex',
-            flexDirection: 'column',
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Box mb={0}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="h6" align="left" sx={{ fontFamily: '"Lexend", sans-serif' }}>
-                {moment(currentDate).format('Do MMMM YYYY, dddd')}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography
+                variant="h6"
+                align="left"
+                sx={{ fontFamily: '"Lexend", sans-serif' }}
+              >
+                {moment(currentDate).format("Do MMMM YYYY, dddd")}
               </Typography>
 
-              <Box display="flex" alignItems="center" style={{ minHeight: '70px' }}>
+              {/* ----------------------- Save feature Start ----------------------- */}
+              {(!isLoggedIn && (
+                <Tooltip title="Log in to save your schedule">
+                  <IconButton
+                    onClick={handleSaveClick}
+                    className="glowing-save-button"
+                  >
+                    <SaveIcon
+                      style={{ color: themeOrange.palette.primary.main }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              )) || (
+                <Tooltip title="Don't forget to save your Schedule !!">
+                  <IconButton
+                    onClick={handleSaveClick}
+                    className="glowing-save-button"
+                  >
+                    <SaveIcon
+                      style={{ color: themeOrange.palette.primary.main }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {/* ----------------------- Save feature End ----------------------- */}
+              <Box
+                display="flex"
+                alignItems="center"
+                style={{ minHeight: "70px" }}
+              >
                 {loadingWeather ? (
                   <CircularProgress size={24} />
                 ) : weather ? (
                   <Box display="flex" alignItems="center">
-                    <Typography variant="h6" style={{ fontWeight: 300, fontFamily: 'Lexend', marginRight: 0, fontSize: '20px' }}>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: 300,
+                        fontFamily: "Lexend",
+                        marginRight: 0,
+                        fontSize: "20px",
+                      }}
+                    >
                       {weather.tempDay}°C
                     </Typography>
                     <img
                       src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
                       alt={weather.weather_description}
-                      style={{ marginRight: 0, height: '70px' }}
+                      style={{ marginRight: 0, height: "70px" }}
                     />
                     <Box>
-                      <Typography variant="body2" style={{ fontWeight: 250, fontFamily: 'Lexend', fontSize: '12px' }}>
+                      <Typography
+                        variant="body2"
+                        style={{
+                          fontWeight: 250,
+                          fontFamily: "Lexend",
+                          fontSize: "12px",
+                        }}
+                      >
                         Wind: {weather.speed.toFixed(1)} m/s
                       </Typography>
-                      <Typography variant="body2" style={{ fontWeight: 250, fontFamily: 'Lexend', fontSize: '12px' }}>
+                      <Typography
+                        variant="body2"
+                        style={{
+                          fontWeight: 250,
+                          fontFamily: "Lexend",
+                          fontSize: "12px",
+                        }}
+                      >
                         Humidity: {weather.humidity}%
                       </Typography>
                     </Box>
                   </Box>
                 ) : (
-                  <Typography variant="body2" style={{ fontWeight: 'normal', fontFamily: 'Lexend' }}>
+                  <Typography
+                    variant="body2"
+                    style={{ fontWeight: "normal", fontFamily: "Lexend" }}
+                  >
                     No weather data
                   </Typography>
                 )}
               </Box>
             </Stack>
+
+            {/* ----------------------- Save feature Start LoginComponent ----------------------- */}
+            {isLoginMode ? (
+              <LoginComponent
+                open={loginOpen}
+                onClose={() => setLoginOpen(false)}
+                onSwitch={handleSwitch}
+              />
+            ) : (
+              <RegisterComponent
+                open={loginOpen}
+                onClose={() => setLoginOpen(false)}
+                onSwitch={handleSwitch}
+              />
+            )}
+            {/* ----------------------- Save feature End ----------------------- */}
           </Box>
 
           <Stack direction="row" spacing={1} mb={3}>
@@ -151,23 +279,38 @@ const Schedule: React.FC = () => {
                 key={date}
                 onClick={() => handleDateChange(date)}
                 style={{
-                  backgroundColor: date === currentDate ? 'orange' : '#f8f8f8',
-                  color: date === currentDate ? '#fff' : '#888',
-                  borderRadius: '20px',
-                  padding: '8px 16px',
-                  minWidth: '60px',
-                  minHeight: '65px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  backgroundColor: date === currentDate ? "orange" : "#f8f8f8",
+                  color: date === currentDate ? "#fff" : "#888",
+                  borderRadius: "20px",
+                  padding: "8px 16px",
+                  minWidth: "60px",
+                  minHeight: "65px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <Typography variant="caption" style={{ fontWeight: 'normal', fontFamily: 'Lexend', lineHeight: 1 }}>
+                <Typography
+                  variant="caption"
+                  style={{
+                    fontWeight: "normal",
+                    fontFamily: "Lexend",
+                    lineHeight: 1,
+                  }}
+                >
                   {formatDayOfWeek(date)}
                 </Typography>
-                <Typography variant="body1" style={{ fontWeight: 400, fontFamily: 'Lexend', fontSize: '1.5em', lineHeight: 1 }}>
-                  {moment(date).format('DD')}
+                <Typography
+                  variant="body1"
+                  style={{
+                    fontWeight: 400,
+                    fontFamily: "Lexend",
+                    fontSize: "1.5em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {moment(date).format("DD")}
                 </Typography>
               </Button>
             ))}
@@ -177,9 +320,9 @@ const Schedule: React.FC = () => {
             className="card-container"
             style={{
               flexGrow: 1,
-              overflowY: 'scroll',
-              msOverflowStyle: 'none', 
-              scrollbarWidth: 'none', 
+              overflowY: "scroll",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
             }}
           >
             <style>
@@ -211,8 +354,8 @@ const Schedule: React.FC = () => {
                 free={item.free}
                 userRatings_total={item.userRatings_total}
                 index={index + 1}
-                onStartTimeClick={handleStartTimeClick} 
-                highlightedStartTime={selectedTime}  
+                onStartTimeClick={handleStartTimeClick}
+                highlightedStartTime={selectedTime}
               />
             ))}
           </div>
@@ -222,17 +365,17 @@ const Schedule: React.FC = () => {
       <div
         className="map"
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: NAVBAR_HEIGHT,
           right: 0,
-          width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%',
+          width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : "100%",
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
-        <Map_Schedule 
-          events={events} 
-          busynessData={busynessData} 
-          selectedTime={selectedTime} 
+        <Map_Schedule
+          events={events}
+          busynessData={busynessData}
+          selectedTime={selectedTime}
           selectedEvent={selectedEvent} // Pass the selectedEvent state
           setSelectedEvent={setSelectedEvent} // Pass the setSelectedEvent function
         />
