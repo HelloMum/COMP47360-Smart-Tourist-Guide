@@ -13,6 +13,8 @@ import theme from './utils/theme';
 import 'antd/dist/antd.css';
 import { ListProvider } from './contexts/ListContext';
 import Header_Home from './components/Header_Home';
+import Dashboard from './pages/dashboard/Dashboard';
+
 
 const App: React.FC = () => {
   const [selectedDates, setSelectedDates] = useState<[moment.Moment | null, moment.Moment | null] | null>(null);
@@ -42,6 +44,7 @@ const App: React.FC = () => {
             <Route path="/events" element={<Events selectedDates={selectedDates} />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/about" element={<About />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
       </ListProvider>
