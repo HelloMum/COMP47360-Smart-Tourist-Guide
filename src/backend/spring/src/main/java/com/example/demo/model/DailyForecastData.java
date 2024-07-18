@@ -1,9 +1,11 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.UUID;
 
 @Entity
@@ -11,13 +13,20 @@ import java.util.UUID;
 public class DailyForecastData {
     @Id
     private UUID id;
-    private double clouds;
-    private int dt;
+    private Timestamp fetch_time;
+    private long dt;
+    @Column(name = "temp_day")
+    private double tempDay;
     private double rain;
+    private double snow;
+    private double speed;
+    private double humidity;
+    private double pressure;
+    private String weather_description;
     private String weather_icon;
-    private int weather_id;
     private String weather_main;
-    private UUID daily_weather_forecast_data_id;
+    @Transient
+    private LocalDate date;
 
     public UUID getId() {
         return id;
@@ -27,20 +36,36 @@ public class DailyForecastData {
         this.id = id;
     }
 
-    public double getClouds() {
-        return clouds;
+    public Timestamp getFetch_time() {
+        return fetch_time;
     }
 
-    public void setClouds(double clouds) {
-        this.clouds = clouds;
+    public void setFetch_time(Timestamp fetch_time) {
+        this.fetch_time = fetch_time;
     }
 
-    public int getDt() {
+    public long getDt() {
         return dt;
     }
 
-    public void setDt(int dt) {
+    public void setDt(long dt) {
         this.dt = dt;
+    }
+
+    public double getTempDay() {
+        return tempDay;
+    }
+
+    public void setTempDay(double tempDay) {
+        this.tempDay = tempDay;
+    }
+
+    public double getSnow() {
+        return snow;
+    }
+
+    public void setSnow(double snow) {
+        this.snow = snow;
     }
 
     public double getRain() {
@@ -51,35 +76,42 @@ public class DailyForecastData {
         this.rain = rain;
     }
 
-    public String getWeather_icon() {
-        return weather_icon;
+    public double getSpeed() {
+        return speed;
     }
 
-    public void setWeather_icon(String weather_icon) {
-        this.weather_icon = weather_icon;
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
-    public int getWeather_id() {
-        return weather_id;
-    }
+    public double getHumidity() { return humidity; }
 
-    public void setWeather_id(int weather_id) {
-        this.weather_id = weather_id;
-    }
+    public void setHumidity(double humidity) { this.humidity = humidity; }
 
-    public String getWeather_main() {
-        return weather_main;
-    }
+    public double getPressure() { return pressure; }
 
-    public void setWeather_main(String weather_main) {
-        this.weather_main = weather_main;
-    }
+    public void setPressure(double pressure) { this.pressure = pressure; }
 
-    public UUID getDaily_weather_forecast_data_id() {
-        return daily_weather_forecast_data_id;
-    }
+    public String getWeather_description() { return weather_description; }
 
-    public void setDaily_weather_forecast_data_id(UUID daily_weather_forecast_data_id) {
-        this.daily_weather_forecast_data_id = daily_weather_forecast_data_id;
+    public void setWeather_description(String weather_description) { this.weather_description = weather_description; }
+
+    public String getWeather_icon() { return weather_icon; }
+
+    public void setWeather_icon(String weather_icon) { this.weather_icon = weather_icon; }
+
+    public String getWeather_main() { return weather_main; }
+
+    public void setWeather_main(String weather_main) { this.weather_main = weather_main; }
+
+    public LocalDate getDate() { return date; }
+
+    public void setDate(LocalDate date) { this.date = date; }
+
+    // Convert dt to LocalDate and set it
+    public void convertDtToDate() {
+        this.date = Instant.ofEpochSecond(this.dt)
+                .atZone(ZoneId.of("America/New_York"))
+                .toLocalDate();
     }
 }

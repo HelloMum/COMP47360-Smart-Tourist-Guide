@@ -1,0 +1,12 @@
+docker run -d \
+  -p 5000:5000 \
+  --restart=unless-stopped \
+  --name registry \
+  -v /etc/docker/registry/auth:/auth \
+  -v /home/student:/certs \
+  -e REGISTRY_AUTH=htpasswd \
+  -e REGISTRY_AUTH_HTPASSWD_REALM="Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/sodium-11.tail49328.ts.net.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/sodium-11.tail49328.ts.net.key \
+  registry:2

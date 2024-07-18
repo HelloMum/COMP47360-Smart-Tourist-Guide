@@ -20,6 +20,8 @@ public class Event {
 
     private String category;
 
+    private String combined_category;
+
     @Column(name = "description", length = 2000)
     private String description;
 
@@ -53,6 +55,35 @@ public class Event {
 
     private String zip_code;
 
+    public Event() {}
+
+    public Event(UUID id, String name, Double latitude, Double longitude, String category, String combined_category,
+                 String description, String event_site_url, String image_url, Boolean is_free, String time_start,
+                 String time_end, Integer attending_count, Integer interested_count, Boolean is_canceled,
+                 Boolean is_official, LocalDateTime fetchTime, String address, String city, String state, String zip_code) {
+        this.id = id;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.category = category;
+        this.combined_category = combined_category;
+        this.description = description;
+        this.event_site_url = event_site_url;
+        this.image_url = image_url;
+        this.is_free = is_free;
+        this.time_start = time_start;
+        this.time_end = time_end;
+        this.attending_count = attending_count;
+        this.interested_count = interested_count;
+        this.is_canceled = is_canceled;
+        this.is_official = is_official;
+        this.fetchTime = fetchTime;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zip_code = zip_code;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -84,6 +115,10 @@ public class Event {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getCombined_category() { return combined_category; }
+
+    public void setCombined_category(String combined_category) { this.combined_category = combined_category; }
 
     public Double getLongitude() {
         return longitude;

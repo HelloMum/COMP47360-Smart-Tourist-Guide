@@ -10,24 +10,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/latest-weather")
+@RequestMapping("/weather")
 public class DailyWeatherDataController {
 
+    private final DailyWeatherDataService service;
+
     @Autowired
-    private DailyWeatherDataService service;
+    public DailyWeatherDataController(DailyWeatherDataService service) {
+        this.service = service;
+    }
 
     @GetMapping("/all")
-    public List<DailyForecastData> getLatestForecast() {
+    public List<DailyForecastData> getDailyForecast() {
         return service.getLatestForecast();
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("/by_date/{date}")
     public List<DailyForecastData> getForecastByDate(@PathVariable String date) {
         LocalDate localDate = LocalDate.parse(date);
         return service.getForecastByDate(localDate);
     }
-}
 
+    @GetMapping("/by_date_range/{startDate}/{endDate}")
+    public List<DailyForecastData> getForecastByDateRange(@PathVariable String startDate, @PathVariable String endDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+        return service.getForecastByDateRange(start, end);
+    }
+}

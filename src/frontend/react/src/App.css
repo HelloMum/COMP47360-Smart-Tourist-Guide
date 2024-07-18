@@ -1,10 +1,16 @@
 
-body {
-  font-family: Arial, sans-serif;
+/* clear default css  */
+*  
+ {  
+    margin: 0;  
+    padding: 0;  
+    box-sizing: border-box; 
+} 
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
 }
 
-.event-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+/* just a commit */
