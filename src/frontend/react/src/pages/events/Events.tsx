@@ -14,7 +14,7 @@ import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import AlertModal from '../../components/AlertModal';
 import SkeletonEventCard from '../../components/events/SkeletonEventCard';
-import { useUpdateLeftWidth } from '../../utils/useResponsiveSizes';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 const Events = ({ selectedDates }) => {
   const [events, setEvents] = useState([]);
@@ -97,6 +97,8 @@ const Events = ({ selectedDates }) => {
   };
 
   useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
 
 
   return (

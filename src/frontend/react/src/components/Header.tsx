@@ -14,6 +14,7 @@ import AlertModal from './AlertModal';
 import Logo from './Logo';
 import LoginComponent from "./users/LoginComponent";
 import RegisterComponent from "./users/RegisterComponent";
+import { useUpdateNavbarHeight } from '../utils/useResponsiveSizes';
 
 const Header = () => {
 
@@ -23,6 +24,8 @@ const Header = () => {
   const isMd = useMediaQuery(theme.breakpoints.only('md'));
   const isLg = useMediaQuery(theme.breakpoints.only('lg'));
   const isXl = useMediaQuery(theme.breakpoints.only('xl'));
+  useUpdateNavbarHeight();
+
 
   let spacing;
   if (isXs) {
@@ -110,7 +113,20 @@ const Header = () => {
         paddingLeft: "2%",
       }}
     >
+
+       
       <Logo />
+
+      <Stack
+    sx={{
+      display: { xs: 'block', sm: 'none' },
+    }}
+  >
+    <DateRangePicker
+      onDateChange={handleDateChange}
+      value={selectedDates}
+    />
+  </Stack>
 
       <Stack direction="row" spacing={spacing} alignItems="center">
         <Button
@@ -140,10 +156,19 @@ const Header = () => {
           Plan
         </Button>
 
-        <DateRangePicker
-          onDateChange={handleDateChange}
-          value={selectedDates}
-        />
+
+        <Box
+    sx={{
+      display: { xs: 'none', sm: 'block' },
+    }}
+  >
+    <DateRangePicker
+      onDateChange={handleDateChange}
+      value={selectedDates}
+    />
+  </Box>
+
+
       </Stack>
 
       {/* ----------------------- Login modal Start ----------------------- */}

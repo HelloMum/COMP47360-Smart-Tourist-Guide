@@ -23,6 +23,7 @@ import LoginComponent from "../../components/users/LoginComponent"; // Import th
 import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 import { theme } from "antd";
 import RegisterComponent from "../../components/users/RegisterComponent";
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
 
 const Schedule: React.FC = () => {
   const {
@@ -140,7 +141,16 @@ const Schedule: React.FC = () => {
   const handleSwitch = () => {
     setIsLoginMode(!isLoginMode);
   };
+
+
   // ----------------------- Save feature End -----------------------
+
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
+
+
+
   return (
     <div
       className="schedule"

@@ -23,7 +23,7 @@ const Header = () => {
       className="header"
       style={{
         backgroundColor: 'white',
-        height: NAVBAR_HEIGHT,
+        height:'50px',
         position: 'fixed',
         top: 0,
         left: 0,

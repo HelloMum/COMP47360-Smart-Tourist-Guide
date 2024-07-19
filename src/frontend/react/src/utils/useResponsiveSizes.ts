@@ -1,5 +1,5 @@
 import { useTheme, useMediaQuery } from '@mui/material';
-import { setLeftWidth } from './constants';
+import { setLeftWidth, setNavbarHeight } from './constants';
 
 export const useUpdateLeftWidth = (): void => {
   const theme = useTheme();
@@ -21,6 +21,19 @@ export const useUpdateLeftWidth = (): void => {
   }
 };
 
+export const useUpdateNavbarHeight = (): void => {
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down(426));
+  const isSm = useMediaQuery(theme.breakpoints.down(768));
+
+  if (isXs) {
+    setNavbarHeight('100px'); 
+  } else if (isSm) {
+    setNavbarHeight('50px'); // 768px及以下
+  } else {
+    setNavbarHeight('50px'); // 默认高度
+  }
+};
 
 export const useResponsiveCardWidth = (): string => {
   const theme = useTheme();

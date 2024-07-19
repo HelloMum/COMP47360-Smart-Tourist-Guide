@@ -36,7 +36,7 @@
 }
 
 
-@media (min-width: 400px) {
+@media (min-width: 320px) {
   .custom-range-picker .ant-picker {
     width: 45vw;
   }

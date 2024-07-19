@@ -17,7 +17,7 @@ import AlertModal from '../../components/AlertModal';
 import Map_Spots from '../../components/spots/Map_Spots';
 import SkeletonSpotCard from '../../components/spots/SkeletonSpotCard';
 
-import { useUpdateLeftWidth } from '../../utils/useResponsiveSizes';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | null] | null }> = ({ selectedDates }) => {
   const [activeSpot, setActiveSpot] = useState(null);
@@ -141,6 +141,7 @@ const Spots: React.FC<{ selectedDates: [moment.Moment | null, moment.Moment | nu
   };
 
   useUpdateLeftWidth();
+  useUpdateNavbarHeight();
 
   return (
     <div style={{ display: 'flex' }}>

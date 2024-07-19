@@ -6,6 +6,7 @@ import DateRangePicker from '../../components/DateRangePicker';
 import { NAVBAR_HEIGHT } from '../../utils/constants';
 import HomeCard from '../../components/HomeCard';
 import { ListContext } from '../../contexts/ListContext';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +17,10 @@ const Home: React.FC = () => {
     setSelectedDates(dates);
   };
 
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
+
   return (
     <Stack direction='row' paddingX='8vw' gap='1vw'
       style={{
@@ -25,7 +30,7 @@ const Home: React.FC = () => {
       }}
 
       sx={{
-        backgroundImage: { xs: 'url(images/spots/54_1.webp)', sm: 'none' },
+        backgroundImage: { xs: 'url(images/spots/22_3.webp)', sm: 'none' },
         backgroundSize: 'cover',
         backgroundPosition: 'left',
         backgroundRepeat: 'no-repeat',
@@ -38,10 +43,10 @@ const Home: React.FC = () => {
   gap='2vh' 
   sx={{ 
     width: { xs: '100vw', sm: '35vw', md: '26vw', lg: '20vw' },
-    background: { xs: 'rgba(251, 251, 251, 0.95)', sm: 'none' }, 
+    background: { xs: 'rgba(250, 166, 63, 1)', sm: 'none' }, 
     height: { xs: '45vh', sm: '65vh' },
     borderRadius: { xs: '10px', sm: '0' }, 
-    paddingLeft: { xs: '2vh', sm: '0' }, 
+    paddingLeft: { xs: '3vw', sm: '0' }, 
   }}
   paddingTop='8vh'      
 >
@@ -50,7 +55,7 @@ const Home: React.FC = () => {
             fontFamily: '"Lexend", sans-serif',
             fontWeight: '600',
             letterSpacing: '-1px',
-            color: theme.palette.primary.dark,
+            color:{xs:'white' ,sm:theme.palette.primary.dark},
             marginBottom: '8vh',
             fontSize: { xs: '8vw', sm: '4.5vw', md: '3.3vw', lg: '2.5vw', xl: '2vw' },
             lineHeight: { xs: '10vw', sm: '5.5vw', md: '4.3vw', lg: '3.5vw', xl: '3vw' }
@@ -69,24 +74,24 @@ const Home: React.FC = () => {
             value={selectedDates}
           />
 
-          <div
-            onClick={() => navigate('/spots')}
-            style={{
-              backgroundColor: theme.palette.primary.dark,
-              color: 'white',
-              borderRadius: '50%',
-              boxShadow: 'none',
-              height: '40px',
-              width: '40px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-              fontWeight: '600',
-            }}
-          >
-            GO
-          </div>
+<Box
+  onClick={() => navigate('/spots')}
+  sx={{
+    backgroundColor: { xs: 'white', sm: theme.palette.primary.dark }, 
+    color: { xs: '#ee9527', sm: 'white' }, 
+    borderRadius: '50%',
+    boxShadow: 'none',
+    height: '40px',
+    width: '40px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+    fontWeight: '600',
+  }}
+>
+  GO
+</Box>
         </Stack>
       </Stack>
 

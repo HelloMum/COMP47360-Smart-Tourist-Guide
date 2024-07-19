@@ -3,15 +3,20 @@ import { Box, Typography } from '@mui/material';
 import { ChevronRightRounded, KeyboardArrowLeftRounded } from '@mui/icons-material';
 import { ListContext } from '../contexts/ListContext';
 import { LEFT_WIDTH } from '../utils/constants';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../utils/useResponsiveSizes';
 
 const Btn_List: React.FC = () => {
   const { isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
+
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
 
   return (
     <Box
       sx={{
         position: 'absolute',
-        top: '70px',
+        top: {xs:'120px',sm:'70px'},
         left: isLeftPanelVisible ?`calc(${LEFT_WIDTH} + 1vw)`: '20px',
         boxShadow: 2,
         borderRadius: '6px',
