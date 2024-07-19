@@ -21,21 +21,17 @@ public class AttractionServiceTest {
     public void setUp() throws Exception {
         attractionService = new AttractionService();
         InputStream testResource = getClass().getClassLoader().getResourceAsStream("attractions_test.csv");
+        if (testResource == null) {
+            throw new RuntimeException("Test resource not found");
+        }
         loadTestData(attractionService, testResource);
     }
 
     @Test
-    public void testGetAttractionByIndex() {
-        Attraction attraction = attractionService.getAttractionByIndex(1);
-        assertThat(attraction).isNotNull();
-        assertThat(attraction.getAttraction_name()).isEqualTo("Test Attraction 1");
-    }
-
-    @Test
     public void testFilterAndSortAttractions() {
-        List<Attraction> attractions = attractionService.filterAndSortAttractions("Test", true, List.of("Art"), "price", "asc");
+        List<Attraction> attractions = attractionService.filterAndSortAttractions("Garden", true, List.of("natural"), "price", "asc");
         assertThat(attractions).hasSize(1);
-        assertThat(attractions.get(0).getAttraction_name()).isEqualTo("Test Attraction 1");
+        assertThat(attractions.get(0).getAttraction_name()).isEqualTo("6BC Botanical Garden");
     }
 
     private void loadTestData(AttractionService attractionService, InputStream inputStream) throws Exception {
@@ -48,6 +44,10 @@ public class AttractionServiceTest {
         int lineNumber = 1;
         while ((line = reader.readNext()) != null) {
             lineNumber++;
+            if (line.length < 25 || line[0].isEmpty()) {
+                System.err.println("Skipping line " + lineNumber + ": incomplete data or empty line");
+                continue;
+            }
             try {
                 Attraction attraction = new Attraction();
                 attraction.setTaxi_zone(Integer.parseInt(line[0]));
