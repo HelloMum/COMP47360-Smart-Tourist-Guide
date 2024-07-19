@@ -73,7 +73,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
       >
         <Stack direction="row">
           <Box sx={{ position: 'relative', 
-           width: {xs:'90px',sm:'90px',md:'180px'}, 
+           width: {xs:'70px',sm:'90px',md:'180px'}, 
            height: isExpanded ? {xs:'120px',sm:'100px',md:'190px'} :  {xs:'100px',sm:'100px',md:'128px'},
              
              boxShadow: 1, borderRadius: '4px', marginTop: '10px' }}>
@@ -82,7 +82,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
               height="100"
               image={imageUrl}
               alt={event.name}
-              sx={{ objectFit: 'cover', borderRadius: '4px', width: {xs:'90px',sm:'90px',md:'180px'},
+              sx={{ objectFit: 'cover', borderRadius: '4px', width: {xs:'70px',sm:'90px',md:'180px'},
                 
                 
                 height: isExpanded ? {xs:'120px',sm:'100px',md:'190px'} :  {xs:'100px',sm:'100px',md:'128px'}
@@ -97,7 +97,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
             <Typography
               sx={{
                 whiteSpace: isExpanded ? 'normal' : 'nowrap',
-                fontSize: '1.05rem',
+                fontSize: {xs:'1rem',sm:'1.05rem'},
                 fontWeight: 400,
                 overflow: 'hidden',
                 textOverflow: isExpanded ? 'clip' : 'ellipsis',
@@ -121,12 +121,15 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
 
             <Stack gap={'4px'} marginTop={'2px'}>
               <Box display="flex" alignItems="center" marginTop={1}>
-                <DateRangeRounded sx={{ fontSize: 'large', marginRight: {xs:0,sm:0,md:1} }} />
-                <Typography variant="body2" color="text.secondary" sx={{ marginRight: {xs:'5px',sm:'45px'} }}>
+                <DateRangeRounded sx={{fontSize: {xs:'medium',sm:'large'}, marginRight: {xs:1,sm:1,md:1} }} />
+                <Typography variant="body2" color="text.secondary" 
+                sx={{ 
+                  marginRight: {xs:'15px',sm:'45px'},
+                fontSize:{xs:'12px',sm:'14px'} }}>
                   {date}
                 </Typography>
-                <AccessTimeRounded sx={{ fontSize: 'large', marginRight:{xs:0,sm:0,md:1}  }} />
-                <Typography variant="body2" color="text.secondary">
+                <AccessTimeRounded sx={{ fontSize: {xs:'medium',sm:'large'}, marginRight:{xs:1,sm:1,md:1}  }} />
+                <Typography variant="body2" color="text.secondary" sx={{fontSize:{xs:'12px',sm:'14px'}}}>
                   {time}
                 </Typography>
               </Box>

@@ -85,7 +85,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
       <Box
         sx={{
           width: {            
-            xs:'55vw',
+            xs:'70vw',
             sm:'28vw',
             md:'22vw',
             lg:'18vw',

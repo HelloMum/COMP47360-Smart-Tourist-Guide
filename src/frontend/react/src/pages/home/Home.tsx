@@ -18,14 +18,13 @@ const Home: React.FC = () => {
   };
 
   useUpdateLeftWidth();
-  useUpdateNavbarHeight();
 
 
   return (
     <Stack direction='row' paddingX='8vw' gap='1vw'
       style={{
-        marginTop: NAVBAR_HEIGHT,
-        height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+        marginTop: '50px',
+        height: `calc(100vh - 50px)`,
         paddingTop: '10vh',
       }}
 
