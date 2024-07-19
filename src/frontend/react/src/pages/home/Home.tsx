@@ -23,18 +23,28 @@ const Home: React.FC = () => {
         height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         paddingTop: '10vh',
       }}
+
+      sx={{
+        backgroundImage: { xs: 'url(images/spots/54_1.webp)', sm: 'none' },
+        backgroundSize: 'cover',
+        backgroundPosition: 'left',
+        backgroundRepeat: 'no-repeat',
+      }}
+
     >
       {/* Left Section */}
       <Stack 
-        direction='column' 
-        gap='2vh' 
-        sx={{ 
-          width: { xs: '100vw', sm: '35vw', md: '26vw', lg: '20vw' },
-          background:'#fbfbfb' 
-        }}
-        paddingTop='8vh'      
-        height='65vh' 
-      >
+  direction='column' 
+  gap='2vh' 
+  sx={{ 
+    width: { xs: '100vw', sm: '35vw', md: '26vw', lg: '20vw' },
+    background: { xs: 'rgba(251, 251, 251, 0.95)', sm: 'none' }, 
+    height: { xs: '45vh', sm: '65vh' },
+    borderRadius: { xs: '10px', sm: '0' }, 
+    paddingLeft: { xs: '2vh', sm: '0' }, 
+  }}
+  paddingTop='8vh'      
+>
         <Typography
           sx={{
             fontFamily: '"Lexend", sans-serif',

@@ -42,7 +42,7 @@ const Searchbar = ({ onSearch }) => {
         }}
         sx={{
           width: {
-            xs: '57vw', 
+            xs: '60vw', 
             sm: '37vw', 
             md: '35vw', 
             lg: '25vw', 

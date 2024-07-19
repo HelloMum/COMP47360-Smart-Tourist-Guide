@@ -11,7 +11,7 @@ export const useUpdateLeftWidth = (): void => {
   if (isSm) {
     setLeftWidth('80vw'); // 768px及以下
   } else if (isMd) {
-    setLeftWidth('340px'); // 768px到1024px
+    setLeftWidth('380px'); // 768px到1024px
   } else if (isLg) {
     setLeftWidth('50vw'); // 1024px到1440px
   } else if (isXl) {

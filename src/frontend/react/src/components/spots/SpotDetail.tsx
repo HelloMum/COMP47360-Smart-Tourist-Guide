@@ -47,7 +47,6 @@ const SpotDetail = ({ spot, onCollapse }) => {
       overflow: 'hidden',
       boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
       width: "94%",
-      // height:"105%",
       margin: "5px auto",
     }}>
       {/*------------------ picture -------------------- */}
@@ -55,9 +54,8 @@ const SpotDetail = ({ spot, onCollapse }) => {
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        
         height: {
-          xs: '20vh', 
+          xs: '24vh', 
           sm: '24vh', 
           md: '30vh', 
           lg: '30vh', 
@@ -73,7 +71,8 @@ const SpotDetail = ({ spot, onCollapse }) => {
           width: '35.5%', 
           flexShrink: 0, 
           overflow: 'hidden', 
-          cursor: 'pointer' 
+          cursor: 'pointer',
+          display: { xs: 'none', md: 'block' } 
         }}>
           <CardMedia
             component="img"
@@ -99,7 +98,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           boxShadow: 1, 
           marginTop: '10px', 
           height: '100%', 
-          width: '64%', 
+          width: { xs: '100%', md: '64%' }, 
           flexShrink: 0, 
           overflow: 'hidden', 
           cursor: 'pointer' 
@@ -182,7 +181,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           <Box display="flex" alignItems="center">
             <ConfirmationNumber sx={{ fontSize: 'large', marginRight: '8px' }} />
             <Typography variant="body2" color="text.secondary">
-              from {spot.price} per adult
+              from $ {spot.price} per adult
             </Typography>
           </Box>
 
@@ -286,7 +285,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         open={alertOpen}
         onClose={() => setAlertOpen(false)}
         title="Warning"
-        message="Please set the start and end dates before adding items to the list."
+        message="Please set travel dates before adding items to the list."
       />
     </Card>
   );
