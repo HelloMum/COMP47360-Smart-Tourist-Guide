@@ -43,7 +43,7 @@ export const useResponsiveCardWidth = (): string => {
   const isXl = useMediaQuery(theme.breakpoints.down(1920));
 
   if (isSm) {
-    return '69vw'; // 768px及以下
+    return '71vw'; // 768px及以下
   } else if (isMd) {
     return '45vw'; // 768px到1024px
   } else if (isLg) {

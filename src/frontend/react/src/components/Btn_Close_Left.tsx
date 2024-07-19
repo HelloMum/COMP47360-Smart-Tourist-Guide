@@ -21,7 +21,7 @@ const Btn_List: React.FC = () => {
         boxShadow: {xs:isLeftPanelVisible ? 0:2,sm:2},
         borderRadius: '6px',
         cursor: 'pointer',
-        backgroundColor: '#fff',
+        backgroundColor: {xs: isLeftPanelVisible ?null:"#fff",sm:'#fff'},
         paddingTop: '5px',
         paddingBottom: isLeftPanelVisible ?'0px':'5px',
         paddingX: {xs:'2px',sm:'6px'},

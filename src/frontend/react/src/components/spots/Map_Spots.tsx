@@ -69,7 +69,7 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={14}
+      zoom={13.5}
       options={mapOptions}
       onLoad={map => {
         mapRef.current = map;
