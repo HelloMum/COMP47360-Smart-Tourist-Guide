@@ -1,19 +1,20 @@
-import React, { useContext, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
-import './Header.css';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { Box, Button, Stack, IconButton } from '@mui/material';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
-import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
-import { NAVBAR_HEIGHT } from '../utils/constants';
-import DateRangePicker from './DateRangePicker';
-import { ListContext } from '../contexts/ListContext';
-import AlertModal from './AlertModal';
-import Logo from './Logo';
+import React, { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import "./Header.css";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import { Box, Button, Stack, IconButton } from "@mui/material";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import AddLocationRounded from "@mui/icons-material/AddLocationAltRounded";
+import LocalActivityRoundedIcon from "@mui/icons-material/LocalActivityRounded";
+import { NAVBAR_HEIGHT } from "../utils/constants";
+import DateRangePicker from "./DateRangePicker";
+import { ListContext } from "../contexts/ListContext";
+import AlertModal from "./AlertModal";
+import Logo from "./Logo";
 import LoginComponent from "./users/LoginComponent";
 import RegisterComponent from "./users/RegisterComponent";
+import LogoutComponent from "./users/AccountMenuComponent"; // Import LogoutComponent
 
 const Header = () => {
   const theme = useTheme();
@@ -123,24 +124,29 @@ const Header = () => {
 
       {/* ----------------------- Login modal Start ----------------------- */}
       <Box position="relative">
-        <IconButton onClick={handleAvatarClick}>
-          <AccountCircleRoundedIcon
-            style={{ color: theme.palette.primary.dark, fontSize: 28 }}
-          />
-        </IconButton>
-        {isLoginMode ? (
-          <LoginComponent
-            open={loginOpen}
-            onClose={() => setLoginOpen(false)}
-            onSwitch={handleSwitch}
-          />
+        {isLoggedIn ? (
+          <LogoutComponent /> // Show LogoutComponent if the user is logged in
         ) : (
-          <RegisterComponent
-            open={loginOpen}
-            onClose={() => setLoginOpen(false)}
-            onSwitch={handleSwitch}
-          />
+          <IconButton onClick={handleAvatarClick}>
+            <AccountCircleRoundedIcon
+              style={{ color: theme.palette.primary.dark, fontSize: 28 }}
+            />
+          </IconButton>
         )}
+        {!isLoggedIn &&
+          (isLoginMode ? (
+            <LoginComponent
+              open={loginOpen}
+              onClose={() => setLoginOpen(false)}
+              onSwitch={handleSwitch}
+            />
+          ) : (
+            <RegisterComponent
+              open={loginOpen}
+              onClose={() => setLoginOpen(false)}
+              onSwitch={handleSwitch}
+            />
+          ))}
       </Box>
       {/* ----------------------- Login modal End ----------------------- */}
 
