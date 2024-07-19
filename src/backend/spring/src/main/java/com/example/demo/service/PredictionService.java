@@ -50,10 +50,12 @@ public class PredictionService {
             reader.readLine(); // skip header
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length >= 5) {
-                    String key = parts[0] + "_" + parts[1] + "_" + parts[2];
-                    meanMap.put(key, Double.parseDouble(parts[3]));
-                    stdMap.put(key, Double.parseDouble(parts[4]));
+                if (parts.length >= 4) {
+                    String key = parts[0] + "_" + parts[1];
+                    double mean = Double.parseDouble(parts[2]);
+                    double std = Double.parseDouble(parts[3]);
+                    meanMap.put(key, mean);
+                    stdMap.put(key, std);
                 }
             }
             reader.close();
@@ -253,7 +255,7 @@ public class PredictionService {
             float passengerCount = (float) Math.expm1(predictions[0][0]);
 
             // Calculate busyness index
-            String key = taxiZone + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
+            String key = taxiZone + "_" + dateTime.getHour();
             Double mean = meanMap.get(key);
             Double std = stdMap.get(key);
 
