@@ -55,7 +55,7 @@ const Header = () => {
   const buttonStyle = (path) => ({
     color: theme.palette.primary.dark,
     borderColor: isActive(path) && !isXs ? theme.palette.primary.main : "transparent",
-    backgroundColor: isXs && isActive(path) ? '#fff1cc' : 'transparent',
+    backgroundColor: isXs && isActive(path) ? '#ffebbb' : 'transparent',
     borderRadius: 20,
     padding: "3px 15px",
     fontSize: "0.875rem",
