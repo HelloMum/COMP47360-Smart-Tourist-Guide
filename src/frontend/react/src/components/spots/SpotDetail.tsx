@@ -147,11 +147,11 @@ const SpotDetail = ({ spot, onCollapse }) => {
           <Box style={{ color: '#888',fontSize:'14px' }}   sx={{
           display: {
             xs: 'none',
-            sm: 'none',
+            sm: 'inline',
             md: 'inline',
             lg: 'inline',
           },
-        }}>by {spot.user_ratings_total} people</Box>
+        }}>by {spot.user_ratings_total} users</Box>
         </Stack>
 
         <Typography
@@ -161,7 +161,9 @@ const SpotDetail = ({ spot, onCollapse }) => {
         color: "#444",
         textAlign: 'justify',
         hyphens: 'auto',
-        wordBreak: 'break-word'
+        wordBreak: 'break-word',
+        fontSize:{xs:'13px',sm:'14px'}
+
       }}
     >
       {spot.description}
@@ -172,7 +174,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           {/* Address */}
           <Box display="flex" alignItems="center">
             <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-            <Typography variant="body2" color="text.secondary" sx={{ marginRight: '24px' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ marginRight: '24px',fontSize:{xs:'13px',sm:'14px'} }}>
               {spot.attraction_vicinity}
             </Typography>
           </Box>
@@ -180,7 +182,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           {/* price */}
           <Box display="flex" alignItems="center">
             <ConfirmationNumber sx={{ fontSize: 'large', marginRight: '8px' }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary"  sx={{ fontSize:{xs:'13px',sm:'14px'} }}>
               from $ {spot.price} per adult
             </Typography>
           </Box>
@@ -199,12 +201,12 @@ const SpotDetail = ({ spot, onCollapse }) => {
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
               >
-                <Typography variant="body2" color={isHovered || isClicked ? 'orange' : 'text.secondary'}>
+                <Typography variant="body2" color={isHovered || isClicked ? 'orange' : 'text.secondary'}  sx={{ fontSize:{xs:'13px',sm:'14px'} }}>
                   {spot.attractionWebsite}
                 </Typography>
               </a>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary"  sx={{ fontSize:{xs:'13px',sm:'14px'} }} >
                 No address provided
               </Typography>
             )}
@@ -213,7 +215,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           {/* phone */}
           <Box display="flex">
             <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary"  sx={{ fontSize:{xs:'13px',sm:'14px'} }}>
               local: {spot.attraction_phone_number || 'No local phone provided'} <br />
               international: {spot.international_phone_number || 'No international phone provided'}
             </Typography>

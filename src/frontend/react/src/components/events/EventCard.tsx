@@ -110,14 +110,19 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
               {event.name}
             </Typography>
 
-            <Stack direction='row' spacing={1}>
-              <Tag_Category category={event.combined_category} />
-              {event.is_free && <Tag_IsFree />}
-
-              <Btn_Earth url={event.event_site_url} />
-
-
-            </Stack>
+            <Stack 
+      direction='row' 
+      sx={{
+        spacing: {
+          xs: 0.5, 
+          sm: 1    
+        }
+      }}
+    >
+      <Tag_Category category={event.combined_category} />
+      {event.is_free && <Tag_IsFree />}
+      <Btn_Earth url={event.event_site_url} />
+    </Stack>
 
             <Stack gap={'4px'} marginTop={'2px'}>
               <Box display="flex" alignItems="center" marginTop={1}>

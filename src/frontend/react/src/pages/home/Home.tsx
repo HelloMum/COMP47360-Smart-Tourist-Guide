@@ -43,7 +43,7 @@ const Home: React.FC = () => {
   sx={{ 
     width: { xs: '100vw', sm: '35vw', md: '26vw', lg: '20vw' },
     background: { xs: 'rgba(250, 166, 63, 1)', sm: 'none' }, 
-    height: { xs: '45vh', sm: '65vh' },
+    height: { xs: '370px', sm: '65vh' },
     borderRadius: { xs: '10px', sm: '0' }, 
     paddingLeft: { xs: '3vw', sm: '0' }, 
   }}

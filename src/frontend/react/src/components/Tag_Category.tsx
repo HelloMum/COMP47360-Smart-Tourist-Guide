@@ -1,21 +1,26 @@
-import theme from '../utils/theme';
+import { Box } from '@mui/material';
+
 
 const Tag = ({ category }) => {
-
-
   return (
-    <span  style={{
+    <Box sx={{
       backgroundColor: '#f3f3f3', 
       color: '#616161',
-      padding: '0px 9px',
+      padding: {
+        xs: '0px 3px', 
+        sm: '0px 9px'  
+      },
       borderRadius: '4px',
       fontSize: '12px',
-      marginRight: '6px', 
-      display: 'inline-block' ,
+      marginRight: {
+        xs: '4px',
+        sm: '6px'
+      }, 
+      display: 'inline-block',
       boxSizing: 'border-box',
     }}>
       {category}
-    </span>
+    </Box>
   );
 }
 

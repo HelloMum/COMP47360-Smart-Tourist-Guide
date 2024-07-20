@@ -55,7 +55,7 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
           sx={{
             position: 'absolute',
             top: '-10px',
-            right: '-95px',
+            right: {xs:'-68px',sm:'-95px'},
             backgroundColor: 'white',
             borderRadius: '50%',
             width: '23px',
