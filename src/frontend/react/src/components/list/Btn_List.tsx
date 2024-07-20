@@ -19,7 +19,7 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
       sx={{
         position: 'absolute',
         display: 'inline-block',
-        top: { xs: '120px', sm: '70px' },
+        top: { xs: '105px', sm: '70px' },
         right: { xs: '70px', sm: '130px' },
       }}
     >

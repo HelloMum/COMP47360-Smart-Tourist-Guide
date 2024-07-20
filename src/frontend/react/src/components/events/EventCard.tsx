@@ -73,7 +73,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
       >
         <Stack direction="row">
           <Box sx={{ position: 'relative', 
-           width: {xs:'70px',sm:'90px',md:'180px'}, 
+           width: {xs:'80px',sm:'90px',md:'180px'}, 
            height: isExpanded ? {xs:'120px',sm:'100px',md:'190px'} :  {xs:'100px',sm:'100px',md:'128px'},
              
              boxShadow: 1, borderRadius: '4px', marginTop: '10px' }}>
@@ -82,7 +82,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
               height="100"
               image={imageUrl}
               alt={event.name}
-              sx={{ objectFit: 'cover', borderRadius: '4px', width: {xs:'70px',sm:'90px',md:'180px'},
+              sx={{ objectFit: 'cover', borderRadius: '4px', width: {xs:'80px',sm:'90px',md:'180px'},
                 
                 
                 height: isExpanded ? {xs:'120px',sm:'100px',md:'190px'} :  {xs:'100px',sm:'100px',md:'128px'}

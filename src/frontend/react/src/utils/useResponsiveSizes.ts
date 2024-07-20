@@ -27,9 +27,9 @@ export const useUpdateNavbarHeight = (): void => {
   const isSm = useMediaQuery(theme.breakpoints.down(768));
 
   if (isXs) {
-    setNavbarHeight('100px'); 
+    setNavbarHeight('85px'); 
   } else if (isSm) {
-    setNavbarHeight('50px'); // 768px及以下
+    setNavbarHeight('85px'); // 768px及以下
   } else {
     setNavbarHeight('50px'); // 默认高度
   }

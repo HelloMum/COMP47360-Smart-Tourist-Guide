@@ -113,8 +113,13 @@ const EventCard_PopUp = ({ event, onClose }) => {
           {/* date & time */}
           <Box display="flex" alignItems="center" marginTop={1}>
             <DateRangeRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-            <Typography variant="body2" color="text.secondary" style={{ marginRight: '50px' }} sx={{ fontSize:{xs:'12px',sm:'14px'} }}
-      >
+            <Typography variant="body2" color="text.secondary"  
+            sx={{ 
+              fontSize:{xs:'12px',sm:'14px'},
+              marginRight: {xs:'35px',sm:'50px'} }}
+              
+              >
+      
               {date}
             </Typography>
             <AccessTimeRounded sx={{ fontSize: 'large', marginRight: 1 }} />

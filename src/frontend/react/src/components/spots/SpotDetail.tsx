@@ -124,7 +124,11 @@ const SpotDetail = ({ spot, onCollapse }) => {
         </Box>
       </Box>
       {/*------------------ content below pictures -------------------*/}
-      <Stack sx={{ p: 3, px: {
+      <Stack sx={{ 
+        
+        p: {xs:2,sm:3}, 
+      
+      px: {
           xs: '2', 
           sm: '2', 
           md: '5', 
@@ -142,11 +146,19 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
         {/*-------------------- rating ---------------------- */}
         <Stack direction={"row"} gap={1}>
-          <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly />
+          <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly 
+          sx={{
+            fontSize: {
+              xs: '1.2rem', 
+              sm: '1.3rem', 
+        
+            }
+          }}/>
+
           {spot.attraction_rating} 
           <Box style={{ color: '#888',fontSize:'14px' }}   sx={{
           display: {
-            xs: 'none',
+            xs: 'inline',
             sm: 'inline',
             md: 'inline',
             lg: 'inline',
