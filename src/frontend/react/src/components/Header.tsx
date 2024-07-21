@@ -10,6 +10,7 @@ import LocalActivityRoundedIcon from "@mui/icons-material/LocalActivityRounded";
 import { NAVBAR_HEIGHT } from "../utils/constants";
 import DateRangePicker from "./DateRangePicker";
 import { ListContext } from "../contexts/ListContext";
+import { useAuth } from "../contexts/AuthContext"; // Import useAuth
 import AlertModal from "./AlertModal";
 import Logo from "./Logo";
 import LoginComponent from "./users/LoginComponent";
@@ -25,9 +26,10 @@ const Header = () => {
 
   // ----------------------- Login modal Start -----------------------
   const [loginOpen, setLoginOpen] = useState(false);
+  const { isLoggedIn } = useAuth(); // Use the context
   const [isLoginMode, setIsLoginMode] = useState(true);
 
-  const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const isToken = Boolean(localStorage.getItem("token"));
   // ----------------------- Login modal End -----------------------
 
   const isActive = (path) => location.pathname === path;
@@ -127,7 +129,7 @@ const Header = () => {
         {isLoggedIn ? (
           <LogoutComponent /> // Show LogoutComponent if the user is logged in
         ) : (
-          <IconButton onClick={handleAvatarClick}>
+          <IconButton id="avatarButton" onClick={handleAvatarClick}>
             <AccountCircleRoundedIcon
               style={{ color: theme.palette.primary.dark, fontSize: 28 }}
             />
