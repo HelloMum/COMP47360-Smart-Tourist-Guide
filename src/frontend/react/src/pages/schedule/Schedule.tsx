@@ -23,6 +23,7 @@ import LoginComponent from "../../components/users/LoginComponent"; // Import th
 import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 import { theme } from "antd";
 import RegisterComponent from "../../components/users/RegisterComponent";
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
 
 const Schedule: React.FC = () => {
   const {
@@ -140,7 +141,16 @@ const Schedule: React.FC = () => {
   const handleSwitch = () => {
     setIsLoginMode(!isLoginMode);
   };
+
+
   // ----------------------- Save feature End -----------------------
+
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
+
+
+
   return (
     <div
       className="schedule"
@@ -167,7 +177,14 @@ const Schedule: React.FC = () => {
               <Typography
                 variant="h6"
                 align="left"
-                sx={{ fontFamily: '"Lexend", sans-serif' }}
+                sx={{ 
+                  fontFamily: '"Lexend", sans-serif',
+                  fontSize: {
+                    xs: '14px', 
+                    sm: '16px',  
+                    md:'20px'
+                  }
+                 }}
               >
                 {moment(currentDate).format("Do MMMM YYYY, dddd")}
               </Typography>
@@ -197,6 +214,8 @@ const Schedule: React.FC = () => {
                 </Tooltip>
               )}
               {/* ----------------------- Save feature End ----------------------- */}
+
+
               <Box
                 display="flex"
                 alignItems="center"
@@ -208,27 +227,39 @@ const Schedule: React.FC = () => {
                   <Box display="flex" alignItems="center">
                     <Typography
                       variant="h6"
-                      style={{
+                      sx={{
                         fontWeight: 300,
                         fontFamily: "Lexend",
                         marginRight: 0,
-                        fontSize: "20px",
+                        fontSize: {
+                          xs: '14px', 
+                          sm: '16px',
+                          md:'18px'  
+                        }
                       }}
                     >
                       {weather.tempDay}°C
                     </Typography>
-                    <img
-                      src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
-                      alt={weather.weather_description}
-                      style={{ marginRight: 0, height: "70px" }}
-                    />
-                    <Box>
+
+
+                    <Box 
+  component="img"
+  src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
+  alt={weather.weather_description}
+  sx={{ 
+    marginRight: 0,
+    height: { xs: '50px', sm: '60px',md:'70px' } 
+  }}
+/>
+
+                    <Box sx={{display:{xs:'none',sm:'none',md:'block'}}}>
                       <Typography
                         variant="body2"
-                        style={{
+                        sx={{
                           fontWeight: 250,
                           fontFamily: "Lexend",
                           fontSize: "12px",
+                       
                         }}
                       >
                         Wind: {weather.speed.toFixed(1)} m/s
@@ -281,14 +312,22 @@ const Schedule: React.FC = () => {
                 style={{
                   backgroundColor: date === currentDate ? "orange" : "#f8f8f8",
                   color: date === currentDate ? "#fff" : "#888",
-                  borderRadius: "20px",
-                  padding: "8px 16px",
-                  minWidth: "60px",
-                  minHeight: "65px",
+                  // borderRadius: "20px",
+                  // padding: "8px 16px",
+                  // minWidth: "60px",
+                  // minHeight: "65px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
+                }}
+
+                sx={{
+
+                  minWidth:{xs:'50px',sm: "55px",md: "60px"},
+                  minHeight: {xs:'50px',sm: "60px",md: "65px"},
+                  padding: {xs:'10px 8px',sm:"8px 10px",md:"8px 16px"},
+                  borderRadius: {xs:'14px',sm:"18px",md:'20px'},
                 }}
               >
                 <Typography
@@ -306,14 +345,20 @@ const Schedule: React.FC = () => {
                   style={{
                     fontWeight: 400,
                     fontFamily: "Lexend",
-                    fontSize: "1.5em",
+                    // fontSize: "1.5em",
                     lineHeight: 1,
                   }}
+
+                  sx={{fontSize:{xs:'1.3em',sm: "1.4em",md: "1.5em"}}}
                 >
                   {moment(date).format("DD")}
                 </Typography>
               </Button>
             ))}
+
+
+
+            
           </Stack>
 
           <div

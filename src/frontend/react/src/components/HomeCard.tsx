@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Card, Box, CardMedia, Typography, Stack, Rating, IconButton } from '@mui/material';
+import { Card, Box, CardMedia, Typography, Stack, Rating } from '@mui/material';
 
 interface SpotCardProps {
   image1: string;
@@ -43,11 +43,11 @@ const HomeCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating, user
 
   return (
     <>
-      <Card sx={{ boxShadow: '0 2px 2px rgba(0, 0, 0, 0.0)', width: "400px", marginBottom: 2, gap: 1 }}>
-        <Box sx={{ position: 'relative', overflow: 'hidden', borderRadius: '16px', boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', }}>
+      <Card sx={{ boxShadow: '0 2px 2px rgba(0, 0, 0, 0.0)', width: '100%', marginBottom: 2 }}>
+        <Box sx={{ position: 'relative', overflow: 'hidden', borderRadius: '16px', boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)' }}>
           <CardMedia
             component="img"
-            height={`${screenHeight * 0.65}px`} // Set height to 60% of the screen height
+            height={`${screenHeight * 0.65}px`}
             image={currentImage}
             alt={title}
             sx={{ ...imageStyle }}
@@ -74,8 +74,6 @@ const HomeCard: React.FC<SpotCardProps> = ({ image1, image3, title, rating, user
           <Stack direction={"row"} gap={1}>
             <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly sx={{ fontSize: '1.2rem' }} />
             {rating}<span style={{ color: '#888' }}>by {user_ratings_total} people</span>
-          </Stack>
-          <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1.5 }}>
           </Stack>
         </Stack>
       </Card>

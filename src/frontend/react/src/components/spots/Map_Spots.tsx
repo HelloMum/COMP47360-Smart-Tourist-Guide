@@ -69,7 +69,7 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={14}
+      zoom={13.5}
       options={mapOptions}
       onLoad={map => {
         mapRef.current = map;
@@ -108,7 +108,7 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
               height: '100%',
               background: 'transparent',
               zIndex: 998,
-              pointerEvents: 'none', // Make sure this layer does not block clicks
+              pointerEvents: 'none', 
             }}
           />
           <OverlayView
@@ -117,12 +117,12 @@ const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose,
           >
             <div style={{
               position: 'absolute',
-              transform: 'translate(-50%, -115%)',
+              transform: 'translate(-50%, -108%)',
               background: 'white',
               border: '1px solid #ddd',
               borderRadius: '8px',
               maxWidth: '500px',
-              pointerEvents: 'auto' // Ensure the card itself is still clickable
+              pointerEvents: 'auto' 
             }}>
               <SpotsCard_PopUp
                 id={selectedMarker.index}
