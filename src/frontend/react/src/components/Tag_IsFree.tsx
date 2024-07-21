@@ -1,21 +1,26 @@
 import React from 'react';
-import theme from '../utils/theme';
+import Box from '@mui/material/Box';
 
 const Tag = () => {
   return (
-    <span style={{
-      backgroundColor: '#4CAF50', 
+    <Box sx={{
+      backgroundColor: '#4CAF50',
       color: 'white',
-      padding: '0px 9px',
+      padding: {
+        xs: '0px 3px', 
+        sm: '0px 9px'  
+      },
       borderRadius: '4px',
       fontSize: '12px',
-  
-      display: 'inline-block' ,
+      display: 'inline-block',
       boxSizing: 'border-box',
-
+      marginRight: {
+        xs: '4px',
+        sm: '6px'
+      }, 
     }}>
-    free
-    </span>
+      free
+    </Box>
   );
 }
 
