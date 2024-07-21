@@ -7,7 +7,7 @@ import { Box, Button, Stack } from '@mui/material';
 
 import { NAVBAR_HEIGHT } from '../utils/constants';
 
-import Logo from './Logo';
+import Logo from './Logo_Home';
 import { grey } from '@mui/material/colors';
 
 const Header = () => {
@@ -23,7 +23,7 @@ const Header = () => {
       className="header"
       style={{
         backgroundColor: 'white',
-        height: NAVBAR_HEIGHT,
+        height:'50px',
         position: 'fixed',
         top: 0,
         left: 0,

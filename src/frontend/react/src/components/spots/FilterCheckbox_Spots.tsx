@@ -61,7 +61,26 @@ const FilterCheckbox = ({ onChange }) => {
     <>
       <Stack direction="row" alignItems="center" onClick={handleChange}>
         <FilterAltTwoTone style={{ color: '#999999', borderRadius: 20 }} />
-        <span style={{ marginLeft: '2px', color: '#777777' }}>category</span>
+        <Box
+        component="span"
+        sx={{
+          display: { xs: 'inline', sm: 'inline', md: 'none', lg: 'none' },
+          marginLeft: '2px',
+          color: '#777777',
+        }}
+      >
+        type
+      </Box>
+      <Box
+        component="span"
+        sx={{
+          display: { xs: 'none', sm: 'none', md: 'inline', lg: 'inline' },
+          marginLeft: '2px',
+          color: '#777777',
+        }}
+      >
+        category
+      </Box>
       </Stack>
 
       {open && (
