@@ -22,6 +22,11 @@ public class DailyWeatherDataController {
         this.service = service;
     }
 
+    @GetMapping("/by_date/{date}")
+    public List<DailyForecastData> getForecastByDate(@PathVariable String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        return service.getForecastByDate(localDate);
+    }
     @GetMapping("/by_date_range/{startDate}/{endDate}")
     public List<DailyForecastData> getForecastByDateRange(@PathVariable String startDate, @PathVariable String endDate) {
         LocalDate start = LocalDate.parse(startDate);
