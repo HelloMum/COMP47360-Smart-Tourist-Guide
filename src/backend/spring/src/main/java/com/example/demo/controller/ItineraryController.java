@@ -62,4 +62,28 @@ public class ItineraryController {
             return ResponseEntity.status(401).body(response);
         }
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserItineraries(@RequestParam String token) {
+        if (userService.verifyToken(token)) {
+            Map<Integer, Map<String, Object>> itineraries = itineraryService.getUserItineraries(token);
+            return ResponseEntity.ok(itineraries);
+        } else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Invalid or expired token.");
+            return ResponseEntity.status(401).body(response);
+        }
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getItineraryStatistics(@RequestParam String token) {
+        if (userService.verifyToken(token)) {
+            Map<String, Object> statistics = itineraryService.getItineraryStatistics(token);
+            return ResponseEntity.ok(statistics);
+        } else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Invalid or expired token.");
+            return ResponseEntity.status(401).body(response);
+        }
+    }
 }
