@@ -1,16 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.model.*;
+import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.ItinerarySavedItemsRepository;
 import com.example.demo.repository.ItinerarySavedRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -536,5 +534,92 @@ public class ItineraryService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    public Map<Integer, Map<String, Object>> getUserItineraries(String token) {
+        String email = userService.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email);
+        List<ItinerarySaved> itineraries = itinerarySavedRepository.findByUserId(user.getId());
+
+        Map<Integer, Map<String, Object>> itinerariesData = new HashMap<>();
+        int index = 0;
+
+        for (ItinerarySaved itinerary : itineraries) {
+            Map<String, List<Map<String, Object>>> planData = new HashMap<>();
+
+            for (ItinerarySavedItems item : itinerary.getItems()) {
+                String date = item.getStartTime().toLocalDate().toString();
+                planData.putIfAbsent(date, new ArrayList<>());
+
+                Map<String, Object> itemData = new HashMap<>();
+                itemData.put("id", item.getItemId());
+                itemData.put("startTime", item.getStartTime().toString());
+                itemData.put("endTime", item.getEndTime().toString());
+                itemData.put("event", item.getIsEvent());
+
+                if (item.getIsEvent()) {
+                    Event event = eventRepository.findById(convertIntToUUID(item.getItemId())).orElse(null);
+                    if (event != null) {
+                        itemData.put("name", event.getName());
+                        itemData.put("latitude", event.getLatitude());
+                        itemData.put("longitude", event.getLongitude());
+                        itemData.put("category", event.getCategory());
+                        itemData.put("description", event.getDescription());
+                        itemData.put("event_site_url", event.getEvent_site_url());
+                        itemData.put("image_url", event.getImage_url());
+                        itemData.put("is_free", event.getIs_free());
+                        itemData.put("address", event.getAddress());
+                        itemData.put("rating", null);  // Events don't have rating
+                        itemData.put("attraction_phone_number", null);  // Events don't have phone number
+                        itemData.put("international_phone_number", null);  // Events don't have international phone number
+                        itemData.put("userRatings_total", null);  // Events don't have user ratings
+                    }
+                } else {
+                    Attraction attraction = attractionService.getAttractionByIndex(item.getItemId());
+                    if (attraction != null) {
+                        itemData.put("name", attraction.getAttraction_name());
+                        itemData.put("latitude", attraction.getAttraction_latitude());
+                        itemData.put("longitude", attraction.getAttraction_longitude());
+                        itemData.put("category", attraction.getCategory());
+                        itemData.put("description", attraction.getDescription());
+                        itemData.put("event_site_url", attraction.getAttractionWebsite());
+                        itemData.put("image_url", null);  // Attractions don't have image URL
+                        itemData.put("is_free", attraction.isFree());
+                        itemData.put("address", attraction.getAttraction_vicinity());
+                        itemData.put("rating", attraction.getAttraction_rating());
+                        itemData.put("attraction_phone_number", attraction.getAttraction_phone_number());
+                        itemData.put("international_phone_number", attraction.getInternational_phone_number());
+                        itemData.put("userRatings_total", attraction.getUser_ratings_total());
+                    }
+                }
+
+                planData.get(date).add(itemData);
+            }
+
+            Map<String, Object> itineraryData = new HashMap<>();
+            itineraryData.put("planData", planData);
+            itineraryData.put("startDate", itinerary.getStartDate().toString());
+            itineraryData.put("endDate", itinerary.getEndDate().toString());
+
+            itinerariesData.put(index++, itineraryData);
+        }
+
+        return itinerariesData;
+    }
+
+    /**
+     * Converts an integer ID to a UUID.
+     * This is a simple approach that uses a static UUID and sets the integer as the least significant bits.
+     * @param id The integer ID to convert.
+     * @return A UUID corresponding to the integer ID.
+     */
+    private UUID convertIntToUUID(int id) {
+        // Assuming a static UUID for the most significant bits
+        long msb = 0x0000000000000000L; // Example static most significant bits
+        long lsb = ((long) id) & 0xFFFFFFFFL; // Use the integer as the least significant bits
+        return new UUID(msb, lsb);
     }
 }
