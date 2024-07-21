@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.model.Attraction;
-import com.example.demo.model.Event;
-import com.example.demo.model.ItineraryItem;
-import com.example.demo.model.TimeSlot;
+import com.example.demo.model.*;
+import com.example.demo.repository.ItinerarySavedItemsRepository;
+import com.example.demo.repository.ItinerarySavedRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -488,5 +488,53 @@ public class ItineraryService {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+//    Saving the itinerary to the database is implemented below in the saveItinerary method. --------------------------
+
+    @Autowired
+    private ItinerarySavedRepository itinerarySavedRepository;
+
+    @Autowired
+    private ItinerarySavedItemsRepository itinerarySavedItemsRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    public boolean saveItinerary(String token, Map<String, List<Map<String, Object>>> planData, LocalDate startDate, LocalDate endDate) {
+        try {
+            String email = userService.getEmailFromToken(token);
+            User user = userRepository.findByEmail(email);
+
+            ItinerarySaved itinerarySaved = new ItinerarySaved();
+            itinerarySaved.setUser(user);
+            itinerarySaved.setStartDate(startDate);
+            itinerarySaved.setEndDate(endDate);
+
+            List<ItinerarySavedItems> items = planData.entrySet().stream()
+                    .flatMap(entry -> {
+                        LocalDate date = LocalDate.parse(entry.getKey());
+                        return entry.getValue().stream().map(itemData -> {
+                            ItinerarySavedItems item = new ItinerarySavedItems();
+                            item.setItinerary(itinerarySaved);
+                            item.setIsEvent((Boolean) itemData.get("event"));
+                            item.setStartTime(LocalDateTime.parse(itemData.get("startTime").toString()));
+                            item.setEndTime(LocalDateTime.parse(itemData.get("endTime").toString()));
+                            item.setItemId(Integer.parseInt(itemData.get("id").toString()));
+                            return item;
+                        });
+                    })
+                    .collect(Collectors.toList());
+
+            itinerarySaved.setItems(items);
+            itinerarySavedRepository.save(itinerarySaved);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
