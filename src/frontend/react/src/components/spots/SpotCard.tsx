@@ -7,6 +7,9 @@ import Tag_Category from '../Tag_Category';
 import Tag_IsFree from '../Tag_IsFree';
 import { ListContext } from '../../contexts/ListContext';
 import AlertModal from '../AlertModal';
+import { useResponsiveCardWidth } from '../../utils/useResponsiveSizes';
+
+
 
 interface SpotCardProps {
   id: string;
@@ -53,6 +56,8 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, isFree, 
   };
 
   const isAdded = isItemInList(title);
+  const cardWidth = useResponsiveCardWidth();
+
 
   return (
     <>
@@ -61,7 +66,7 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, isFree, 
           borderRadius: '8px',
           overflow: 'hidden',
           boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.2)',
-          width: "17.5vw",
+          width: cardWidth,
           marginBottom: 2,
           gap: 1,
           height: "300px",
@@ -98,9 +103,20 @@ const SpotCard: React.FC<SpotCardProps> = ({ id, image1, image3, title, isFree, 
             {title}
           </Typography>
           <Stack direction={"row"} gap={1}>
-            <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly sx={{ fontSize: '1.2rem' }} />
-            {rating}<span style={{ color: '#888', fontSize: '13px', fontWeight: 400 }}>by {user_ratings_total} people</span>
-          </Stack>
+  <>
+    <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly sx={{ fontSize: '1.2rem' }} />
+    {rating}
+    <Typography
+      sx={{
+        display: { xs: 'inline', sm:'inline',md:'none',lg: 'inline' },
+        color: '#888',
+        fontSize: '13px'
+      }}
+    >
+      by {user_ratings_total} users
+    </Typography>
+  </>
+</Stack>
           <Stack direction="row">
             <Tag_Category category={category} />
             {isFree && <Tag_IsFree />}
