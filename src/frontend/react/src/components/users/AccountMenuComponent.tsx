@@ -4,10 +4,14 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { useTheme } from "@mui/material/styles";
 
+import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
+
 const LogoutComponent: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const { isLoggedIn, setIsLoggedIn } = useAuth(); // Use the context
 
   const theme = useTheme();
 
@@ -21,6 +25,7 @@ const LogoutComponent: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setIsLoggedIn(false); // Set the context
     navigate("/"); // Redirect to the main page
     handleMenuClose();
   };
