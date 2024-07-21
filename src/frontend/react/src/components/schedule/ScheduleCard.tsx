@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CardMedia, Typography, Box, IconButton, Paper, Stack } from '@mui/material';
+import { CardMedia, Typography, Box, IconButton, Paper, Stack, useTheme } from '@mui/material';
 import { LocationOnRounded, PhoneEnabledRounded, PublicRounded, ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import moment from 'moment';
 import Tag_IsFree from '../Tag_IsFree';
@@ -105,9 +105,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   };
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
-
+  const theme = useTheme();
+  
   return (
-    <Box sx={{ marginBottom: 3, display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
+    <Stack sx={{ marginBottom: 3,  alignItems: 'flex-start', position: 'relative',
+      }}>
+
+
+      <Stack direction='row' >
       <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
         <Box
           sx={{
@@ -126,10 +131,32 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         </Box>
       </Box>
 
-      <Stack direction='column' gap={1} sx={{ minWidth: '6vw', textAlign: 'right', marginX: 1 }}>
+
+{/*---------------- time -------------- */}
+      <Stack
+      gap={1}
+      sx={{
+        minWidth: '6vw',
+        textAlign: 'right',
+        // marginX: 1,
+        [theme.breakpoints.down('xs')]: {
+          flexDirection: 'row',
+        },
+        [theme.breakpoints.down('sm')]: {
+          flexDirection: 'row',
+        },
+        [theme.breakpoints.down('md')]: {
+          flexDirection: 'row',
+        },
+        [theme.breakpoints.down('lg')]: {
+          flexDirection: 'row',
+        },
+      }}
+    >
         <Typography
           variant="h6"
           style={{height:'30px',
+            width: '100px',
             fontWeight: startTime === highlightedStartTime ? '600' : 'normal',
             fontFamily: 'Lexend',
             color: startTime === highlightedStartTime || isHovered ? 'darkorange' : '#707070',
@@ -143,8 +170,25 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         >
           {formattedStartTime}
         </Typography>
-        <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}>{formattedEndTime}</Typography>
+
+        <Typography variant="h6" 
+        style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}
+        sx={{marginLeft:{xs: '10px', sm: '10px', md:'10px',lg:'0vw'},marginTop:{xs: '2px', sm: '0vw', },
+        display:{xs: 'block', sm: 'block', md: 'block', lg: 'none'}
+        }}>
+-
+          </Typography>
+
+        <Typography variant="h6" 
+        style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}
+        sx={{marginLeft:{xs: '10px', sm: '10px', md:'10px',lg:'0vw'},marginTop:{xs: '2px', sm: '0vw', }}}>
+
+          {formattedEndTime}
+          </Typography>
       </Stack>
+
+      </Stack>
+
 
       <Paper variant="outlined" sx={{
         borderRadius: '8px',
@@ -152,20 +196,26 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         padding: 2,
         position: 'relative',
         display: 'flex',
-        width: '100%'
+        width: '100%',
+        marginTop:{xs: '10px', sm: '10px', md: '10px', lg: '0vw'},
       }}>
+
+
+
         <Box
           sx={{
             height: isExpanded ? 160 : 100,
-            width: 120,
+            width: {xs:80,sm:120},
             overflow: 'hidden',
             position: 'relative',
             borderRadius: '2px',
             marginRight: 2,
             boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
-            minWidth: '120px',
+            minWidth: {xs:80,sm:120},
           }}
         >
+        
+
           {currentImage && (
             <CardMedia
               component="img"
@@ -192,7 +242,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
               fontSize: '1.1rem',
               fontWeight: 400,
               marginBottom: '8px',
-              maxWidth: '16vw',
+              maxWidth: {xs:'40vw',sm:'24vw',md:'16vw',lg:'16vw'},
               whiteSpace: isExpanded ? 'normal' : 'nowrap',
               overflow: 'hidden',
               textOverflow: isExpanded ? 'clip' : 'ellipsis',
@@ -248,7 +298,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           </IconButton>
         </Box>
       </Paper>
-    </Box>
+    </Stack>
   );
 };
 
