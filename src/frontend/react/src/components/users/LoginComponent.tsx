@@ -14,6 +14,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "./LoginComponent.scss";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 const LoginComponent: React.FC<{
   onClose: () => void;
   onSwitch: () => void;
@@ -27,6 +29,8 @@ const LoginComponent: React.FC<{
   const navigate = useNavigate();
   const theme = useTheme();
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const { isLoggedIn, setIsLoggedIn } = useAuth(); // Use the context
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +55,7 @@ const LoginComponent: React.FC<{
       if (data.token) {
         localStorage.setItem("token", data.token);
         setMessage("Login successful!");
+        setIsLoggedIn(true); // Set the context
         // Optionally redirect to another page
         // window.location.href = "/dashboard";
       } else {
