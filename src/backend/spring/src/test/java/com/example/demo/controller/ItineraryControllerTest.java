@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.model.ItineraryItem;
 import com.example.demo.model.UserSelection;
 import com.example.demo.service.ItineraryService;
+import com.example.demo.service.UserService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -32,6 +34,9 @@ public class ItineraryControllerTest {
 
     @MockBean
     private ItineraryService itineraryService;
+
+    @MockBean
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
