@@ -622,4 +622,44 @@ public class ItineraryService {
         long lsb = ((long) id) & 0xFFFFFFFFL; // Use the integer as the least significant bits
         return new UUID(msb, lsb);
     }
+
+    public Map<String, Object> getItineraryStatistics(String token) {
+        String email = userService.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email);
+        List<ItinerarySaved> itineraries = itinerarySavedRepository.findByUserId(user.getId());
+
+        int totalActivities = 0;
+        Map<String, Integer> categoryCount = new HashMap<>();
+        Set<LocalDate> uniqueDays = new HashSet<>();
+
+        for (ItinerarySaved itinerary : itineraries) {
+            for (ItinerarySavedItems item : itinerary.getItems()) {
+                totalActivities++;
+
+                String category;
+                if (item.getIsEvent()) {
+                    Event event = eventRepository.findById(convertIntToUUID(item.getItemId())).orElse(null);
+                    category = (event != null) ? event.getCategory() : "Unknown";
+                } else {
+                    Attraction attraction = attractionService.getAttractionByIndex(item.getItemId());
+                    category = (attraction != null) ? attraction.getCategory() : "Unknown";
+                }
+
+                categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
+                uniqueDays.add(item.getStartTime().toLocalDate());
+            }
+        }
+
+        String favouriteCategory = categoryCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("None");
+
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("totalActivities", totalActivities);
+        statistics.put("favouriteCategory", favouriteCategory);
+        statistics.put("totalDaysSpent", uniqueDays.size());
+
+        return statistics;
+    }
 }
