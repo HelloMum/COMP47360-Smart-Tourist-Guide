@@ -83,7 +83,7 @@ const TeamIcons = [
     name:"Boyu Wang"
   },
   {
-    icon:"",
+    icon:"images/avatar/jorge.jpg",
     role:"Maintenance Lead",
     name:"Jorge Duran Gonzalez"
   }
@@ -97,13 +97,9 @@ const About: React.FC = () => {
         {/* ---------- Stack containing information about our service ---------- */}
         <Stack direction="column" alignItems="flex-start"  spacing={1}  sx={{ mt: '80px' }}> 
           <SectionTitle variant="h2" >
-            Our Service
+            Our Services
           </SectionTitle>
-          {/* <SectionDescription variant="body1"  style={{  marginLeft: '2vw',}}>
-          TourWise takes the hassle out of planning your trip to New York City. Effortlessly explore curated activities in Manhattan based on your interests, whether it’s sightseeing, dining, shopping, or cultural experiences.
-<br/><br/>
-Our advanced algorithm creates a personalized itinerary for you, ensuring optimal times for each activity to avoid crowds. Each day, TourWise provides a detailed map with your planned activities and directions.With TourWise, travel planning is stress-free, turning your trip into a seamless and enjoyable experience.
-          </SectionDescription> */}
+    
           <Grid container spacing={4}>
             {ProcessIcons.map((feature, index) => (
               <Grid item xs={12} md={4} key={index}>
@@ -117,34 +113,30 @@ Our advanced algorithm creates a personalized itinerary for you, ensuring optima
 
 
         {/* ---------- Stack containing information about data and algo ---------- */}
-        <Stack direction="column" alignItems="flex-start" spacing={2} sx={{ mt: 10 }}>
-          <SectionTitle variant="h2">Data & Algorithm</SectionTitle>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <SectionDescription variant="body1">
-              Donec et odio pellentesque diam volutpat commodo sed egestas egestas. Nibh mauris cursus mattis molestie. 
-              Ipsum a arcu cursus vitae congue mauris rhoncus aenean vel. Pharetra et ultrices neque ornare aenean euismod 
-              elementum nisi quis. Aliquam id diam maecenas ultricies mi eget. Sed ullamcorper morbi tincidunt ornare massa eget egestas. 
-              Ipsum dolor sit amet consectetur adipiscing elit duis tristique sollicitudin. Neque laoreet suspendisse interdum consectetur 
-              libero id faucibus nisl tincidunt. Sit amet commodo nulla facilisi nullam vehicula ipsum a. Diam ut venenatis tellus in metus 
-              vulputate eu. Et tortor at risus viverra adipiscing at in tellus integer. Mattis ullamcorper velit sed ullamcorper morbi 
-              tincidunt ornare massa. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Amet porttitor eget dolor morbi 
-              non arcu. Sed viverra ipsum nunc aliquet. Neque sodales ut etiam sit. Adipiscing at in tellus integer feugiat. Diam vulputate 
-              ut pharetra sit amet aliquam id diam. Ultricies mi quis hendrerit dolor magna eget. Purus sit amet volutpat consequat mauris nunc 
-              congue nisi.
+        <Stack direction="column" alignItems="flex-start" spacing={3} sx={{ mt: 8 }}>
+          <SectionTitle variant="h2">Machine Learning & Itinerary Algorithm</SectionTitle>
+          <Stack direction="row"  spacing='8vw' sx={{ marginLeft: 8 }}>
+            <Grid item xs={12} md={6} >
+        
+              <SectionDescription variant="body1" sx={{ marginLeft:4,mt:4 }}>
+              Our application leverages advanced data analytics to optimize tourist trip scheduling in New York City. By integrating datasets from  
+    <span style={{ fontWeight: 550 }}> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</span> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
+
+              <br></br> <br></br>
+              <b> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</b> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
               </SectionDescription>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <img src="/path/to/your/image.png" alt="Data & Algorithm" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
+                <img src="images/about/right2.png" alt="Data & Algorithm" style={{ width:'450px' }} />
               </Box>
             </Grid>
-          </Grid>
+          </Stack>
         </Stack>
 
 
         {/* ---------- Stack containing information about our team ---------- */}
-        <Stack direction="column" alignItems="flex-start" spacing={2} sx={{ mt: 10}}>
+        <Stack direction="column" alignItems="flex-start" spacing={2} sx={{ mt: 8}}>
           <SectionTitle variant="h2">Our Team</SectionTitle>
           <Grid container spacing={4}>
             {TeamIcons.map((member, index) => (
@@ -160,12 +152,28 @@ Our advanced algorithm creates a personalized itinerary for you, ensuring optima
       </Box>
 
 
-      <Box sx={{ 
-        // backgroundColor:'orange',
-        height:'50px',
-        mt:'40px' }}>
-        <Divider/>
-          </Box>
+      <Box sx={{
+
+      
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+      
+      }}>
+        <Divider />
+        <Typography
+          sx={{
+            textAlign: 'center',
+            fontSize: '13px',
+            color: 'gray',
+          }}
+        >
+          © 2024, University College Dublin,
+         
+          Computer Science Conversion  <br />COMP47360-Research Practicum
+        </Typography>
+      </Box>
     </Box>
   );
 }
