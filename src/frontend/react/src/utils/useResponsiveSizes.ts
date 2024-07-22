@@ -1,5 +1,5 @@
 import { useTheme, useMediaQuery } from '@mui/material';
-import { setLeftWidth, setNavbarHeight } from './constants';
+import { setLeftWidth, setNavbarHeight,setListWidth } from './constants';
 
 export const useUpdateLeftWidth = (): void => {
   const theme = useTheme();
@@ -52,4 +52,29 @@ export const useResponsiveCardWidth = (): string => {
     return '17.5vw'; // 1440px到1920px
   }
   return '17.5vw'; // 默认宽度
+};
+
+
+
+export const useResponsiveListWidth = (): string => {
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down(426));
+  const isSm = useMediaQuery(theme.breakpoints.down(768));
+  const isMd = useMediaQuery(theme.breakpoints.down(1024));
+  const isLg = useMediaQuery(theme.breakpoints.down(1440));
+  const isXl = useMediaQuery(theme.breakpoints.down(1920));
+
+  if (isXs) {
+    setListWidth ('70vw');
+  } else if (isSm) {
+    setListWidth ('28vw');
+  } else if (isMd) {
+    setListWidth ('28vw');
+  } else if (isLg) {
+    setListWidth ('22vw');
+  }
+  else if (isXl) {
+    setListWidth ('18vw');
+  }
+  
 };
