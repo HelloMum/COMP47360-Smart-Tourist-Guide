@@ -7,6 +7,7 @@ import { NAVBAR_HEIGHT } from '../../utils/constants';
 import Btn_Close_List from './Btn_Close_List';
 import { ClearRounded } from '@mui/icons-material';
 import AlertModal from '../AlertModal';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 interface ListProps {
   onClose: () => void;
@@ -76,13 +77,21 @@ const List: React.FC<ListProps> = ({ onClose }) => {
     }
   };
 
+
+  useUpdateNavbarHeight();
+
   return (
     <>
       <Box
         sx={{
-          width: '18vw',
+          width: {            
+            xs:'70vw',
+            sm:'28vw',
+            md:'22vw',
+            lg:'18vw',
+          },
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-          marginTop: '50px',
+          marginTop: NAVBAR_HEIGHT,
           backgroundColor: 'white',
           boxShadow: 1,
           zIndex: 10,

@@ -8,6 +8,7 @@ import Tag_IsFree from '../Tag_IsFree';
 import theme from '../../utils/theme';
 import { ListContext } from '../../contexts/ListContext';
 import AlertModal from '../AlertModal';
+import { useResponsiveCardWidth } from '../../utils/useResponsiveSizes';
 
 interface SpotCardPopUpProps {
   id: number;
@@ -57,13 +58,14 @@ const SpotCard_PopUp: React.FC<SpotCardPopUpProps> = ({ id, image1, image3, titl
   };
 
   const isAdded = isItemInList(title);
-
+  const cardWidth = useResponsiveCardWidth();
+  
   return (
     <>
       <div style={{
         borderRadius: '8px',
         overflow: 'hidden',
-        width: '17.5vw',
+        width: cardWidth,
         background: 'white',
         marginBottom: 15,
         padding: 0

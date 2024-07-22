@@ -47,7 +47,6 @@ const SpotDetail = ({ spot, onCollapse }) => {
       overflow: 'hidden',
       boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
       width: "94%",
-      // height:"105%",
       margin: "5px auto",
     }}>
       {/*------------------ picture -------------------- */}
@@ -55,7 +54,13 @@ const SpotDetail = ({ spot, onCollapse }) => {
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        height: '30vh',
+        height: {
+          xs: '24vh', 
+          sm: '24vh', 
+          md: '30vh', 
+          lg: '30vh', 
+          xl: '30vh'  
+        },
         justifyContent: 'space-between'
       }}>
         <Box sx={{ 
@@ -66,7 +71,8 @@ const SpotDetail = ({ spot, onCollapse }) => {
           width: '35.5%', 
           flexShrink: 0, 
           overflow: 'hidden', 
-          cursor: 'pointer' 
+          cursor: 'pointer',
+          display: { xs: 'none', md: 'block' } 
         }}>
           <CardMedia
             component="img"
@@ -92,7 +98,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           boxShadow: 1, 
           marginTop: '10px', 
           height: '100%', 
-          width: '64%', 
+          width: { xs: '100%', md: '64%' }, 
           flexShrink: 0, 
           overflow: 'hidden', 
           cursor: 'pointer' 
@@ -118,7 +124,17 @@ const SpotDetail = ({ spot, onCollapse }) => {
         </Box>
       </Box>
       {/*------------------ content below pictures -------------------*/}
-      <Stack sx={{ p: 3, px: 5 }}>
+      <Stack sx={{ 
+        
+        p: {xs:2,sm:3}, 
+      
+      px: {
+          xs: '2', 
+          sm: '2', 
+          md: '5', 
+          lg: '5', 
+          xl: '5'  
+        }, }}>
         {/*--------------- title & two tags -------------------------- */}
         <h2 style={{ marginBottom: 4 }}>{spot.attraction_name}</h2>
         <Stack marginBottom={1}>
@@ -130,21 +146,47 @@ const SpotDetail = ({ spot, onCollapse }) => {
 
         {/*-------------------- rating ---------------------- */}
         <Stack direction={"row"} gap={1}>
-          <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly />
+          <Rating name="half-rating-read" defaultValue={spot.attraction_rating} precision={0.1} readOnly 
+          sx={{
+            fontSize: {
+              xs: '1.2rem', 
+              sm: '1.3rem', 
+        
+            }
+          }}/>
+
           {spot.attraction_rating} 
-          <span style={{ color: '#888',fontSize:'14px' }}>by {spot.user_ratings_total} people</span>
+          <Box style={{ color: '#888',fontSize:'14px' }}   sx={{
+          display: {
+            xs: 'inline',
+            sm: 'inline',
+            md: 'inline',
+            lg: 'inline',
+          },
+        }}>by {spot.user_ratings_total} users</Box>
         </Stack>
 
-        <Typography variant="body2" marginTop={2} sx={{ color:"#444" }}   >
-          {spot.description}
-        </Typography>
+        <Typography
+      variant="body2"
+      marginTop={2}
+      sx={{
+        color: "#444",
+        textAlign: 'justify',
+        hyphens: 'auto',
+        wordBreak: 'break-word',
+        fontSize:{xs:'13px',sm:'14px'}
+
+      }}
+    >
+      {spot.description}
+    </Typography>
 
         {/*------------------ Address, price, website, phone -------------------- */}
         <Stack gap={1.5} marginTop={2}>
           {/* Address */}
           <Box display="flex" alignItems="center">
             <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-            <Typography variant="body2" color="text.secondary" sx={{ marginRight: '24px' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ marginRight: '24px',fontSize:{xs:'13px',sm:'14px'} }}>
               {spot.attraction_vicinity}
             </Typography>
           </Box>
@@ -152,8 +194,8 @@ const SpotDetail = ({ spot, onCollapse }) => {
           {/* price */}
           <Box display="flex" alignItems="center">
             <ConfirmationNumber sx={{ fontSize: 'large', marginRight: '8px' }} />
-            <Typography variant="body2" color="text.secondary">
-              from {spot.price} per adult
+            <Typography variant="body2" color="text.secondary"  sx={{ fontSize:{xs:'13px',sm:'14px'} }}>
+              from $ {spot.price} per adult
             </Typography>
           </Box>
 
@@ -171,12 +213,12 @@ const SpotDetail = ({ spot, onCollapse }) => {
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
               >
-                <Typography variant="body2" color={isHovered || isClicked ? 'orange' : 'text.secondary'}>
+                <Typography variant="body2" color={isHovered || isClicked ? 'orange' : 'text.secondary'}  sx={{ fontSize:{xs:'13px',sm:'14px'} }}>
                   {spot.attractionWebsite}
                 </Typography>
               </a>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary"  sx={{ fontSize:{xs:'13px',sm:'14px'} }} >
                 No address provided
               </Typography>
             )}
@@ -185,7 +227,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
           {/* phone */}
           <Box display="flex">
             <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary"  sx={{ fontSize:{xs:'13px',sm:'14px'} }}>
               local: {spot.attraction_phone_number || 'No local phone provided'} <br />
               international: {spot.international_phone_number || 'No international phone provided'}
             </Typography>
@@ -257,7 +299,7 @@ const SpotDetail = ({ spot, onCollapse }) => {
         open={alertOpen}
         onClose={() => setAlertOpen(false)}
         title="Warning"
-        message="Please set the start and end dates before adding items to the list."
+        message="Please set travel dates before adding items to the list."
       />
     </Card>
   );

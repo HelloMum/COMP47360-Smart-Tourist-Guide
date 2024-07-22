@@ -45,10 +45,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <ListProvider>
-          <div
-            className="app-container"
-            style={{ height: "100vh", overflow: "hidden" }}
-          >
+          <div className="app-container" style={{ overflow: "auto" }}>
             {renderHeader()}
             <Routes>
               <Route

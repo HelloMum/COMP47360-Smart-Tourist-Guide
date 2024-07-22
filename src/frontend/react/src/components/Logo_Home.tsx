@@ -1,5 +1,7 @@
+import { useTheme } from '@emotion/react';
+import { PublicRounded } from '@mui/icons-material';
+import { Box } from '@mui/material';
 import React from 'react';
-import { useTheme, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const Logo: React.FC = () => {
@@ -18,36 +20,22 @@ const Logo: React.FC = () => {
         fontFamily: '"Lexend", sans-serif',
         fontWeight: 600,
         fontStyle: 'normal',
+        // marginLeft: '5px',
         letterSpacing: '-1px',
         marginRight: '0px',
       }}
     >
-      <Box
-        component="img"
-        src="images/logo-xs.png"
-        alt="logo-xs"
-        sx={{
-          width: '28px',
-          marginRight: '6px',
-          display: { xs: 'block', sm: 'none' }
-        }}
-      />
-      <Box
-        component="img"
-        src="images/logo2.png"
-        alt="logo"
-        sx={{
-          width: '28px',
-          marginRight: '6px',
-          display: { xs: 'none', sm: 'block' }
-        }}
-      />
-      <Box
+          <img 
+      src="images/logo2.png" 
+      alt="logo" 
+      style={{ width: '28px',marginRight: '6px'}} 
+    />
+  <Box
         component="span"
         sx={{
           display: {
-            xs: 'none',
-            sm: 'none',
+            xs: 'inline',
+            sm: 'inline',
             md: 'inline',
             lg: 'inline',
           },
