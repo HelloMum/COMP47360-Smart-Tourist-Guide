@@ -12,7 +12,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "./LoginComponent.css";
+import "./LoginComponent.scss";
+
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginComponent: React.FC<{
   onClose: () => void;
@@ -23,21 +25,45 @@ const LoginComponent: React.FC<{
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { isLoggedIn, setIsLoggedIn } = useAuth(); // Use the context
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Fetch API call will be implemented later
-    // Here just simulate a successful login
-    const simulatedResponse = { token: "dummy_token", message: "" };
-    if (simulatedResponse.token) {
-      localStorage.setItem("token", simulatedResponse.token);
-      navigate("/home");
-      onClose();
-    } else {
-      setMessage(simulatedResponse.message);
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/users/login", {
+        // The proxy will forward this to your backend
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      setLoading(false);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        setMessage("Login successful!");
+        setIsLoggedIn(true); // Set the context
+        // Optionally redirect to another page
+        // window.location.href = "/dashboard";
+      } else {
+        setMessage(data.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      setMessage("Login failed: " + error.message);
     }
   };
 
@@ -81,67 +107,75 @@ const LoginComponent: React.FC<{
 
   return (
     open && (
-      <Box className="login-modal" ref={modalRef}>
-        <Box className="login-modal-header">
-          <Typography variant="h6" className="login-modal-title">
-            Login
-          </Typography>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <form onSubmit={handleSubmit} className="login-modal-form">
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            className="login-modal-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            InputProps={{ style: { fontSize: fsFontsize } }}
-            InputLabelProps={{ style: { fontSize: fsFontsize } }}
-          />
-          <TextField
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            className="login-modal-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            InputProps={{
-              style: { fontSize: fsFontsize },
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    style={{ color: theme.palette.primary.main }}
-                    onClick={togglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            InputLabelProps={{ style: { fontSize: fsFontsize } }}
-          />
-          <Button type="submit" variant="contained" fullWidth>
-            Login
-          </Button>
-          {message && (
-            <Typography color="error" align="center" mt={2}>
-              {message}
+      <>
+        <div className="modal-overlay" onClick={onClose}></div>
+        <Box className="login-modal" ref={modalRef}>
+          <Box className="login-modal-header">
+            <Typography variant="h6" className="login-modal-title">
+              Login
             </Typography>
-          )}
-        </form>
-        <Box className="login-modal-footer">
-          <Typography variant="body2">New Member?</Typography>
-          <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
-            Sign up
-          </Button>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <form onSubmit={handleSubmit} className="login-modal-form">
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              className="login-modal-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              InputProps={{ style: { fontSize: fsFontsize } }}
+              InputLabelProps={{ style: { fontSize: fsFontsize } }}
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              className="login-modal-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              InputProps={{
+                style: { fontSize: fsFontsize },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      style={{ color: theme.palette.primary.main }}
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              InputLabelProps={{ style: { fontSize: fsFontsize } }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              fullWidth
+            >
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+            {message && (
+              <Typography color="error" align="center" mt={2}>
+                {message}
+              </Typography>
+            )}
+          </form>
+          <Box className="login-modal-footer">
+            <Typography variant="body2">New Member?</Typography>
+            <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
+              Sign up
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      </>
     )
   );
 };

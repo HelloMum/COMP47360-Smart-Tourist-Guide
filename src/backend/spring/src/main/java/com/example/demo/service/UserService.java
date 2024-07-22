@@ -99,6 +99,12 @@ public class UserService {
         }
     }
 
+    public String getEmailFromToken(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC512(SECRET_KEY)).build();
+        DecodedJWT jwt = verifier.verify(token.replace("Bearer ", ""));
+        return jwt.getSubject();
+    }
+
     /**
      * Generates a random salt for use in password hashing.
      *
