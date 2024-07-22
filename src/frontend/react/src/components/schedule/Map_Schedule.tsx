@@ -9,6 +9,10 @@ import ToggleButton from './ToggleButton';
 import { getColor } from './colorMappings';
 import ZoneBusyness from './ZoneBusyness';
 import ZoneInfo from './ZoneInfo';
+import { useResponsiveListWidth } from '../../utils/useResponsiveSizes';
+import { LIST_WIDTH } from '../../utils/constants';
+import { useMediaQuery } from '@mui/material';
+
 
 interface MapScheduleProps {
   events: any[];
@@ -16,9 +20,11 @@ interface MapScheduleProps {
   selectedTime: string | null;
   selectedEvent: any | null;
   setSelectedEvent: (event: any | null) => void;
+  showList: boolean;
+  isLeftPanelVisible: boolean;
 }
 
-const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, selectedTime, selectedEvent, setSelectedEvent }) => {
+const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, selectedTime, selectedEvent, setSelectedEvent, showList, isLeftPanelVisible }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: googleMapsConfig.googleMapsApiKey,
     libraries: googleMapsConfig.libraries,
@@ -32,6 +38,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   const [showGeoJson, setShowGeoJson] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [isZoneBusynessVisible, setIsZoneBusynessVisible] = useState(true);
+  const isXsScreen = useMediaQuery(theme => theme.breakpoints.down('xs'));
 
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 40.732, lng: -73.965 });
   const [mapZoom, setMapZoom] = useState<number>(12.5);
@@ -41,6 +48,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
     height: '100vh',
     position: 'relative' as 'relative',
   };
+  useResponsiveListWidth();
 
   useEffect(() => {
     fetch('/data/NYC_Taxi_Zones.geojson')
@@ -86,7 +94,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
             strokeColor: '#fff',
             strokeWeight: highlightedZone === zoneId ? 3 : 1,
             strokeOpacity: 0.8,
-            zIndex:highlightedZone === zoneId ? 3 : 1,
+            zIndex: highlightedZone === zoneId ? 3 : 1,
           };
         });
 
@@ -149,10 +157,10 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
         return {
           fillColor: color,
           fillOpacity: highlightedZone === zoneId ? 1 : 0.8,
-          strokeColor: highlightedZone === zoneId ? '#fff' :'#fff',
+          strokeColor: highlightedZone === zoneId ? '#fff' : '#fff',
           strokeWeight: highlightedZone === zoneId ? 4 : 1,
-          zIndex:highlightedZone === zoneId ? 3 : 1,
-          strokeOpacity: highlightedZone === zoneId ? 3 :0.5,
+          zIndex: highlightedZone === zoneId ? 3 : 1,
+          strokeOpacity: highlightedZone === zoneId ? 3 : 0.5,
         };
       });
     }
@@ -269,7 +277,6 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
             busyness={hoveredZone.busyness}
           />
         )}
-
       </GoogleMap>
 
       {showLegend && <Legend />}
@@ -277,18 +284,19 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
       <ToggleButton
         showGeoJson={showGeoJson}
         handleToggleGeoJson={handleToggleGeoJson}
+        showlist={showList}
       />
 
-      {selectedZone && showLegend && isZoneBusynessVisible && (
+      {selectedZone && showLegend && isZoneBusynessVisible && (!isLeftPanelVisible && !isXsScreen) && (
         <div style={{
           position: 'absolute',
           bottom: '60px',
-          right: '19vw',
+          right: showList ? `calc(${LIST_WIDTH} + 1vw)` : '1.5vw',
           background: 'white',
           border: '1px solid #ddd',
           borderRadius: '8px',
           padding: '10px',
-          zIndex: 1000,
+          zIndex: 1,
           opacity: 0.95
         }}>
           <ZoneBusyness

@@ -81,7 +81,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
   useUpdateNavbarHeight();
   useUpdateLeftWidth();
   useResponsiveListWidth();
-  
+
   return (
     <>
       <Box
@@ -91,7 +91,7 @@ const List: React.FC<ListProps> = ({ onClose }) => {
           marginTop: NAVBAR_HEIGHT,
           backgroundColor: 'white',
           boxShadow: 1,
-          zIndex: 10,
+          zIndex: 9,
           position: 'fixed',
           right: 0,
         }}

@@ -165,6 +165,7 @@ const Schedule: React.FC = () => {
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
             display: "flex",
             flexDirection: "column",
+            // zIndex:999999
           }}
         >
           <Box mb={0}>
@@ -334,7 +335,10 @@ const Schedule: React.FC = () => {
           position: "fixed",
           top: NAVBAR_HEIGHT,
           right: 0,
-          width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : "100%",
+          width: 
+          isLeftPanelVisible ? `
+          calc(100% - ${LEFT_WIDTH})` : "100%",
+
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
       >
@@ -343,7 +347,9 @@ const Schedule: React.FC = () => {
           busynessData={busynessData}
           selectedTime={selectedTime}
           selectedEvent={selectedEvent} // Pass the selectedEvent state
-          setSelectedEvent={setSelectedEvent} // Pass the setSelectedEvent function
+          setSelectedEvent={setSelectedEvent}
+          showList={showList} // Pass the setSelectedEvent function
+          isLeftPanelVisible={isLeftPanelVisible}
         />
       </div>
 

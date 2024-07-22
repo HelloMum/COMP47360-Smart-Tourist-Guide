@@ -117,8 +117,8 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
 
   return (
     <Box sx={{
-      width: 350,
-      height: 230,
+      width: 330,
+      height: 200,
       backgroundColor: '#fff',
       display: 'flex',
       alignItems: 'center',
@@ -126,7 +126,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
       textAlign: 'center',
       flexDirection: 'column',
       position: 'relative',
-      p: 1,
+      p: 0.5,
     }}>
 
       <Close 
@@ -198,7 +198,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
       </Box>
 
       {selectedDate && busynessData[selectedDate] && (
-        <Box sx={{ mt: 1, height: '180px', width: '350px' }}>
+        <Box sx={{ mt: 1, height: '190px', width: '350px' }}>
           <Chart
             chartType="ColumnChart"
             width="100%"
@@ -209,7 +209,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
               chartArea: {
                 left: 30,    
                 right: 20,  
-                top: 20,     
+                top: 5,     
                 bottom: 30,
               },
               bar: { groupWidth: '50%' },
