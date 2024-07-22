@@ -49,10 +49,24 @@ const CircleContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   backgroundColor: '#f9f9f9',
   borderRadius: '2%',
-  width: '320px',
+  // width: '320px', // Default width for xs
   height: '350px',
-  // margin: '0 auto',
-  padding:'20px'
+  padding: '20px',
+  [theme.breakpoints.up('xs')]: {
+    width: '70vw',
+  },
+  [theme.breakpoints.up('sm')]: {
+    width: '80vw',
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '25vw',
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: '25vw',
+  },
+  [theme.breakpoints.up('xl')]: {
+    width: '25vw',
+  },
 }));
 
 // ---------- static information about team members ----------
@@ -115,8 +129,17 @@ const About: React.FC = () => {
         {/* ---------- Stack containing information about data and algo ---------- */}
         <Stack direction="column" alignItems="flex-start" spacing={3} sx={{ mt: 8 }}>
           <SectionTitle variant="h2">Machine Learning & Itinerary Algorithm</SectionTitle>
-          <Stack direction="row"  spacing='8vw' sx={{ marginLeft: 8 }}>
-            <Grid item xs={12} md={6} >
+
+
+          <Box 
+  sx={{ 
+    display: 'flex', 
+    flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row', xl: 'row' },
+    alignItems: 'center',
+    marginLeft: '10vw'
+  }}
+>
+            <Box sx={{width:{md:'44vw',},marginRight:{md:'5vw',lg:'10vw'}}} >
         
               <SectionDescription variant="body1" sx={{ marginLeft:4,mt:4 }}>
               Our application leverages advanced data analytics to optimize tourist trip scheduling in New York City. By integrating datasets from  
@@ -125,13 +148,25 @@ const About: React.FC = () => {
               <br></br> <br></br>
               <b> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</b> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
               </SectionDescription>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
-                <img src="images/about/right2.png" alt="Data & Algorithm" style={{ width:'450px' }} />
-              </Box>
-            </Grid>
-          </Stack>
+            </Box>
+          
+
+
+            <Box sx={{ display: {xs:'none',sm:'none',md:'flex'}, justifyContent: 'center', alignItems: 'center',  }}>
+
+
+  <img 
+    src="images/about/right2.png" 
+    alt="Data & Algorithm" 
+    style={{ 
+     
+     width:'400px'
+    }} 
+  />
+</Box>
+
+          
+          </Box>
         </Stack>
 
 
