@@ -1,3 +1,4 @@
+// Schedule.tsx
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./schedule.css";
@@ -24,6 +25,7 @@ import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 import { theme } from "antd";
 import RegisterComponent from "../../components/users/RegisterComponent";
 import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
+import WeatherComponent from "../../components/schedule/WeatherComponent"; 
 
 const Schedule: React.FC = () => {
   const {
@@ -148,9 +150,6 @@ const Schedule: React.FC = () => {
   useUpdateLeftWidth();
   useUpdateNavbarHeight();
 
-
-
-
   return (
     <div
       className="schedule"
@@ -174,6 +173,8 @@ const Schedule: React.FC = () => {
               justifyContent="space-between"
               alignItems="center"
             >
+
+              {/*--------------------- date ---------------------------*/}
               <Typography
                 variant="h6"
                 align="left"
@@ -215,76 +216,8 @@ const Schedule: React.FC = () => {
               )}
               {/* ----------------------- Save feature End ----------------------- */}
 
+              <WeatherComponent weather={weather} loadingWeather={loadingWeather} />
 
-              <Box
-                display="flex"
-                alignItems="center"
-                style={{ minHeight: "70px" }}
-              >
-                {loadingWeather ? (
-                  <CircularProgress size={24} />
-                ) : weather ? (
-                  <Box display="flex" alignItems="center">
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 300,
-                        fontFamily: "Lexend",
-                        marginRight: 0,
-                        fontSize: {
-                          xs: '14px', 
-                          sm: '16px',
-                          md:'18px'  
-                        }
-                      }}
-                    >
-                      {weather.tempDay}°C
-                    </Typography>
-
-
-                    <Box 
-  component="img"
-  src={`http://openweathermap.org/img/wn/${weather.weather_icon}@2x.png`}
-  alt={weather.weather_description}
-  sx={{ 
-    marginRight: 0,
-    height: { xs: '50px', sm: '60px',md:'70px' } 
-  }}
-/>
-
-                    <Box sx={{display:{xs:'none',sm:'none',md:'block'}}}>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 250,
-                          fontFamily: "Lexend",
-                          fontSize: "12px",
-                       
-                        }}
-                      >
-                        Wind: {weather.speed.toFixed(1)} m/s
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        style={{
-                          fontWeight: 250,
-                          fontFamily: "Lexend",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Humidity: {weather.humidity}%
-                      </Typography>
-                    </Box>
-                  </Box>
-                ) : (
-                  <Typography
-                    variant="body2"
-                    style={{ fontWeight: "normal", fontFamily: "Lexend" }}
-                  >
-                    No weather data
-                  </Typography>
-                )}
-              </Box>
             </Stack>
 
             {/* ----------------------- Save feature Start LoginComponent ----------------------- */}
@@ -312,22 +245,16 @@ const Schedule: React.FC = () => {
                 style={{
                   backgroundColor: date === currentDate ? "orange" : "#f8f8f8",
                   color: date === currentDate ? "#fff" : "#888",
-                  // borderRadius: "20px",
-                  // padding: "8px 16px",
-                  // minWidth: "60px",
-                  // minHeight: "65px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-
                 sx={{
-
-                  minWidth:{xs:'50px',sm: "55px",md: "60px"},
-                  minHeight: {xs:'50px',sm: "60px",md: "65px"},
+                  minWidth:{xs:'43px',sm: "55px",md: "60px"},
+                  minHeight: {xs:'40px',sm: "60px",md: "65px"},
                   padding: {xs:'10px 8px',sm:"8px 10px",md:"8px 16px"},
-                  borderRadius: {xs:'14px',sm:"18px",md:'20px'},
+                  borderRadius: {xs:'12px',sm:"18px",md:'20px'},
                 }}
               >
                 <Typography
@@ -345,20 +272,14 @@ const Schedule: React.FC = () => {
                   style={{
                     fontWeight: 400,
                     fontFamily: "Lexend",
-                    // fontSize: "1.5em",
                     lineHeight: 1,
                   }}
-
                   sx={{fontSize:{xs:'1.3em',sm: "1.4em",md: "1.5em"}}}
                 >
                   {moment(date).format("DD")}
                 </Typography>
               </Button>
             ))}
-
-
-
-            
           </Stack>
 
           <div

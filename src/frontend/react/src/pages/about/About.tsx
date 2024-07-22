@@ -49,14 +49,14 @@ const CircleContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   backgroundColor: '#f9f9f9',
   borderRadius: '2%',
-  // width: '320px', // Default width for xs
+  // width: '320px',
   height: '350px',
   padding: '20px',
   [theme.breakpoints.up('xs')]: {
     width: '70vw',
   },
   [theme.breakpoints.up('sm')]: {
-    width: '80vw',
+    width: '75vw',
   },
   [theme.breakpoints.up('md')]: {
     width: '25vw',
