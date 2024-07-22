@@ -102,12 +102,12 @@ const Header = () => {
         width: "100%",
         boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
-        paddingRight: { xs: "2%", sm: "2%" },
-        paddingLeft: { xs: "2%", sm: "2%" },
+        paddingRight: { xs: "2%", sm: "0%", md: "0%" },
+        paddingLeft: { xs: "2%", sm: "0%", md: "0%"  },
       }}
     >
       <Stack direction="column" sx={{ width: "100%", height: '100%' }}>
-        <Stack direction="row" justifyContent="space-between" sx={{ width: "100%", height: '45px', backgroundColor: { xs: 'rgba(250, 166, 63, 1)', sm: "white" }, paddingX: '3%' }}>
+        <Stack direction="row" justifyContent="space-between" sx={{ width: "100%", height: '45px', backgroundColor: { xs: 'rgba(250, 166, 63, 1)', sm: "white" }, paddingX: '2%' }}>
           <Logo />
           <Stack direction="row" spacing={spacing} alignItems="center">
             <Stack direction="row" spacing={spacing} alignItems="center" sx={{ display: { xs: 'none', sm: 'block' } }}>

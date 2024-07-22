@@ -2,78 +2,84 @@ import React from 'react';
 import './About.css';
 import { Box, Container, Stack, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import TeamMember from '../../components/TeamMember';
-import FeatureProcess from '../../components/FeatureProcess';
+import TeamMember from '../../components/about/TeamMember';
+import FeatureProcess from '../../components/about/FeatureProcess';
+import { Divider } from 'antd';
 
 
 // ---------- Text Styling ----------
 const SectionTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '32px',
-  fontWeight: 'bold',
-  color: '#333',
+  fontSize: '28px',
+  fontWeight: '600',
+  color: '#faa134',
+  fontFamily: '"Lexend", sans-serif',
 }));
 
 const SectionDescription = styled(Typography)(({ theme }) => ({
   fontSize: '16px',
   color: '#666',
+
+
 }));
 
 // ---------- static information about feature process ----------
 const ProcessIcons = [
   {
-    icon:"",
+    icon:"images/about/icon_1.png",
     title: "Wide Selection of Activities",
-    description: "Browse through X number of fun events and popular activities and select the ones that you are interestedi in"
+    description: "Browse through and select from numerous tourist attractions and events in Manhattan, New York "
   },
   {
-    icon:"",
+    icon:"images/about/icon_2.png",
     title: "Ideal Planning",
     description: "Access your personalized schedule with ideal timings to avoid busyness and other inconveniences"
   },
   {
-    icon:"",
-    title: "Mapped Itinerary",
-    description: "Access our map displaying your planned activities for the day"
+    icon:"images/about/icon_3.png",
+    title: "Saved Itinerary",
+    description: "Save your favorite itineraries permanently to your account for easy access and future reference anytime"
   }
 ]
+
 
 // ---------- set up of the circle container for the feature process ----------
 const CircleContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: '#f0f0f0',
-  borderRadius: '50%',
+  backgroundColor: '#f9f9f9',
+  borderRadius: '2%',
   width: '320px',
-  height: '320px',
-  margin: '0 auto',
+  height: '350px',
+  // margin: '0 auto',
+  padding:'20px'
 }));
 
 // ---------- static information about team members ----------
 const TeamIcons = [
   {
-    icon:"",
+    icon:"images/avatar/nathan.jpg",
     role:"Data Lead",
     name:"Nathan Power"
   },
   {
-    icon:"",
+    icon:"images/avatar/mutu.jpg",
     role:"Coordination Lead",
     name:"Mustafa Tugrul Yilmaz"
   },
   {
-    icon:"",
-    role:"Front-end Code Lead",
+    icon:"images/avatar/sha.jpg",
+    role:"Frontend Code Lead",
     name:"Sha Luo"
   },
   {
-    icon:"",
+    icon:"images/avatar/zack.jpg",
     role:"Customer Lead",
     name:"Maxim Zack Istasse"
   },
   {
-    icon:"",
-    role:"Back-end Code Lead",
+    icon:"images/avatar/boyu.jpg",
+    role:"Backend Code Lead",
     name:"Boyu Wang"
   },
   {
@@ -86,26 +92,18 @@ const TeamIcons = [
 
 const About: React.FC = () => {
   return (
-    <Box sx={{ p: 5 }}>
-      <Container>
+    <Box >
+      <Box sx={{ px: '9%' }}>
         {/* ---------- Stack containing information about our service ---------- */}
-        <Stack direction="column" alignItems="flex-start"  spacing={6}  sx={{ mt: 10 }}> 
+        <Stack direction="column" alignItems="flex-start"  spacing={1}  sx={{ mt: '80px' }}> 
           <SectionTitle variant="h2" >
             Our Service
           </SectionTitle>
-          <SectionDescription variant="body1">
-          XXX, your perfect travel companion!<br />
-          Forget about spending hours researching events and activities for your trip to New York City. 
-          Instead, let us do the heavy lifting for you. With XXX, you can effortlessly browse through a wide range 
-          of popular activities to do in Manhattan. Choose your favourites based on your interests, whether it's sightseeing, 
-          dining, shopping, or experiencing the vibrant culture of the city.<br />
-          Our advanced algorithm will then create a personalized planning just for you. It ensures you visit 
-          each event at the best time, avoiding crowds and other hassles, to make your trip as pleasant as possible.<br /> 
-          Each day of your trip, XXX will offer you a detailed map displaying all your planned activities in order. 
-          This map will not only show you the sequence of your events but also provide important information on how 
-          to reach each destination. (ADD MORE ONCE THE FEATURE IS COMPLETED)<br />
-          With XXX, every aspect of your journey planning is taken care of, without the usual stress and inconveniences, turning your trip into a seamless travel experience. 
-          </SectionDescription>
+          {/* <SectionDescription variant="body1"  style={{  marginLeft: '2vw',}}>
+          TourWise takes the hassle out of planning your trip to New York City. Effortlessly explore curated activities in Manhattan based on your interests, whether it’s sightseeing, dining, shopping, or cultural experiences.
+<br/><br/>
+Our advanced algorithm creates a personalized itinerary for you, ensuring optimal times for each activity to avoid crowds. Each day, TourWise provides a detailed map with your planned activities and directions.With TourWise, travel planning is stress-free, turning your trip into a seamless and enjoyable experience.
+          </SectionDescription> */}
           <Grid container spacing={4}>
             {ProcessIcons.map((feature, index) => (
               <Grid item xs={12} md={4} key={index}>
@@ -157,7 +155,17 @@ const About: React.FC = () => {
           </Grid>
         </Stack>
 
-      </Container>
+        
+
+      </Box>
+
+
+      <Box sx={{ 
+        // backgroundColor:'orange',
+        height:'50px',
+        mt:'40px' }}>
+        <Divider/>
+          </Box>
     </Box>
   );
 }

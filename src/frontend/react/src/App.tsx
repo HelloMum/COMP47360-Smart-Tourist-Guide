@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const location = useLocation();
 
   const renderHeader = () => {
-    if (location.pathname === '/') {
+    if (location.pathname === '/' || location.pathname === '/about')  {
       return <Header_Home onDateChange={handleDateChange} />;
     } else {
       return <Header onDateChange={handleDateChange} />;
