@@ -41,8 +41,8 @@ const Btn_List: React.FC = () => {
 
       {isLeftPanelVisible && (
         <>
-        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-        <CloseRounded style={{ color: '#333', fontSize: '22px' }} />
+        <Box sx={{ display: { xs: 'block', sm: 'none' } ,zIndex:8}}>
+        <CloseRounded style={{ color: '#333', fontSize: '22px'}} />
       </Box>
       
       <Box sx={{ display: { xs: 'none', sm: 'block' } }}>

@@ -13,19 +13,24 @@ const FeatureBox = styled(Box)(({ theme }) => ({
 }));
 
 const FeatureIcon = styled('img')(({ theme }) => ({
-  width: '60px',
-  height: '60px',
-  marginBottom: '16px',
+  width: 'auto',
+  height: 'auto',
+  maxWidth: '100px',
+  maxHeight: '100px',
+  marginBottom: '20px',
+  objectFit: 'contain',
 }));
 
+
 const FeatureTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '20px',
-  fontWeight: 'bold',
+  fontSize: '18px',
+  fontWeight: '600',
   color: '#333',
+  marginBottom: '14px',
 }));
 
 const FeatureDescription = styled(Typography)(({ theme }) => ({
-  fontSize: '16px',
+  fontSize: '15px',
   color: '#666',
 }));
 

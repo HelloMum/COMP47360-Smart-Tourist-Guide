@@ -26,7 +26,7 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
       <Button
         sx={{
           position: 'absolute',
-          zIndex: 10,
+          zIndex: 7,
           borderRadius: '20px',
           cursor: 'pointer',
           backgroundColor: '#ffc147',
@@ -66,7 +66,7 @@ const Btn_List: React.FC<BtnListProps> = ({ onClick }) => {
             color: '#363636',
             fontSize: '13px',
             fontWeight: '500',
-            zIndex: 10,
+            zIndex: 8,
             boxShadow: '2px 2px 6px rgba(0, 0, 0, 0.2)',
           }}
         >

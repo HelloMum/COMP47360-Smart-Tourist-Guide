@@ -56,7 +56,7 @@ const theme = createTheme({
 
   },
   
- // -----------------------------------  breakpoints for screens withe different sizes  --------------------------------
+ // ------------------  breakpoints for screens withe different sizes  ----------------------------
 
   breakpoints: {
     values: {

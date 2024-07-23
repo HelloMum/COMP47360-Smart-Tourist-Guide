@@ -13,14 +13,16 @@ const TeamMemberBox = styled(Box)(({ theme }) => ({
 }));
 
 const TeamMemberImage = styled('img')(({ theme }) => ({
-  width: '80px',
-  height: '80px',
+  width: '150px',
+  height: '150px',
   borderRadius: '50%',
   marginBottom: '16px',
+  boxShadow: '0 0px 3px rgba(0, 0, 0, 0.4)',
+  objectFit: 'cover',
 }));
 
 const TeamMemberName = styled(Typography)(({ theme }) => ({
-  fontSize: '18px',
+  fontSize: '16px',
   fontWeight: 'bold',
   color: '#333',
 }));
