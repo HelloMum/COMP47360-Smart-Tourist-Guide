@@ -1,7 +1,7 @@
+/* General styles for custom range picker */
 .custom-range-picker .ant-picker {
   border-radius: 20px;
   border-color: #ef9930;
-  width: 100%;
   margin-right: 0; /* Ensure there's no right margin */
 }
 
@@ -18,9 +18,39 @@
   font-size: 12px;
 }
 
-/* Home page */
+/* Media queries to adjust width based on screen size for custom-range-picker */
+.custom-range-picker .ant-picker {
+  width: 100%;
+}
+
+@media (min-width: 320px) {
+  .custom-range-picker .ant-picker {
+    width: 60vw; /* Default width for non-home pages at 320px */
+    height: 34px; 
+  }
+}
+
+@media (min-width: 600px) {
+  .custom-range-picker .ant-picker {
+    width: 26vw;
+    height: 32px; 
+  }
+}
+
+@media (min-width: 960px) {
+  .custom-range-picker .ant-picker {
+    width: 20vw;
+  }
+}
+
+@media (min-width: 1280px) {
+  .custom-range-picker .ant-picker {
+    width: 15vw;
+  }
+}
+
+/* Home page specific styles */
 .home-date-picker .ant-picker {
-  width: 14vw;
   height: 38px;
   border-width: 1px;
   margin-right: 0; /* Ensure there's no right margin */
@@ -30,34 +60,31 @@
   font-size: 12px;
 }
 
-/* Media queries to adjust width based on screen size */
-.custom-range-picker .ant-picker {
-  width: 100%;
+/* Media queries to adjust width based on screen size for home-date-picker */
+.home-date-picker .ant-picker {
+  width: 14vw; /* Default width for home page */
 }
 
-
 @media (min-width: 320px) {
-  .custom-range-picker .ant-picker {
-    width: 45vw;
-
+  .home-date-picker .ant-picker {
+    width: 45vw; /* Width for home page at 320px */
   }
 }
 
 @media (min-width: 600px) {
-  .custom-range-picker .ant-picker {
+  .home-date-picker .ant-picker {
     width: 25vw;
   }
 }
 
 @media (min-width: 960px) {
-  .custom-range-picker .ant-picker {
+  .home-date-picker .ant-picker {
     width: 18vw;
   }
 }
 
-
 @media (min-width: 1280px) {
-  .custom-range-picker .ant-picker {
-    width:14vw;
+  .home-date-picker .ant-picker {
+    width: 14vw;
   }
 }
