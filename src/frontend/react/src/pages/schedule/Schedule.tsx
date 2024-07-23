@@ -6,6 +6,7 @@ import { LEFT_PADDING, LEFT_WIDTH, NAVBAR_HEIGHT } from "../../utils/constants";
 import Btn_List from "../../components/list/Btn_List";
 import List from "../../components/list/List";
 import { ListContext } from "../../contexts/ListContext";
+import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
 import Btn_Close_Left from "../../components/Btn_Close_Left";
 import ScheduleCard from "../../components/schedule/ScheduleCard";
 import {
@@ -20,10 +21,8 @@ import {
 import SaveIcon from "@mui/icons-material/Save";
 import moment from "moment";
 import Map_Schedule from "../../components/schedule/Map_Schedule";
-import LoginComponent from "../../components/users/LoginComponent"; // Import the LoginComponent
-import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
+import Tooltip from "@mui/material/Tooltip"; // Import Tooltip
 import { theme } from "antd";
-import RegisterComponent from "../../components/users/RegisterComponent";
 import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
 import WeatherComponent from "../../components/schedule/WeatherComponent"; 
 
@@ -35,6 +34,7 @@ const Schedule: React.FC = () => {
     isLeftPanelVisible,
     toggleLeftPanel,
     planData,
+    selectedDates,
   } = useContext(ListContext);
   const initialDate = planData ? Object.keys(planData)[0] : null;
   const [currentDate, setCurrentDate] = useState<string | null>(initialDate);
@@ -49,9 +49,7 @@ const Schedule: React.FC = () => {
 
   // ----------------------- Save feature Start -----------------------
   const themeOrange = useTheme();
-  const [loginOpen, setLoginOpen] = useState(false); // State for the login modal
-  const [isLoginMode, setIsLoginMode] = useState(true);
-  const isLoggedIn = Boolean(localStorage.getItem("token")); // Check if the user is logged in
+  const { isLoggedIn } = useAuth(); // Use the context
   const navigate = useNavigate();
   // ----------------------- Save feature End -----------------------
 
@@ -132,16 +130,74 @@ const Schedule: React.FC = () => {
   }
 
   // ----------------------- Save feature Start -----------------------
-  const handleSaveClick = () => {
-    if (!isLoggedIn) {
-      setLoginOpen(true);
-    } else {
-      // Save the schedule
+  const downloadJSON = (data, filename) => {
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleSavePlan = async () => {
+    if (!planData || !selectedDates || !selectedDates[0] || !selectedDates[1]) {
+      console.error("Error: Plan data or selected dates are missing.");
+      return;
+    }
+
+    const saveData = {
+      planData,
+      startDate: selectedDates[0].format("YYYY-MM-DD"),
+      endDate: selectedDates[1].format("YYYY-MM-DD"),
+      token: localStorage.getItem("token")
+    };
+
+    // Trigger the download of the JSON file
+    // downloadJSON(saveData, "planData.json");
+    console.log("Data to be sent to backend:", saveData);
+
+    try {
+      const response = await fetch("/api/itinerary/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(saveData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+
+      const result = await response.json();
+      console.log("Plan saved successfully:", result);
+    } catch (error) {
+      console.error("Error saving plan to backend:", error);
     }
   };
 
-  const handleSwitch = () => {
-    setIsLoginMode(!isLoginMode);
+  const handleSaveClick = () => {
+    if (!isLoggedIn) {
+      // Trigger avatar click to open the login modal
+      triggerAvatarClick();
+    } else {
+      // Save the schedule
+      handleSavePlan();
+    }
+  };
+
+  const triggerAvatarClick = () => {
+    const avatarButton = document.getElementById("avatarButton");
+    if (avatarButton) {
+      avatarButton.click();
+    }
   };
 
 
@@ -221,22 +277,6 @@ const Schedule: React.FC = () => {
               <WeatherComponent weather={weather} loadingWeather={loadingWeather} />
 
             </Stack>
-
-            {/* ----------------------- Save feature Start LoginComponent ----------------------- */}
-            {isLoginMode ? (
-              <LoginComponent
-                open={loginOpen}
-                onClose={() => setLoginOpen(false)}
-                onSwitch={handleSwitch}
-              />
-            ) : (
-              <RegisterComponent
-                open={loginOpen}
-                onClose={() => setLoginOpen(false)}
-                onSwitch={handleSwitch}
-              />
-            )}
-            {/* ----------------------- Save feature End ----------------------- */}
           </Box>
 
           <Stack direction="row" spacing={1} mb={3}>

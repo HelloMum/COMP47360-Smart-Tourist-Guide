@@ -12,7 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "./RegisterComponent.css";
+import "./LoginComponent.scss";
 
 const RegisterComponent: React.FC<{
   onClose: () => void;
@@ -27,16 +27,30 @@ const RegisterComponent: React.FC<{
   const theme = useTheme();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Fetch API call will be implemented later
-    // Here just simulate a successful registration
-    const simulatedResponse = { success: true, message: "" };
-    if (simulatedResponse.success) {
-      navigate("/login");
-      onClose();
-    } else {
-      setMessage(simulatedResponse.message);
+    try {
+      const response = await fetch("/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          "Error:",
+          response.status,
+          response.statusText,
+          errorText
+        );
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setMessage(data.message);
+    } catch (error) {
+      setMessage("An error occurred: " + error.message);
     }
   };
 
@@ -81,67 +95,70 @@ const RegisterComponent: React.FC<{
 
   return (
     open && (
-      <Box className="register-modal" ref={modalRef}>
-        <Box className="register-modal-header">
-          <Typography variant="h6" className="register-modal-title">
-            Register
-          </Typography>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <form onSubmit={handleSubmit} className="register-modal-form">
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            className="register-modal-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            InputProps={{ style: { fontSize: fsFontsize } }}
-            InputLabelProps={{ style: { fontSize: fsFontsize } }}
-          />
-          <TextField
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            className="register-modal-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            InputProps={{
-              style: { fontSize: fsFontsize },
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    style={{ color: theme.palette.primary.main }}
-                    onClick={togglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            InputLabelProps={{ style: { fontSize: fsFontsize } }}
-          />
-          <Button type="submit" variant="contained" fullWidth>
-            Register
-          </Button>
-          {message && (
-            <Typography color="error" align="center" mt={2}>
-              {message}
+      <>
+        <div className="modal-overlay" onClick={onClose}></div>
+        <Box className="register-modal" ref={modalRef}>
+          <Box className="register-modal-header">
+            <Typography variant="h6" className="register-modal-title">
+              Register
             </Typography>
-          )}
-        </form>
-        <Box className="register-modal-footer">
-          <Typography variant="body2">Already a Member?</Typography>
-          <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
-            Login
-          </Button>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <form onSubmit={handleSubmit} className="register-modal-form">
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              className="register-modal-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              InputProps={{ style: { fontSize: fsFontsize } }}
+              InputLabelProps={{ style: { fontSize: fsFontsize } }}
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              className="register-modal-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              InputProps={{
+                style: { fontSize: fsFontsize },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      style={{ color: theme.palette.primary.main }}
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              InputLabelProps={{ style: { fontSize: fsFontsize } }}
+            />
+            <Button type="submit" variant="contained" fullWidth>
+              Register
+            </Button>
+            {message && (
+              <Typography color="error" align="center" mt={2}>
+                {message}
+              </Typography>
+            )}
+          </form>
+          <Box className="register-modal-footer">
+            <Typography variant="body2">Already a Member?</Typography>
+            <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
+              Login
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      </>
     )
   );
 };

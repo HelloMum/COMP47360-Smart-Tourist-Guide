@@ -1,19 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
-import './Header.css';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { Box, Button, Stack, IconButton, useMediaQuery } from '@mui/material';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import AddLocationRounded from '@mui/icons-material/AddLocationAltRounded';
-import LocalActivityRoundedIcon from '@mui/icons-material/LocalActivityRounded';
-import { NAVBAR_HEIGHT } from '../utils/constants';
-import DateRangePicker from './DateRangePicker';
-import { ListContext } from '../contexts/ListContext';
-import AlertModal from './AlertModal';
-import Logo from './Logo';
+import React, { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import "./Header.css";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import { Box, Button, Stack, IconButton, useMediaQuery } from "@mui/material";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import AddLocationRounded from "@mui/icons-material/AddLocationAltRounded";
+import LocalActivityRoundedIcon from "@mui/icons-material/LocalActivityRounded";
+import { NAVBAR_HEIGHT } from "../utils/constants";
+import DateRangePicker from "./DateRangePicker";
+import { ListContext } from "../contexts/ListContext";
+import { useAuth } from "../contexts/AuthContext"; // Import useAuth
+import AlertModal from "./AlertModal";
+import Logo from "./Logo";
 import LoginComponent from "./users/LoginComponent";
 import RegisterComponent from "./users/RegisterComponent";
+import LogoutComponent from "./users/AccountMenuComponent"; // Import LogoutComponent
 import { useUpdateNavbarHeight } from '../utils/useResponsiveSizes';
 
 const Header = () => {
@@ -45,9 +47,10 @@ const Header = () => {
 
   // ----------------------- Login modal Start -----------------------
   const [loginOpen, setLoginOpen] = useState(false);
+  const { isLoggedIn } = useAuth(); // Use the context
   const [isLoginMode, setIsLoginMode] = useState(true);
 
-  const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const isToken = Boolean(localStorage.getItem("token"));
   // ----------------------- Login modal End -----------------------
 
   const isActive = (path) => location.pathname === path;
@@ -106,11 +109,25 @@ const Header = () => {
         paddingLeft: { xs: "2%", sm: "0%", md: "0%"  },
       }}
     >
+
       <Stack direction="column" sx={{ width: "100%", height: '100%' }}>
-        <Stack direction="row" justifyContent="space-between" sx={{ width: "100%", height: '45px', backgroundColor: { xs: 'rgba(250, 166, 63, 1)', sm: "white" }, paddingX: '2%' }}>
+        <Stack 
+          direction="row" 
+          justifyContent="space-between" 
+          sx={{ 
+            width: "100%", 
+              height: '45px', 
+                backgroundColor: { xs: 'rgba(250, 166, 63, 1)', sm: "white" },
+                  paddingX: '2%' }}>
+
           <Logo />
           <Stack direction="row" spacing={spacing} alignItems="center">
-            <Stack direction="row" spacing={spacing} alignItems="center" sx={{ display: { xs: 'none', sm: 'block' } }}>
+            <Stack
+              direction="row"
+              spacing={spacing}
+              alignItems="center"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
               <Button
                 variant="text"
                 onClick={() => navigate("/spots")}
@@ -136,7 +153,7 @@ const Header = () => {
                 Plan
               </Button>
             </Stack>
-            <Box sx={{ display: { xs: 'block', sm: 'block' } }}>
+            <Box sx={{ display: { xs: "block", sm: "block" } }}>
               <DateRangePicker
                 onDateChange={handleDateChange}
                 value={selectedDates}
@@ -145,27 +162,32 @@ const Header = () => {
           </Stack>
           {/* ----------------------- Login modal Start ----------------------- */}
           <Box position="relative">
-            <IconButton onClick={handleAvatarClick}>
-              <AccountCircleRoundedIcon
-                sx={{
-                  color: { xs: 'white', sm: theme.palette.primary.dark },
-                  fontSize: 28
-                }}
-              />
-            </IconButton>
-            {isLoginMode ? (
-              <LoginComponent
-                open={loginOpen}
-                onClose={() => setLoginOpen(false)}
-                onSwitch={handleSwitch}
-              />
+            {isLoggedIn ? (
+              <LogoutComponent /> // Show LogoutComponent if the user is logged in
             ) : (
-              <RegisterComponent
-                open={loginOpen}
-                onClose={() => setLoginOpen(false)}
-                onSwitch={handleSwitch}
-              />
+              <IconButton id="avatarButton" onClick={handleAvatarClick}>
+                <AccountCircleRoundedIcon
+                  sx={{
+                    color: { xs: "white", sm: theme.palette.primary.dark },
+                    fontSize: 28,
+                  }}
+                />
+              </IconButton>
             )}
+            {!isLoggedIn &&
+              (isLoginMode ? (
+                <LoginComponent
+                  open={loginOpen}
+                  onClose={() => setLoginOpen(false)}
+                  onSwitch={handleSwitch}
+                />
+              ) : (
+                <RegisterComponent
+                  open={loginOpen}
+                  onClose={() => setLoginOpen(false)}
+                  onSwitch={handleSwitch}
+                />
+              ))}
           </Box>
           {/* ----------------------- Login modal End ----------------------- */}
           <AlertModal
@@ -178,12 +200,21 @@ const Header = () => {
         <Stack
           direction="row"
           justifyContent="space-around"
-          sx={{ display: { xs: 'block', sm: 'none' }, marginTop: '5px', width: '100% ', backgroundColor: 'white' }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            marginTop: "5px",
+            width: "100% ",
+            backgroundColor: "white",
+          }}
         >
           <Button
             variant="text"
             onClick={() => navigate("/spots")}
-            style={{ ...buttonStyle("/spots"),  fontSize: 13, marginLeft: '15vw' }}
+            style={{
+              ...buttonStyle("/spots"),
+              fontSize: 13,
+              marginLeft: "15vw",
+            }}
             alignItems="center"
             startIcon={<AddLocationRounded />}
           >
@@ -191,7 +222,6 @@ const Header = () => {
           </Button>
           <Button
             variant="text"
-            
             onClick={() => navigate("/events")}
             style={{ ...buttonStyle("/events"), fontSize: 13 }}
             startIcon={<LocalActivityRoundedIcon />}

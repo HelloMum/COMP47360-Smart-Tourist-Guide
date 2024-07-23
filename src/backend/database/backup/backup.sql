@@ -80,9 +80,27 @@ ALTER TABLE ONLY public.weather_data
     ADD CONSTRAINT weather_data_pkey PRIMARY KEY (id);
 
 
--- Completed on 2024-06-03 17:22:55 IST
+CREATE TABLE users (
+                       id SERIAL PRIMARY KEY,
+                       email VARCHAR(255) UNIQUE NOT NULL,
+                       password VARCHAR(255) NOT NULL,
+                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
---
--- PostgreSQL database dump complete
---
+CREATE TABLE itinerary_saved (
+                                 id SERIAL PRIMARY KEY,
+                                 user_id INTEGER NOT NULL,
+                                 start_date DATE NOT NULL,
+                                 end_date DATE NOT NULL,
+                                 FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
+CREATE TABLE itinerary_saved_items (
+                                       id SERIAL PRIMARY KEY,
+                                       itinerary_id INTEGER NOT NULL,
+                                       item_id INTEGER NOT NULL,
+                                       is_event BOOLEAN NOT NULL,
+                                       start_time TIMESTAMP NOT NULL,
+                                       end_time TIMESTAMP NOT NULL,
+                                       FOREIGN KEY (itinerary_id) REFERENCES itinerary_saved(id)
+);
