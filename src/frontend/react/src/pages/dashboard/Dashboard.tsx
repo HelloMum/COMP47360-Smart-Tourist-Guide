@@ -29,10 +29,15 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+
     const fetchItineraries = async () => {
       try {
         const response = await fetch('http://localhost:3000/api/itinerary/user', {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
         });
 
         if (!response.ok) {
@@ -54,7 +59,10 @@ const Dashboard: React.FC = () => {
     const fetchStatistics = async () => {
       try {
         const response = await fetch('http://localhost:3000/api/itinerary/statistics', {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
         });
 
         if (!response.ok) {
