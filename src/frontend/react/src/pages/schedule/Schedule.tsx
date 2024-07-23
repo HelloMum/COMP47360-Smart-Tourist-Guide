@@ -165,7 +165,8 @@ const Schedule: React.FC = () => {
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
             display: "flex",
             flexDirection: "column",
-            // zIndex:999999
+            zIndex:5,
+            backgroundColor:'white'
           }}
         >
           <Box mb={0}>

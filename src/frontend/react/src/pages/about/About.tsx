@@ -50,7 +50,7 @@ const CircleContainer = styled(Box)(({ theme }) => ({
   backgroundColor: '#f9f9f9',
   borderRadius: '2%',
   // width: '320px',
-  height: '350px',
+  height: '400px',
   padding: '20px',
   [theme.breakpoints.up('xs')]: {
     width: '70vw',
@@ -109,7 +109,7 @@ const About: React.FC = () => {
     <Box >
       <Box sx={{ px: '9%' }}>
         {/* ---------- Stack containing information about our service ---------- */}
-        <Stack direction="column" alignItems="flex-start"  spacing={1}  sx={{ mt: '80px' }}> 
+        <Stack direction="column" alignItems="flex-start"  spacing={1}  sx={{ mt: '90px' }}> 
           <SectionTitle variant="h2" >
             Our Services
           </SectionTitle>
@@ -127,7 +127,7 @@ const About: React.FC = () => {
 
 
         {/* ---------- Stack containing information about data and algo ---------- */}
-        <Stack direction="column" alignItems="flex-start" spacing={3} sx={{ mt: 8 }}>
+        <Stack direction="column" alignItems="flex-start" spacing={3} sx={{ mt: 10 }}>
           <SectionTitle variant="h2">Machine Learning & Itinerary Algorithm</SectionTitle>
 
 
@@ -171,7 +171,7 @@ const About: React.FC = () => {
 
 
         {/* ---------- Stack containing information about our team ---------- */}
-        <Stack direction="column" alignItems="flex-start" spacing={2} sx={{ mt: 8}}>
+        <Stack direction="column" alignItems="flex-start" spacing={2} sx={{ mt: 10}}>
           <SectionTitle variant="h2">Our Team</SectionTitle>
           <Grid container spacing={4}>
             {TeamIcons.map((member, index) => (
@@ -194,6 +194,7 @@ const About: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
+        marginTop: '3vh',
       
       }}>
         <Divider />

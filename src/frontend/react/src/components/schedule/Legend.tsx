@@ -14,13 +14,14 @@ const Legend: React.FC = () => {
     <Box
       sx={{
         position: 'absolute',
-        bottom: 60,
+        bottom:{sm:60,md:null},
+        // top:{xs:70,sm:null,md:null},
         left: 20,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         padding: '10px',
         borderRadius: '10px',
         color:'grey',
-        width: 180,
+        width:{xs:160,sm: 180},
         border: '1px solid rgba(0, 0, 0, 0.15)'}}
             >
       <Grid container spacing={1}>

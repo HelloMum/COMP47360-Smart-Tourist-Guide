@@ -127,6 +127,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
       flexDirection: 'column',
       position: 'relative',
       p: 0.5,
+    
     }}>
 
       <Close 

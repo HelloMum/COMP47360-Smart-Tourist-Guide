@@ -11,7 +11,7 @@ import ZoneBusyness from './ZoneBusyness';
 import ZoneInfo from './ZoneInfo';
 import { useResponsiveListWidth } from '../../utils/useResponsiveSizes';
 import { LIST_WIDTH } from '../../utils/constants';
-import { useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 
 
 interface MapScheduleProps {
@@ -287,25 +287,26 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
         showlist={showList}
       />
 
-      {selectedZone && showLegend && isZoneBusynessVisible && (!isLeftPanelVisible && !isXsScreen) && (
-        <div style={{
-          position: 'absolute',
-          bottom: '60px',
-          right: showList ? `calc(${LIST_WIDTH} + 1vw)` : '1.5vw',
-          background: 'white',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          padding: '10px',
-          zIndex: 1,
-          opacity: 0.95
-        }}>
-          <ZoneBusyness
-            zoneId={selectedZone.id}
-            zoneName={selectedZone.name}
-            selectedTime={selectedTime}
-            onClose={() => setIsZoneBusynessVisible(false)}
-          />
-        </div>
+      {selectedZone && showLegend && isZoneBusynessVisible &&  (
+ <Box style={{
+  position: 'absolute',
+  bottom: showList ? '60px' : '90px',
+  right: showList ? `calc(${LIST_WIDTH} + 1vw)` : '1.5vw',
+  background: 'white',
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  padding: '10px',
+  zIndex: 2,
+  opacity: 0.95
+}}>
+  <ZoneBusyness
+    zoneId={selectedZone.id}
+    zoneName={selectedZone.name}
+    selectedTime={selectedTime}
+    onClose={() => setIsZoneBusynessVisible(false)}
+  />
+</Box>
+
       )}
     </div>
   );
