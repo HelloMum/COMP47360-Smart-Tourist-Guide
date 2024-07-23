@@ -108,16 +108,30 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const theme = useTheme();
   
   return (
-    <Stack sx={{ marginBottom: 3,  alignItems: 'flex-start', position: 'relative',
-      }}>
+    <Stack
+    sx={{
+      marginBottom: 4,
+      alignItems: 'flex-start',
+      position: 'relative',
+      flexDirection: {
+        xs: 'column', 
+        sm: 'column'  ,
+        md: 'column'  ,
+        lg:'row'
+      }
+    }}
+  >
 
-
+ {/*---------------- index circle & start time & end time-------------- */}
       <Stack direction='row' >
+
+
+       {/*---------------- index circle -------------- */}
       <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
         <Box
           sx={{
-            width: 35,
-            height: 35,
+            width:{ xs:30,sm:30,md:32,lg:35},
+            height: { xs:30,sm:30,md:32,lg:35},
             borderRadius: '50%',
             backgroundColor: '#fdddb5',
             display: 'flex',
@@ -132,7 +146,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       </Box>
 
 
-{/*---------------- time -------------- */}
+{/*---------------- start time  & end time -------------- */}
       <Stack
       gap={1}
       sx={{
@@ -153,6 +167,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         },
       }}
     >
+
+      {/*---------------- start time -------------- */}
         <Typography
           variant="h6"
           style={{height:'30px',
@@ -171,6 +187,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           {formattedStartTime}
         </Typography>
 
+
+
         <Typography variant="h6" 
         style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}
         sx={{marginLeft:{xs: '10px', sm: '10px', md:'10px',lg:'0vw'},marginTop:{xs: '2px', sm: '0vw', },
@@ -178,6 +196,9 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         }}>
 -
           </Typography>
+
+
+  {/*---------------- end time -------------- */}
 
         <Typography variant="h6" 
         style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}
@@ -193,25 +214,27 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       <Paper variant="outlined" sx={{
         borderRadius: '8px',
         overflow: 'hidden',
-        padding: 2,
+        padding: {xs:1,sm:1,md:2},
         position: 'relative',
         display: 'flex',
         width: '100%',
         marginTop:{xs: '10px', sm: '10px', md: '10px', lg: '0vw'},
+        marginLeft:{xs: '0px', sm: '0px', md:'0px',lg:'1vw'},
       }}>
 
 
 
         <Box
           sx={{
-            height: isExpanded ? 160 : 100,
-            width: {xs:80,sm:120},
+            height: isExpanded ? {xs:100,sm:120,md:150,lg:160} : {xs:85,sm:90,md:100},
+            width: {xs:80,sm:100,md:120,lg:100},
             overflow: 'hidden',
             position: 'relative',
             borderRadius: '2px',
-            marginRight: 2,
+            marginRight:{xs:'10px',sm: 2},
+        
             boxShadow: '0 2px 3px rgba(0, 0, 0, 0.15)',
-            minWidth: {xs:80,sm:120},
+            // minWidth: {xs:80,sm:120},
           }}
         >
         
@@ -260,9 +283,20 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
             {website && <Btn_Earth url={website} />}
           </Box>
 
-          <Box display="flex" alignItems="center" gap={1}>
+          <Box
+      display="flex"
+      alignItems="center"
+      sx={{
+        gap: {
+          xs: 0,   
+          sm: 1,   
+          md: 1,    
+          lg: 1    
+        }
+      }}
+    >
             <Typography variant="body2" color="text.secondary">
-              area busyness :
+              busyness :
             </Typography>
             <Box flexGrow={1}>
               <BusynessProgressBar busyness={busyness} />

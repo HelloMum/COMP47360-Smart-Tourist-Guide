@@ -2,82 +2,102 @@ import React from 'react';
 import './About.css';
 import { Box, Container, Stack, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import TeamMember from '../../components/TeamMember';
-import FeatureProcess from '../../components/FeatureProcess';
+import TeamMember from '../../components/about/TeamMember';
+import FeatureProcess from '../../components/about/FeatureProcess';
+import { Divider } from 'antd';
 
 
 // ---------- Text Styling ----------
 const SectionTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '32px',
-  fontWeight: 'bold',
-  color: '#333',
+  fontSize: '28px',
+  fontWeight: '600',
+  color: '#faa134',
+  fontFamily: '"Lexend", sans-serif',
 }));
 
 const SectionDescription = styled(Typography)(({ theme }) => ({
   fontSize: '16px',
   color: '#666',
+
+
 }));
 
 // ---------- static information about feature process ----------
 const ProcessIcons = [
   {
-    icon:"",
+    icon:"images/about/icon_1.png",
     title: "Wide Selection of Activities",
-    description: "Browse through X number of fun events and popular activities and select the ones that you are interestedi in"
+    description: "Browse through and select from numerous tourist attractions and events in Manhattan, New York "
   },
   {
-    icon:"",
+    icon:"images/about/icon_2.png",
     title: "Ideal Planning",
     description: "Access your personalized schedule with ideal timings to avoid busyness and other inconveniences"
   },
   {
-    icon:"",
-    title: "Mapped Itinerary",
-    description: "Access our map displaying your planned activities for the day"
+    icon:"images/about/icon_3.png",
+    title: "Saved Itinerary",
+    description: "Save your favorite itineraries permanently to your account for easy access and future reference anytime"
   }
 ]
+
 
 // ---------- set up of the circle container for the feature process ----------
 const CircleContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: '#f0f0f0',
-  borderRadius: '50%',
-  width: '320px',
-  height: '320px',
-  margin: '0 auto',
+  backgroundColor: '#f9f9f9',
+  borderRadius: '2%',
+  // width: '320px',
+  height: '400px',
+  padding: '20px',
+  [theme.breakpoints.up('xs')]: {
+    width: '70vw',
+  },
+  [theme.breakpoints.up('sm')]: {
+    width: '75vw',
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '25vw',
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: '25vw',
+  },
+  [theme.breakpoints.up('xl')]: {
+    width: '25vw',
+  },
 }));
 
 // ---------- static information about team members ----------
 const TeamIcons = [
   {
-    icon:"",
+    icon:"images/avatar/nathan.jpg",
     role:"Data Lead",
     name:"Nathan Power"
   },
   {
-    icon:"",
+    icon:"images/avatar/mutu.jpg",
     role:"Coordination Lead",
     name:"Mustafa Tugrul Yilmaz"
   },
   {
-    icon:"",
-    role:"Front-end Code Lead",
+    icon:"images/avatar/sha.jpg",
+    role:"Frontend Code Lead",
     name:"Sha Luo"
   },
   {
-    icon:"",
+    icon:"images/avatar/zack.jpg",
     role:"Customer Lead",
     name:"Maxim Zack Istasse"
   },
   {
-    icon:"",
-    role:"Back-end Code Lead",
+    icon:"images/avatar/boyu.jpg",
+    role:"Backend Code Lead",
     name:"Boyu Wang"
   },
   {
-    icon:"",
+    icon:"images/avatar/jorge.jpg",
     role:"Maintenance Lead",
     name:"Jorge Duran Gonzalez"
   }
@@ -86,26 +106,14 @@ const TeamIcons = [
 
 const About: React.FC = () => {
   return (
-    <Box sx={{ p: 5 }}>
-      <Container>
+    <Box >
+      <Box sx={{ px: '9%' }}>
         {/* ---------- Stack containing information about our service ---------- */}
-        <Stack direction="column" alignItems="flex-start"  spacing={6}  sx={{ mt: 10 }}> 
+        <Stack direction="column" alignItems="flex-start"  spacing={1}  sx={{ mt: '90px' }}> 
           <SectionTitle variant="h2" >
-            Our Service
+            Our Services
           </SectionTitle>
-          <SectionDescription variant="body1">
-          XXX, your perfect travel companion!<br />
-          Forget about spending hours researching events and activities for your trip to New York City. 
-          Instead, let us do the heavy lifting for you. With XXX, you can effortlessly browse through a wide range 
-          of popular activities to do in Manhattan. Choose your favourites based on your interests, whether it's sightseeing, 
-          dining, shopping, or experiencing the vibrant culture of the city.<br />
-          Our advanced algorithm will then create a personalized planning just for you. It ensures you visit 
-          each event at the best time, avoiding crowds and other hassles, to make your trip as pleasant as possible.<br /> 
-          Each day of your trip, XXX will offer you a detailed map displaying all your planned activities in order. 
-          This map will not only show you the sequence of your events but also provide important information on how 
-          to reach each destination. (ADD MORE ONCE THE FEATURE IS COMPLETED)<br />
-          With XXX, every aspect of your journey planning is taken care of, without the usual stress and inconveniences, turning your trip into a seamless travel experience. 
-          </SectionDescription>
+    
           <Grid container spacing={4}>
             {ProcessIcons.map((feature, index) => (
               <Grid item xs={12} md={4} key={index}>
@@ -119,29 +127,46 @@ const About: React.FC = () => {
 
 
         {/* ---------- Stack containing information about data and algo ---------- */}
-        <Stack direction="column" alignItems="flex-start" spacing={2} sx={{ mt: 10 }}>
-          <SectionTitle variant="h2">Data & Algorithm</SectionTitle>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <SectionDescription variant="body1">
-              Donec et odio pellentesque diam volutpat commodo sed egestas egestas. Nibh mauris cursus mattis molestie. 
-              Ipsum a arcu cursus vitae congue mauris rhoncus aenean vel. Pharetra et ultrices neque ornare aenean euismod 
-              elementum nisi quis. Aliquam id diam maecenas ultricies mi eget. Sed ullamcorper morbi tincidunt ornare massa eget egestas. 
-              Ipsum dolor sit amet consectetur adipiscing elit duis tristique sollicitudin. Neque laoreet suspendisse interdum consectetur 
-              libero id faucibus nisl tincidunt. Sit amet commodo nulla facilisi nullam vehicula ipsum a. Diam ut venenatis tellus in metus 
-              vulputate eu. Et tortor at risus viverra adipiscing at in tellus integer. Mattis ullamcorper velit sed ullamcorper morbi 
-              tincidunt ornare massa. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Amet porttitor eget dolor morbi 
-              non arcu. Sed viverra ipsum nunc aliquet. Neque sodales ut etiam sit. Adipiscing at in tellus integer feugiat. Diam vulputate 
-              ut pharetra sit amet aliquam id diam. Ultricies mi quis hendrerit dolor magna eget. Purus sit amet volutpat consequat mauris nunc 
-              congue nisi.
+        <Stack direction="column" alignItems="flex-start" spacing={3} sx={{ mt: 10 }}>
+          <SectionTitle variant="h2">Machine Learning & Itinerary Algorithm</SectionTitle>
+
+
+          <Box 
+  sx={{ 
+    display: 'flex', 
+    flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row', xl: 'row' },
+    alignItems: 'center',
+    marginLeft: '10vw'
+  }}
+>
+            <Box sx={{width:{md:'44vw',},marginRight:{md:'5vw',lg:'10vw'}}} >
+        
+              <SectionDescription variant="body1" sx={{ marginLeft:4,mt:4 }}>
+              Our application leverages advanced data analytics to optimize tourist trip scheduling in New York City. By integrating datasets from  
+    <span style={{ fontWeight: 550 }}> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</span> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
+
+              <br></br> <br></br>
+              <b> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</b> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
               </SectionDescription>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <img src="/path/to/your/image.png" alt="Data & Algorithm" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-              </Box>
-            </Grid>
-          </Grid>
+            </Box>
+          
+
+
+            <Box sx={{ display: {xs:'none',sm:'none',md:'flex'}, justifyContent: 'center', alignItems: 'center',  }}>
+
+
+  <img 
+    src="images/about/right2.png" 
+    alt="Data & Algorithm" 
+    style={{ 
+     
+     width:'400px'
+    }} 
+  />
+</Box>
+
+          
+          </Box>
         </Stack>
 
 
@@ -157,7 +182,34 @@ const About: React.FC = () => {
           </Grid>
         </Stack>
 
-      </Container>
+        
+
+      </Box>
+
+
+      <Box sx={{
+
+      
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        marginTop: '3vh',
+      
+      }}>
+        <Divider />
+        <Typography
+          sx={{
+            textAlign: 'center',
+            fontSize: '13px',
+            color: 'gray',
+          }}
+        >
+          © 2024, University College Dublin,
+         
+          Computer Science Conversion  <br />COMP47360-Research Practicum
+        </Typography>
+      </Box>
     </Box>
   );
 }
