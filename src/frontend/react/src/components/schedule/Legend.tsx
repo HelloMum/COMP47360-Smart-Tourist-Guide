@@ -14,10 +14,9 @@ const Legend: React.FC = () => {
     <Box
       sx={{
         position: 'absolute',
-        bottom:{sm:60,md:null},
-        // top:{xs:70,sm:null,md:null},
+        bottom:{xs:95,sm:60,md:60},   
         left: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 1)',
         padding: '10px',
         borderRadius: '10px',
         color:'grey',

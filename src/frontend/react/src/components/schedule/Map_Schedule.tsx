@@ -288,16 +288,16 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
       />
 
       {selectedZone && showLegend && isZoneBusynessVisible &&  (
- <Box style={{
+ <Box sx={{
   position: 'absolute',
-  bottom: showList ? '60px' : '90px',
+  bottom:{ xs:'95px',sm:'60px'},
   right: showList ? `calc(${LIST_WIDTH} + 1vw)` : '1.5vw',
   background: 'white',
   border: '1px solid #ddd',
   borderRadius: '8px',
   padding: '10px',
   zIndex: 2,
-  opacity: 0.95
+  opacity: 1
 }}>
   <ZoneBusyness
     zoneId={selectedZone.id}
