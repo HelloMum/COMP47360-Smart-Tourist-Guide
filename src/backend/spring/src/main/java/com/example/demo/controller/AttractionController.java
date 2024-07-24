@@ -17,12 +17,6 @@ public class AttractionController {
     @Autowired
     private AttractionService attractionService;
 
-    // Return an attraction by the index
-    @GetMapping("/index/{index}")
-    public Attraction getAttractionByIndex(@PathVariable int index) {
-        return attractionService.getAttractionByIndex(index);
-    }
-
     // Filter logic (isFree, category)
     // Sort by rating DESC (default), price ASC
     @GetMapping("/filter")

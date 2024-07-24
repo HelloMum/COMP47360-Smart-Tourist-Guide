@@ -1,18 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleMap, Marker, OverlayView, useLoadScript } from '@react-google-maps/api';
 import SpotsCard_PopUp from './SpotsCard_PopUp';
-import mapOptions from '../../utils/mapStyles'; 
-import  googleMapsConfig  from '../../utils/apiConfig'; 
+import mapOptions from '../../utils/mapStyles';
+import googleMapsConfig from '../../utils/apiConfig';
 
-const Map = ({ events, onMarkerClick }) => {
+const Map_Spots = ({ events, onMarkerClick, activeSpot, popupSpot, onPopupClose, hoveredSpot }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: googleMapsConfig.googleMapsApiKey,
     libraries: googleMapsConfig.libraries,
   });
 
   const [center, setCenter] = useState({ lat: 40.725, lng: -73.99 });
-  const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [hoveredMarker, setHoveredMarker] = useState(null);
   const mapRef = useRef(null);
 
   const containerStyle = {
@@ -43,48 +43,24 @@ const Map = ({ events, onMarkerClick }) => {
     }
   };
 
+  const handleMarkerClick = useCallback((event) => {
+    setSelectedMarker(event);
+    onMarkerClick(event);
+  }, [onMarkerClick]);
+
   useEffect(() => {
-    if (isLoaded && events) {
-      const newMarkers = events.map(event => {
-        const marker = new window.google.maps.Marker({
-          position: { lat: event.attraction_latitude, lng: event.attraction_longitude },
-          title: event.attraction_name,
-          icon: {
-            url: getIconUrl(event.category),
-            scaledSize: new window.google.maps.Size(38, 38)
-          },
-          map: mapRef.current
-        });
-
-        marker.addListener('mouseover', () => {
-          marker.setIcon({
-            url: getIconUrl(event.category, true),
-            scaledSize: new window.google.maps.Size(48, 48)
-          });
-        });
-
-        marker.addListener('mouseout', () => {
-          marker.setIcon({
-            url: getIconUrl(event.category),
-            scaledSize: new window.google.maps.Size(38, 38)
-          });
-        });
-
-        marker.addListener('click', () => {
-          setSelectedMarker(event);
-          onMarkerClick(event);
-        });
-
-        return marker;
-      });
-
-      setMarkers(newMarkers);
-
-      return () => {
-        newMarkers.forEach(marker => marker.setMap(null));
-      };
+    if (popupSpot === null) {
+      setSelectedMarker(null);
     }
-  }, [isLoaded, events, onMarkerClick]);
+  }, [popupSpot]);
+
+  const handleMouseOver = (event) => {
+    setHoveredMarker(event);
+  };
+
+  const handleMouseOut = () => {
+    setHoveredMarker(null);
+  };
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -93,40 +69,81 @@ const Map = ({ events, onMarkerClick }) => {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={14}
-      options={mapOptions} 
+      zoom={13.5}
+      options={mapOptions}
       onLoad={map => {
         mapRef.current = map;
       }}
     >
+      {events.map(event => {
+        const isActive = activeSpot?.index === event.index || hoveredSpot?.index === event.index || selectedMarker?.index === event.index || hoveredMarker?.index === event.index;
+        const iconUrl = getIconUrl(event.category, isActive);
+        const iconSize = isActive ? 45 : 38;
+        return (
+          <Marker
+            key={event.index}
+            position={{ lat: event.attraction_latitude, lng: event.attraction_longitude }}
+            title={event.attraction_name}
+            icon={{
+              url: iconUrl,
+              scaledSize: new window.google.maps.Size(iconSize, iconSize),
+              anchor: new window.google.maps.Point(iconSize / 2, iconSize / 2),
+            }}
+            zIndex={isActive ? 999 : 1}
+            onMouseOver={() => handleMouseOver(event)}
+            onMouseOut={handleMouseOut}
+            onClick={() => handleMarkerClick(event)}
+          />
+        );
+      })}
+
       {selectedMarker && (
-        <OverlayView
-          position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }}
-          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-        >
-          <div style={{
-            position: 'absolute',
-            transform: 'translate(-50%, -115%)',
-            background: 'white',
-            border: '1px solid #ddd',
-            borderRadius: '8px',
-            maxWidth: '500px'
-          }}>
-            <SpotsCard_PopUp
-              image1={`/images/spots_small/${selectedMarker.index}_1.webp`}
-              image3={`/images/spots_small/${selectedMarker.index}_3.webp`}
-              title={selectedMarker.attraction_name}
-              rating={selectedMarker.attraction_rating}
-              category={selectedMarker.category}
-              isFree={selectedMarker.isFree}
-              user_ratings_total={selectedMarker.user_ratings_total}
-              onClose={() => setSelectedMarker(null)}
-            />
-          </div>
-        </OverlayView>
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'transparent',
+              zIndex: 998,
+              pointerEvents: 'none', 
+            }}
+          />
+          <OverlayView
+            position={{ lat: selectedMarker.attraction_latitude, lng: selectedMarker.attraction_longitude }}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div style={{
+              position: 'absolute',
+              transform: 'translate(-50%, -108%)',
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              maxWidth: '500px',
+              pointerEvents: 'auto' 
+            }}>
+              <SpotsCard_PopUp
+                id={selectedMarker.index}
+                image1={`/images/spots_small/${selectedMarker.index}_1.webp`}
+                image3={`/images/spots_small/${selectedMarker.index}_3.webp`}
+                title={selectedMarker.attraction_name}
+                rating={selectedMarker.attraction_rating}
+                category={selectedMarker.category}
+                isFree={selectedMarker.free}
+                user_ratings_total={selectedMarker.user_ratings_total}
+                onClose={() => {
+                  setSelectedMarker(null);
+                  onPopupClose();
+                }}
+              />
+            </div>
+          </OverlayView>
+        </>
       )}
     </GoogleMap>
   );
 };
 
-export default Map;
+export default Map_Spots;

@@ -1,0 +1,101 @@
+@import "../../utils/variables";
+
+:root {
+  --modal-z-index: 1300;
+  --modal-top: calc(#{$NAVBAR_HEIGHT} + 8vh);
+  --modal-left: calc(
+    #{$LEFT_WIDTH} + #{$LEFT_PADDING} - 90vw
+  ); // Works up to 830px width
+  --modal-width: 30vw;
+  --modal-max-width: 300px;
+  --modal-min-height: 20vh;
+  --modal-padding: 2rem;
+  --modal-font-size: 0.875rem;
+  --modal-margin-form-top: 1rem;
+  --modal-margin-form-bottom: 2rem;
+
+  --overlay-background-z-index: 1200;
+  --overlay-background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--overlay-background-color);
+  z-index: var(--overlay-background-z-index);
+}
+
+.login-modal,
+.register-modal {
+  position: absolute;
+  top: var(--modal-top);
+  left: var(--modal-left);
+  width: var(--modal-width);
+  max-width: var(--modal-max-width);
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: var(--modal-padding);
+  z-index: var(--modal-z-index);
+  animation: glowAnimation 1.5s infinite alternate;
+}
+
+@keyframes glowAnimation {
+  from {
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.265);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 166, 0, 0.537);
+  }
+}
+
+.login-modal *,
+.register-modal * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: var(--modal-font-size);
+}
+
+.login-modal-header,
+.register-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-modal-title,
+.register-modal-title {
+  margin: 0;
+}
+
+.login-modal-form,
+.register-modal-form {
+  margin-top: var(--modal-margin-form-top);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  min-height: var(--modal-min-height);
+}
+
+.login-modal-form button,
+.register-modal-form button {
+  color: white;
+}
+
+.login-modal-input,
+.register-modal-input {
+  margin-bottom: var(--modal-margin-form-bottom);
+}
+
+.login-modal-footer,
+.register-modal-footer {
+  margin-top: var(--modal-margin-form-top);
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}

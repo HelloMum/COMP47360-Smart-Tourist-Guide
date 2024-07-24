@@ -95,7 +95,10 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', position: 'relative', width: '460px', padding: '6px' }}>
+    <Box 
+    sx={{ display: 'flex', alignItems: 'flex-start', position: 'relative', 
+    width:{xs:'320px',sm: '460px'}, 
+    padding: '6px' }}>
       <Stack
         direction="row"
         sx={{
@@ -121,7 +124,7 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
           <Close />
         </IconButton>
 
-        <Stack direction="column" gap={1} sx={{ textAlign: 'right', marginRight: 1 }}>
+        <Stack direction="column" gap={1} sx={{ textAlign: 'right', marginRight: 1 ,display: {xs:'none',sm:'block'} }}>
           <Typography
             variant="h6"
             style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1.05rem', cursor: 'pointer' }}

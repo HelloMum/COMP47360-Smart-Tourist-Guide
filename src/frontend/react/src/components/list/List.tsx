@@ -3,10 +3,11 @@ import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ListContext } from '../../contexts/ListContext';
 import ListCard from './ListCard';
-import { NAVBAR_HEIGHT } from '../../utils/constants';
+import { LIST_WIDTH, NAVBAR_HEIGHT } from '../../utils/constants';
 import Btn_Close_List from './Btn_Close_List';
 import { ClearRounded } from '@mui/icons-material';
 import AlertModal from '../AlertModal';
+import { useResponsiveListWidth, useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 interface ListProps {
   onClose: () => void;
@@ -76,16 +77,21 @@ const List: React.FC<ListProps> = ({ onClose }) => {
     }
   };
 
+
+  useUpdateNavbarHeight();
+  useUpdateLeftWidth();
+  useResponsiveListWidth();
+
   return (
     <>
       <Box
         sx={{
-          width: '18vw',
+          width: LIST_WIDTH,
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
-          marginTop: '50px',
+          marginTop: NAVBAR_HEIGHT,
           backgroundColor: 'white',
           boxShadow: 1,
-          zIndex: 10,
+          zIndex: 9,
           position: 'fixed',
           right: 0,
         }}
