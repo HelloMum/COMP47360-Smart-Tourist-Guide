@@ -97,7 +97,7 @@ const Header = () => {
   return (
     <Box
       className="header"
-      style={{
+      sx={{
         height: NAVBAR_HEIGHT,
         position: "fixed",
         top: 0,
@@ -160,12 +160,22 @@ const Header = () => {
               />
             </Box>
           </Stack>
+
+
+
+
+
+
+
+
+
+
           {/* ----------------------- Login modal Start ----------------------- */}
-          <Box position="relative">
-            {isLoggedIn ? (
-              <LogoutComponent /> // Show LogoutComponent if the user is logged in
-            ) : (
-              <IconButton id="avatarButton" onClick={handleAvatarClick}>
+        
+
+
+            {/* icon */}
+          <IconButton id="avatarButton" onClick={handleAvatarClick}>
                 <AccountCircleRoundedIcon
                   sx={{
                     color: { xs: "white", sm: theme.palette.primary.dark },
@@ -173,7 +183,14 @@ const Header = () => {
                   }}
                 />
               </IconButton>
-            )}
+
+            {/* logout */}
+            {isLoggedIn&&
+              <LogoutComponent /> // Show LogoutComponent if the user is logged in
+                           
+           }
+
+
             {!isLoggedIn &&
               (isLoginMode ? (
                 <LoginComponent
@@ -188,8 +205,22 @@ const Header = () => {
                   onSwitch={handleSwitch}
                 />
               ))}
-          </Box>
+        
+
+
+
           {/* ----------------------- Login modal End ----------------------- */}
+
+
+
+
+
+
+
+
+
+
+
           <AlertModal
             open={alertOpen}
             onClose={() => setAlertOpen(false)}

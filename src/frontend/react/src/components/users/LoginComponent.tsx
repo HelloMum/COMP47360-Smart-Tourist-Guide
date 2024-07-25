@@ -12,8 +12,6 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "./LoginComponent.scss";
-
 import { useAuth } from "../../contexts/AuthContext";
 
 const LoginComponent: React.FC<{
@@ -39,7 +37,6 @@ const LoginComponent: React.FC<{
 
     try {
       const response = await fetch("/api/users/login", {
-        // The proxy will forward this to your backend
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -99,42 +96,91 @@ const LoginComponent: React.FC<{
     height: "2rem",
     borderWidth: "0.1rem",
     borderStyle: "solid",
-    transition: "border-color 0.2s ease-in-out",
-    "&:hover": {
-      borderColor: theme.palette.primary.main,
-    },
+    // transition: "border-color 0.2s ease-in-out",
+    // "&:hover": {
+    //   borderColor: theme.palette.primary.main,
+    // },
   };
 
   return (
     open && (
       <>
-        <div className="modal-overlay" onClick={onClose}></div>
-        <Box className="login-modal" ref={modalRef}>
-          <Box className="login-modal-header">
-            <Typography variant="h6" className="login-modal-title">
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            zIndex: 1200,
+          }}
+          onClick={onClose}
+        ></Box>
+
+        <Box
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -60%)",
+            width: "330px",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            padding: "25px 30px",
+            zIndex: 1300,
+          }}
+          ref={modalRef}
+        >
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography variant="h6" sx={{ margin: 0 }}>
               Login
             </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </Box>
-          <form onSubmit={handleSubmit} className="login-modal-form">
+
+          <form onSubmit={handleSubmit} style={{ marginTop: "1rem", display: "flex", flexDirection: "column", justifyContent: "space-around", alignItems: "center", height:'180px' }}>
             <TextField
               label="Email"
               type="email"
               fullWidth
-              className="login-modal-input"
+              sx={{
+                marginBottom: "15px",
+                '& .MuiInputBase-root': { height: '45px' },
+                '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
+                '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
+                '& .MuiInputBase-input': { padding: '14px' }
+              }}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              InputProps={{ style: { fontSize: fsFontsize } }}
+              InputProps={{ 
+                style: { fontSize: fsFontsize, height: '45px' },
+              }}
               InputLabelProps={{ style: { fontSize: fsFontsize } }}
             />
+
             <TextField
               label="Password"
               type={showPassword ? "text" : "password"}
               fullWidth
-              className="login-modal-input"
+              sx={{
+                marginBottom: "20px",
+                '& .MuiInputBase-root': { height: '45px' },
+                '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
+                '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
+                '& .MuiInputBase-input': {
+                  padding: '14px',
+                  fontSize: fsFontsize,
+                  ...(showPassword ? {} : {
+                    '-webkit-text-security': 'disc',
+                    fontSize: '24px', 
+                  })
+                }
+              }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -154,21 +200,31 @@ const LoginComponent: React.FC<{
               }}
               InputLabelProps={{ style: { fontSize: fsFontsize } }}
             />
+
             <Button
               type="submit"
               variant="contained"
-              disabled={loading}
               fullWidth
+              sx={{
+                borderRadius: '20px',
+                boxShadow: 0,
+                '&:hover': {
+                  boxShadow: 'none',
+                },
+              }}
+              disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}
             </Button>
+
             {message && (
               <Typography color="error" align="center" mt={2}>
                 {message}
               </Typography>
             )}
           </form>
-          <Box className="login-modal-footer">
+
+          <Box sx={{ marginTop: "10px", display: "flex", justifyContent: "right", alignItems: "center" }}>
             <Typography variant="body2">New Member?</Typography>
             <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
               Sign up
