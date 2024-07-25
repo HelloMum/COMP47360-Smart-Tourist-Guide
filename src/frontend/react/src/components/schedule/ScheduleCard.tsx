@@ -171,14 +171,17 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       {/*---------------- start time -------------- */}
         <Typography
           variant="h6"
-          style={{height:'30px',
-            width: '100px',
+          style={{
+            height:'30px',
+            // width: '100px',
             fontWeight: startTime === highlightedStartTime ? '600' : 'normal',
             fontFamily: 'Lexend',
             color: startTime === highlightedStartTime || isHovered ? 'darkorange' : '#707070',
             fontSize: startTime === highlightedStartTime ? '1.15rem' : '1.05rem',
             textDecoration: startTime === highlightedStartTime || isHovered ? 'underline' : 'none',
             cursor: 'pointer',
+            
+
           }}
           onClick={() => onStartTimeClick(startTime)}
           onMouseEnter={handleMouseEnterTime}
@@ -202,7 +205,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
         <Typography variant="h6" 
         style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#aaa', fontSize: '0.9rem' }}
-        sx={{marginLeft:{xs: '10px', sm: '10px', md:'10px',lg:'0vw'},marginTop:{xs: '2px', sm: '0vw', }}}>
+        sx={{marginLeft:{xs: '10px', sm: '10px', md:'10px',lg:'0'},marginTop:{xs: '2px', sm: '0vw', },marginRight:{xs:'0px',md:'0px',lg:'0.4vw'}}}>
 
           {formattedEndTime}
           </Typography>

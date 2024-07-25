@@ -105,8 +105,8 @@ const Header = () => {
         width: "100%",
         boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
-        paddingRight: { xs: "2%", sm: "0%", md: "0%" },
-        paddingLeft: { xs: "2%", sm: "0%", md: "0%"  },
+        paddingRight: { xs: "0%", sm: "0%", md: "0%" },
+        paddingLeft: { xs: "0%", sm: "0%", md: "0%"  },
       }}
     >
 
