@@ -12,7 +12,6 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "./LoginComponent.scss";
 
 const RegisterComponent: React.FC<{
   onClose: () => void;
@@ -83,76 +82,159 @@ const RegisterComponent: React.FC<{
     borderColor: "transparent",
     borderRadius: "1rem",
     padding: "0.5rem 1rem",
-    fontSize: "0.875rem",
+    fontSize: "12px",
     height: "2rem",
     borderWidth: "0.1rem",
     borderStyle: "solid",
-    transition: "border-color 0.2s ease-in-out",
-    "&:hover": {
-      borderColor: theme.palette.primary.main,
-    },
+    // transition: "border-color 0.2s ease-in-out",
+    // "&:hover": {
+    //   borderColor: theme.palette.primary.main,
+    // },
   };
 
   return (
     open && (
       <>
-        <div className="modal-overlay" onClick={onClose}></div>
-        <Box className="register-modal" ref={modalRef}>
-          <Box className="register-modal-header">
-            <Typography variant="h6" className="register-modal-title">
+
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            zIndex: 1200,
+          }}
+          onClick={onClose}
+        ></Box>
+
+
+
+
+        <Box
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -60%)",
+            width: "300px",
+            // maxWidth: "300px",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            padding: "20px 24px",
+            zIndex: 1300,
+      
+          }}
+          ref={modalRef}
+        >
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography variant="h6" sx={{ margin: 0 }}>
               Register
             </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </Box>
-          <form onSubmit={handleSubmit} className="register-modal-form">
-            <TextField
-              label="Email"
-              type="email"
-              fullWidth
-              className="register-modal-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              InputProps={{ style: { fontSize: fsFontsize } }}
-              InputLabelProps={{ style: { fontSize: fsFontsize } }}
-            />
-            <TextField
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              fullWidth
-              className="register-modal-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              InputProps={{
-                style: { fontSize: fsFontsize },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      style={{ color: theme.palette.primary.main }}
-                      onClick={togglePasswordVisibility}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              InputLabelProps={{ style: { fontSize: fsFontsize } }}
-            />
-            <Button type="submit" variant="contained" fullWidth>
-              Register
-            </Button>
+
+
+
+          <form onSubmit={handleSubmit} style={{ marginTop: "1rem", display: "flex", flexDirection: "column", justifyContent: "space-around", alignItems: "center", height:'180px' }}>
+
+
+
+          <TextField
+  label="Email"
+  type="email"
+  fullWidth
+  sx={{
+    marginBottom: "15px",
+    '& .MuiInputBase-root': { height: '45px' },
+    '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
+    '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
+    '& .MuiInputBase-input': { padding: '14px' }
+  }}
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+  InputProps={{ 
+    style: { fontSize: fsFontsize, height: '45px' },
+  }}
+  InputLabelProps={{ style: { fontSize: fsFontsize } }}
+/>
+
+
+<TextField
+  label="Password"
+  type={showPassword ? "text" : "password"}
+  fullWidth
+  sx={{
+    marginBottom: "20px",
+    '& .MuiInputBase-root': { height: '45px' },
+    '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
+    '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
+    '& .MuiInputBase-input': {
+      padding: '14px',
+      fontSize: fsFontsize,
+      ...(showPassword ? {} : {
+        '-webkit-text-security': 'disc',
+        fontSize: '24px', 
+      })
+    }
+  }}
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  required
+  InputProps={{
+    style: { fontSize: fsFontsize },
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          style={{ color: theme.palette.primary.main }}
+          onClick={togglePasswordVisibility}
+          edge="end"
+        >
+          {showPassword ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+  InputLabelProps={{ style: { fontSize: fsFontsize } }}
+/>
+
+
+
+
+
+
+ <Button
+  type="submit"
+  variant="contained"
+  fullWidth
+  sx={{
+    borderRadius: '20px',
+    boxShadow: 0,
+    '&:hover': {
+      boxShadow: 'none',
+    },
+  }}
+>
+  Register
+</Button>
+
+            
             {message && (
               <Typography color="error" align="center" mt={2}>
                 {message}
               </Typography>
             )}
           </form>
-          <Box className="register-modal-footer">
-            <Typography variant="body2">Already a Member?</Typography>
+
+
+
+          <Box sx={{ marginTop: "15px", display: "flex", justifyContent: "right", alignItems: "center" }}>
+            <Typography variant="body2" sx={{fontSize:'13px'}}>Already a Member?</Typography>
             <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
               Login
             </Button>
