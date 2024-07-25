@@ -20,8 +20,8 @@ const SaveButton: React.FC<SaveButtonProps> = ({ isLoggedIn, handleSaveClick }) 
             sx={{
               backgroundColor: 'rgba(0, 128, 0, 0.02)', 
               color: 'green',
-              height: '50px',
-              width: '50px',
+              height: {xs:'45px',sm:'50px'},
+              width: {xs:'45px',sm:'50px'},
               borderRadius: '50px',
               border: '1px solid #34a853',
               '&:hover': {
@@ -29,7 +29,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({ isLoggedIn, handleSaveClick }) 
               },
             }}
           >
-            <SaveIcon sx={{ color: '#34a853', fontSize: '32px' }} />
+            <SaveIcon sx={{ color: '#34a853', fontSize: {xs:'26px',sm:'32px'} }} />
           </IconButton>
         </Tooltip>
       )) || (
