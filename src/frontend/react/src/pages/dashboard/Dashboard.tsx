@@ -91,12 +91,11 @@ const Dashboard: React.FC = () => {
         <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Avatar sx={{ width: 100, height: 100 }} src="profile pic" />
-            <Typography variant="h6">Zack</Typography>
             <Typography variant="body2">zack@tourwise.org</Typography>
           </Box>
           <Box sx={{ mt: 4, textAlign: 'center' }}>
             <Typography variant="h6">My points</Typography>
-            <Typography variant="h4">125</Typography>
+            <Typography variant="h4">0</Typography>
             <Button variant="contained" sx={{ mt: 2 }}>CLAIM</Button>
           </Box>
           <Box sx={{ mt: 4 }}>
@@ -111,6 +110,7 @@ const Dashboard: React.FC = () => {
               <Grid item xs={6}>
                 <Box sx={{ p: 2, border: '1px solid #FFA500', height: '100px' }}>
                   <Typography variant="body2">Total Points:</Typography>
+                  <Typography variant="h6">0</Typography>
                 </Box>
               </Grid>
               <Grid item xs={6}>
