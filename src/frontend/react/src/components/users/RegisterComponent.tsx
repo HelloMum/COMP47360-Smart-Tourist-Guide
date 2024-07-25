@@ -233,7 +233,7 @@ const RegisterComponent: React.FC<{
 
 
 
-          <Box sx={{ marginTop: "5px", display: "flex", justifyContent: "right", alignItems: "center" }}>
+          <Box sx={{ marginTop: "15px", display: "flex", justifyContent: "right", alignItems: "center" }}>
             <Typography variant="body2" sx={{fontSize:'13px'}}>Already a Member?</Typography>
             <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
               Login

@@ -92,7 +92,7 @@ const LoginComponent: React.FC<{
     borderColor: "transparent",
     borderRadius: "1rem",
     padding: "0.5rem 1rem",
-    fontSize: "0.875rem",
+    fontSize: "12px",
     height: "2rem",
     borderWidth: "0.1rem",
     borderStyle: "solid",
@@ -224,7 +224,7 @@ const LoginComponent: React.FC<{
             )}
           </form>
 
-          <Box sx={{ marginTop: "5px", display: "flex", justifyContent: "right", alignItems: "center" }}>
+          <Box sx={{ marginTop: "15px", display: "flex", justifyContent: "right", alignItems: "center" }}>
             <Typography variant="body2" sx={{fontSize:'13px'}}>New Member?</Typography>
             <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
               Sign up
