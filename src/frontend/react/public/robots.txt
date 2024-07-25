@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /user-profile/
+Disallow: /about
+Sitemap: https://www.tourwise.org/sitemap.xml
