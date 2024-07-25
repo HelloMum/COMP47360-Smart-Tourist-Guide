@@ -3,4 +3,4 @@ Disallow: /admin/
 Disallow: /login/
 Disallow: /user-profile/
 Disallow: /about
-Sitemap: https://www.tourwise.org/sitemap.xml
+Sitemap: https://tourwise.org/sitemap.xml
