@@ -124,11 +124,11 @@ const LoginComponent: React.FC<{
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -60%)",
-            width: "330px",
+            width: "300px",
             backgroundColor: "white",
             borderRadius: "8px",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            padding: "25px 30px",
+            padding: "20px 24px",
             zIndex: 1300,
           }}
           ref={modalRef}
@@ -224,8 +224,8 @@ const LoginComponent: React.FC<{
             )}
           </form>
 
-          <Box sx={{ marginTop: "10px", display: "flex", justifyContent: "right", alignItems: "center" }}>
-            <Typography variant="body2">New Member?</Typography>
+          <Box sx={{ marginTop: "5px", display: "flex", justifyContent: "right", alignItems: "center" }}>
+            <Typography variant="body2" sx={{fontSize:'13px'}}>New Member?</Typography>
             <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
               Sign up
             </Button>

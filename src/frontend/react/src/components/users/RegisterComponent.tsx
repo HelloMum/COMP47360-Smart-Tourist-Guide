@@ -82,7 +82,7 @@ const RegisterComponent: React.FC<{
     borderColor: "transparent",
     borderRadius: "1rem",
     padding: "0.5rem 1rem",
-    fontSize: "0.875rem",
+    fontSize: "12px",
     height: "2rem",
     borderWidth: "0.1rem",
     borderStyle: "solid",
@@ -118,12 +118,12 @@ const RegisterComponent: React.FC<{
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -60%)",
-            width: "330px",
+            width: "300px",
             // maxWidth: "300px",
             backgroundColor: "white",
             borderRadius: "8px",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            padding: "25px 30px",
+            padding: "20px 24px",
             zIndex: 1300,
       
           }}
@@ -233,8 +233,8 @@ const RegisterComponent: React.FC<{
 
 
 
-          <Box sx={{ marginTop: "10px", display: "flex", justifyContent: "right", alignItems: "center" }}>
-            <Typography variant="body2">Already a Member?</Typography>
+          <Box sx={{ marginTop: "5px", display: "flex", justifyContent: "right", alignItems: "center" }}>
+            <Typography variant="body2" sx={{fontSize:'13px'}}>Already a Member?</Typography>
             <Button variant="text" onClick={onSwitch} sx={buttonStyle}>
               Login
             </Button>
