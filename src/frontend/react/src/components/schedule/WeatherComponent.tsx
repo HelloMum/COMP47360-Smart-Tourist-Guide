@@ -1,7 +1,5 @@
-// WeatherComponent.tsx
 import React from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
-import moment from 'moment';
 
 interface WeatherComponentProps {
   weather: any | null;
@@ -9,6 +7,11 @@ interface WeatherComponentProps {
 }
 
 const WeatherComponent: React.FC<WeatherComponentProps> = ({ weather, loadingWeather }) => {
+  // Function to convert Celsius to Fahrenheit
+  const convertToFahrenheit = (celsius: number): number => {
+    return (celsius * 9/5) + 32;
+  }
+
   return (
     <Box display="flex" alignItems="center" style={{ minHeight: "70px" }}>
       {loadingWeather ? (
@@ -28,7 +31,7 @@ const WeatherComponent: React.FC<WeatherComponentProps> = ({ weather, loadingWea
               }
             }}
           >
-            {weather.tempDay}°C
+            {convertToFahrenheit(weather.tempDay).toFixed(1)}°F
           </Typography>
           <Box
             component="img"
@@ -39,7 +42,7 @@ const WeatherComponent: React.FC<WeatherComponentProps> = ({ weather, loadingWea
               height: { xs: '50px', sm: '60px', md: '70px' }
             }}
           />
-          <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none',lg:'block' } }}>
+          <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' } }}>
             <Typography
               variant="body2"
               sx={{
