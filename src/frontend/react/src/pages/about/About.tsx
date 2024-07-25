@@ -137,7 +137,7 @@ const About: React.FC = () => {
                 <span style={{ fontWeight: 550 }}> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</span> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
 
                 <br></br> <br></br>
-                <b> taxi trips, subway ridership, high-volume for-hire vehicle trips, and popular attractions,</b> we provide a comprehensive view into the movement of New Yorkers. Using these diverse datasets, we developed a machine learning model to predict passenger counts and crowd levels. Our unique Busyness Index helps users plan their visits to avoid peak times, enhancing their overall experience.
+                Our itinerary algorithm efficiently schedules attractions and events. It schedules attractions within their opening hours, allocates events to fixed time slots, minimizes travel distances between activities, and avoids peak busy times.After users select the trip date, attractions, and events, the algorithm first schedules fixed-time events. It then arranges attractions into available slots by sorting and filtering. Priority is given to attractions with shorter opening times and minimal travel distances. The least busy nearby attraction is chosen next, ensuring an efficient and convenient itinerary.
               </SectionDescription>
             </Box>
 
