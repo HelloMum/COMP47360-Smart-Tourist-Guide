@@ -25,6 +25,7 @@ import Tooltip from "@mui/material/Tooltip"; // Import Tooltip
 import { theme } from "antd";
 import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
 import WeatherComponent from "../../components/schedule/WeatherComponent"; 
+import SaveButton from "../../components/schedule/SaveButton";
 
 const Schedule: React.FC = () => {
   const {
@@ -248,38 +249,17 @@ const Schedule: React.FC = () => {
                 {moment(currentDate).format("Do MMMM YYYY, dddd")}
               </Typography>
 
-              {/* ----------------------- Save feature Start ----------------------- */}
-              {(!isLoggedIn && (
-                <Tooltip title="Log in to save your schedule">
-                  <IconButton
-                    onClick={handleSaveClick}
-                    className="glowing-save-button"
-                  >
-                    <SaveIcon
-                      style={{ color: themeOrange.palette.primary.main }}
-                    />
-                  </IconButton>
-                </Tooltip>
-              )) || (
-                <Tooltip title="Don't forget to save your Schedule !!">
-                  <IconButton
-                    onClick={handleSaveClick}
-                    className="glowing-save-button"
-                  >
-                    <SaveIcon
-                      style={{ color: themeOrange.palette.primary.main }}
-                    />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {/* ----------------------- Save feature End ----------------------- */}
+       
+
+            
 
               <WeatherComponent weather={weather} loadingWeather={loadingWeather} />
 
             </Stack>
           </Box>
-
+<Stack direction="row" justifyContent="space-between">
           <Stack direction="row" spacing={1} mb={3}>
+
             {Object.keys(planData).map((date) => (
               <Button
                 key={date}
@@ -322,8 +302,12 @@ const Schedule: React.FC = () => {
                 </Typography>
               </Button>
             ))}
+            
+                   
           </Stack>
-
+          {/* ----------------------- Save btn ----------------------- */}
+                   <SaveButton isLoggedIn={isLoggedIn} handleSaveClick={handleSaveClick} />
+          </Stack>
           <div
             className="card-container"
             style={{
