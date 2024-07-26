@@ -294,7 +294,7 @@ const Map_Schedule: React.FC<MapScheduleProps> = ({ events, busynessData, select
   right: showList ? `calc(${LIST_WIDTH} + 1vw)` : '1.5vw',
   background: 'white',
   border: '1px solid #ddd',
-  borderRadius: '8px',
+  borderRadius: '4px',
   padding: '10px',
   zIndex: 2,
   opacity: 1
