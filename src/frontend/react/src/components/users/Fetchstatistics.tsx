@@ -38,23 +38,26 @@ const Fetchstatistics = () => {
                 <div className="statistics-grid">
                     <div className="statistics-card">
                         <div className="statistics-item">
-                            <strong>Landmarks seen:</strong>
+                            <strong>Total Days Spent:</strong>
                         </div>
                         <div className="value">{statistics.totalDaysSpent}</div>
                     </div>
                     <div className="statistics-card">
                         <div className="statistics-item">
-                            <strong>Total Points:</strong>
+                        <strong>Total Activities:</strong>
                         </div>
                         <div className="value">{statistics.totalActivities}</div>
                     </div>
                     <div className="statistics-card">
                         <div className="statistics-item">
-                            <strong>Most popular category:</strong>
+                            <strong>Most Popular Category:</strong>
                         </div>
                         <div className="value">{statistics.favouriteCategory}</div>
                     </div>
                     <div className="statistics-card">
+                        <div className="statistics-item">
+                            <strong>Total Points:</strong>
+                        </div>
                     </div>
                 </div>
             )}
