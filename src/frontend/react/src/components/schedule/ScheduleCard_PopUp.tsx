@@ -195,7 +195,7 @@ const ScheduleCard_Popup: React.FC<ScheduleCardProps> = ({
 
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.secondary">
-              area busyness :
+              busyness :
             </Typography>
             <Box flexGrow={1}>
               <BusynessProgressBar busyness={busyness} />
