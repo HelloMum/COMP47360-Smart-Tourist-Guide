@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../pages/dashboard/Dashboard.css'; // Import the CSS file for styling
+import '../../pages/dashboard/Dashboard.css';
 
 const ProfileSection = () => {
     return (

@@ -5,7 +5,7 @@ const FetchItinerary = () => {
     const [itinerary, setItinerary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isCollapsed, setIsCollapsed] = useState(true); // State to manage collapse/expand
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('token');

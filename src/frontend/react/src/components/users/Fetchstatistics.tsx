@@ -55,7 +55,6 @@ const Fetchstatistics = () => {
                         <div className="value">{statistics.favouriteCategory}</div>
                     </div>
                     <div className="statistics-card">
-                        {/* Additional statistics can be added here */}
                     </div>
                 </div>
             )}
