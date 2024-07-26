@@ -1,6 +1,7 @@
 import React from 'react';
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box, Typography, Divider } from '@mui/material';
 import { getColor } from './colorMappings';
+
 
 const circleSize = 12;
 const fontSize = 11.5;
@@ -22,13 +23,16 @@ const Legend: React.FC = () => {
         bottom: { xs: 95, sm: 60, md: 60 },
         left: 20,
         backgroundColor: 'rgba(255, 255, 255, 1)',
-        padding: '10px',
-        borderRadius: '10px',
+        padding: '7px 10px',
+        borderRadius: '4px',
         color: 'grey',
-        width: { xs: 160, sm: 160 },
+        width: { xs: 160, sm: 150 },
         border: '1px solid rgba(0, 0, 0, 0.15)',
       }}
     >
+
+      <Typography sx={{ fontSize: 15, fontWeight: '500', }}>Busyness Scale</Typography>
+      <Divider sx={{ fontSize: 16, marginBottom:1,marginTop:0, width: '100%', }} />
       <Grid container spacing='5px'>
         {colors.map((color, index) => (
           <Grid item xs={12} key={index}>
