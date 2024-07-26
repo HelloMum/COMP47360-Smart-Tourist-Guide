@@ -30,6 +30,11 @@ const LogoutComponent: React.FC = () => {
     handleMenuClose();
   };
 
+  const handleDashboard = () => {
+    navigate("/dashboard"); // Redirect to the dashboard page
+    handleMenuClose();
+  };
+
   return (
     <>
       <IconButton onClick={handleMenuClick}>
@@ -38,6 +43,7 @@ const LogoutComponent: React.FC = () => {
         />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+        <MenuItem onClick={handleDashboard}>Dashboard</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

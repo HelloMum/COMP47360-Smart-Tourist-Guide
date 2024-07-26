@@ -19,6 +19,7 @@ import "antd/dist/antd.css";
 import { ListProvider } from "./contexts/ListContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import Header_Home from "./components/Header_Home";
+import Dashboard from './pages/dashboard/Dashboard';
 
 const App: React.FC = () => {
   const [selectedDates, setSelectedDates] = useState<
@@ -64,6 +65,7 @@ const App: React.FC = () => {
               />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/about" element={<About />} />
+                <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </div>
         </ListProvider>
