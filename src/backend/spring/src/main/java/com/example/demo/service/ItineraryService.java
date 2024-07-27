@@ -545,19 +545,42 @@ public class ItineraryService {
         }
     }
 
+    public boolean deleteSavedItinerary(String token, Long itineraryId) {
+        try {
+            String email = userService.getEmailFromToken(token);
+            User user = userRepository.findByEmail(email);
+            ItinerarySaved itinerary = itinerarySavedRepository.findById(itineraryId).orElse(null);
+
+            if (itinerary != null && itinerary.getUser().getId().equals(user.getId())) {
+                // Delete associated items
+                itinerarySavedItemsRepository.deleteAll(itinerary.getItems());
+                // Delete the itinerary
+                itinerarySavedRepository.delete(itinerary);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     @Autowired
     private EventRepository eventRepository;
 
-    public Map<Integer, Map<String, Object>> getUserItineraries(String token) {
+    public Map<Long, Map<String, Object>> getUserItineraries(String token) {
         String email = userService.getEmailFromToken(token);
         User user = userRepository.findByEmail(email);
         List<ItinerarySaved> itineraries = itinerarySavedRepository.findByUserId(user.getId());
 
-        Map<Integer, Map<String, Object>> itinerariesData = new HashMap<>();
-        int index = 0;
+        Map<Long, Map<String, Object>> itinerariesData = new HashMap<>();
 
         for (ItinerarySaved itinerary : itineraries) {
             Map<String, List<Map<String, Object>>> planData = new HashMap<>();
+
+            Long itineraryId = itinerary.getId();
 
             for (ItinerarySavedItems item : itinerary.getItems()) {
                 String date = item.getStartTime().toLocalDate().toString();
@@ -613,7 +636,7 @@ public class ItineraryService {
             itineraryData.put("startDate", itinerary.getStartDate().toString());
             itineraryData.put("endDate", itinerary.getEndDate().toString());
 
-            itinerariesData.put(index++, itineraryData);
+            itinerariesData.put(itineraryId, itineraryData);
         }
 
         return itinerariesData;
