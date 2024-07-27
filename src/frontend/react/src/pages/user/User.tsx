@@ -1,6 +1,7 @@
 // src/components/Dashboard.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Stack, SxProps, Theme } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import AccountSettings from '../../components/users/MyAccount';
 import SavedSchedule from '../../components/users/MyPlans';
 import FetchItinerary from '../../components/users/MyPlans';
@@ -9,7 +10,6 @@ const buttonStyle: SxProps<Theme> = {
     justifyContent: 'flex-start',
     color: 'orange',
     width: '130px',
-    
 
     '&:hover': {
         backgroundColor: '#fff9eb', // Maintain the hover effect
@@ -18,7 +18,16 @@ const buttonStyle: SxProps<Theme> = {
 };
 
 const Dashboard: React.FC = () => {
+    const location = useLocation();
     const [selectedSection, setSelectedSection] = useState<string>('account');
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const section = queryParams.get('section');
+        if (section) {
+            setSelectedSection(section);
+        }
+    }, [location]);
 
     const handleButtonClick = (section: string) => {
         setSelectedSection(section);
@@ -27,7 +36,7 @@ const Dashboard: React.FC = () => {
     return (
         <Stack 
             direction='row'
-            sx={{ height: '80vh', marginTop: 15, marginX: '20vw' }}
+            sx={{ height: '80vh', marginTop: '100px', marginX: '20vw' }}
         >
             <Box
                 sx={{
@@ -47,7 +56,6 @@ const Dashboard: React.FC = () => {
                         sx={{
                             ...buttonStyle,
                             backgroundColor: selectedSection === 'account' ? '#fff9eb' : 'transparent',
-                            // textDecoration: selectedSection === 'account' ? 'underline' : 'none', // Add underline for selected section
                         }}
                     >
                         My Account
@@ -58,16 +66,14 @@ const Dashboard: React.FC = () => {
                         sx={{
                             ...buttonStyle,
                             backgroundColor: selectedSection === 'savedSchedule' ? '#fff9eb' : 'transparent',
-                            // textDecoration: selectedSection === 'savedSchedule' ? 'underline' : 'none', // Add underline for selected section
                         }}
                     >
-                        My Schedule
+                        My Plans
                     </Button>
                 </Stack>
             </Box>
             <Box sx={{ width: '60vw', overflowY: 'auto' }}>
                 {selectedSection === 'account' && <AccountSettings />}
-                {/* {selectedSection === 'savedSchedule' && <SavedSchedule />} */}
                 {selectedSection === 'savedSchedule' && <FetchItinerary />}
             </Box>
         </Stack>

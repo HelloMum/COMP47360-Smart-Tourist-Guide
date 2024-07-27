@@ -30,16 +30,16 @@ const LogoutComponent: React.FC = () => {
     handleMenuClose();
   };
 
-  const handleDashboard = () => {
-    navigate("/dashboard"); // Redirect to the dashboard page
+  const handleDashboard = (section: string) => {
+    navigate(`/dashboard?section=${section}`); // Redirect to the dashboard page with section
     handleMenuClose();
   };
 
   return (
     <>
       <IconButton onClick={handleMenuClick}>
-      <img
-            src="images/avatar-loged.png"
+        <img
+          src="images/avatar-loged.png"
           alt="Profile"
           style={{ width: 28, height: 28, borderRadius: '50%' }} 
         />
@@ -53,13 +53,11 @@ const LogoutComponent: React.FC = () => {
           '& .MuiPaper-root': { 
             boxShadow: '0px 1px 6px rgba(0, 0, 0, 0.4)',
             width:'100px',
-      
-   
           } 
         }}
       >
         <MenuItem
-          onClick={handleDashboard}
+          onClick={() => handleDashboard('account')}
           sx={{
             fontSize: '13px',
             my: 0,
@@ -71,7 +69,21 @@ const LogoutComponent: React.FC = () => {
         >
           My Account
         </MenuItem>
-        <Divider sx={{ mx: 0.3,borderColor: '#dfdfdf'}} />
+        <Divider sx={{ mx: 0.3, borderColor: '#dfdfdf' }} />
+        <MenuItem
+          onClick={() => handleDashboard('savedSchedule')}
+          sx={{
+            fontSize: '13px',
+            my: 0,
+            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            '&:hover': {
+              backgroundColor: 'transparent', // Remove the grey hover color
+            },
+          }}
+        >
+          My Plans
+        </MenuItem>
+        <Divider sx={{ mx: 0.3, borderColor: '#dfdfdf' }} />
         <MenuItem
           onClick={handleLogout}
           sx={{

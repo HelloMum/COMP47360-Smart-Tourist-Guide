@@ -120,7 +120,7 @@ const AccountSettings: React.FC = () => {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     sx={{
-                        '& .MuiInputBase-root': { height: '45px', width: '200px' },
+                        '& .MuiInputBase-root': { height: '45px', width: '230px' },
                         '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
                         '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
                         '& .MuiInputBase-input': {
@@ -154,7 +154,7 @@ const AccountSettings: React.FC = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     sx={{
-                        '& .MuiInputBase-root': { height: '45px', width: '200px' },
+                        '& .MuiInputBase-root': { height: '45px', width: '230px' },
                         '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
                         '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
                         '& .MuiInputBase-input': {
@@ -190,7 +190,7 @@ const AccountSettings: React.FC = () => {
                     boxShadow: 'none',
                     borderRadius: '26px',
                     width: '100px',
-                    mt:'20px',
+                    mt:'10px',
                     '&:hover': {
                         boxShadow: 'none',
                     }
