@@ -19,7 +19,15 @@ const AccountSettings: React.FC = () => {
 
         const fetchStatistics = async () => {
             try {
-                const response = await fetch(`/api/itinerary/statistics?token=${token}`);
+                const url = `/api/itinerary/statistics?token=${token}&timestamp=${new Date().getTime()}`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
