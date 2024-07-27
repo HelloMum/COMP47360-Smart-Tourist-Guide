@@ -18,8 +18,9 @@ import theme from "./utils/theme";
 import "antd/dist/antd.css";
 import { ListProvider } from "./contexts/ListContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { LastUpdatedProvider } from "./contexts/LastUpdatedContext";
 import Header_Home from "./components/Header_Home";
-import Dashboard from './pages/user/User';
+import Dashboard from "./pages/user/User";
 
 const App: React.FC = () => {
   const [selectedDates, setSelectedDates] = useState<
@@ -35,9 +36,7 @@ const App: React.FC = () => {
   const location = useLocation();
 
   const renderHeader = () => {
-
-    if (location.pathname === '/' || location.pathname === '/about')  {
-
+    if (location.pathname === "/" || location.pathname === "/about") {
       return <Header_Home onDateChange={handleDateChange} />;
     } else {
       return <Header onDateChange={handleDateChange} />;
@@ -47,28 +46,30 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <ListProvider>
-          <div className="app-container" style={{ overflow: "auto" }}>
-            {renderHeader()}
-            <Routes>
-              <Route
-                path="/"
-                element={<HomePage onDateChange={handleDateChange} />}
-              />
-              <Route
-                path="/spots/*"
-                element={<Spots selectedDates={selectedDates} />}
-              />
-              <Route
-                path="/events"
-                element={<Events selectedDates={selectedDates} />}
-              />
-              <Route path="/schedule" element={<Schedule />} />
-              <Route path="/about" element={<About />} />
+        <LastUpdatedProvider>
+          <ListProvider>
+            <div className="app-container" style={{ overflow: "auto" }}>
+              {renderHeader()}
+              <Routes>
+                <Route
+                  path="/"
+                  element={<HomePage onDateChange={handleDateChange} />}
+                />
+                <Route
+                  path="/spots/*"
+                  element={<Spots selectedDates={selectedDates} />}
+                />
+                <Route
+                  path="/events"
+                  element={<Events selectedDates={selectedDates} />}
+                />
+                <Route path="/schedule" element={<Schedule />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-          </div>
-        </ListProvider>
+              </Routes>
+            </div>
+          </ListProvider>
+        </LastUpdatedProvider>
       </AuthProvider>
     </ThemeProvider>
   );

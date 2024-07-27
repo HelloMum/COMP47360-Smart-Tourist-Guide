@@ -27,6 +27,7 @@ import { theme } from "antd";
 import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
 import WeatherComponent from "../../components/schedule/WeatherComponent"; 
 import SaveButton from "../../components/schedule/SaveButton";
+import { useLastUpdatedContext } from '../../contexts/LastUpdatedContext';
 
 const Schedule: React.FC = () => {
   const {
@@ -55,6 +56,8 @@ const Schedule: React.FC = () => {
   const navigate = useNavigate();
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+
+  const { setLastUpdated } = useLastUpdatedContext();
   // ----------------------- Save feature End -----------------------
 
   // Trigger the update of the left width and navbar height, MUST BE CALLED BEFORE THE USEEFFECT
@@ -209,6 +212,10 @@ const Schedule: React.FC = () => {
         console.log("Plan saved successfully:", result);
         // Save the plan data to local storage, to avoid saving it again and spamming the backend
         localStorage.setItem("planData", JSON.stringify(planData));
+        
+        // Here, after a successful save, update the lastUpdated context
+        setLastUpdated(new Date());
+
         handleOpenAlert(
           "Plan has been saved. Check it out in your dashboard on the right corner !"
         );
