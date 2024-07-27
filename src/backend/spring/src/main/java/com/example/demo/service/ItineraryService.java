@@ -521,7 +521,16 @@ public class ItineraryService {
                             item.setIsEvent((Boolean) itemData.get("event"));
                             item.setStartTime(LocalDateTime.parse(itemData.get("startTime").toString()));
                             item.setEndTime(LocalDateTime.parse(itemData.get("endTime").toString()));
-                            item.setItemId(Integer.parseInt(itemData.get("id").toString()));
+                            if (item.getIsEvent()) {
+                                // check event exists, it converts to null the other id automatically in db
+                                eventRepository.findById((UUID) itemData.get("id")).ifPresent(event -> item.setEventId((event.getId())));
+                            } else {
+                                // check attraction exists, it converts to null the other id automatically in db
+                                Attraction attraction = attractionService.getAttractionByIndex((Integer) itemData.get("id"));
+                                if (attraction != null) {
+                                    item.setItemId(attraction.getIndex());
+                                }
+                            }
                             return item;
                         });
                     })
@@ -561,7 +570,7 @@ public class ItineraryService {
                 itemData.put("event", item.getIsEvent());
 
                 if (item.getIsEvent()) {
-                    Event event = eventRepository.findById(convertIntToUUID(item.getItemId())).orElse(null);
+                    Event event = eventRepository.findById((item.getEventId())).orElse(null);
                     if (event != null) {
                         itemData.put("name", event.getName());
                         itemData.put("latitude", event.getLatitude());
@@ -610,19 +619,6 @@ public class ItineraryService {
         return itinerariesData;
     }
 
-    /**
-     * Converts an integer ID to a UUID.
-     * This is a simple approach that uses a static UUID and sets the integer as the least significant bits.
-     * @param id The integer ID to convert.
-     * @return A UUID corresponding to the integer ID.
-     */
-    private UUID convertIntToUUID(int id) {
-        // Assuming a static UUID for the most significant bits
-        long msb = 0x0000000000000000L; // Example static most significant bits
-        long lsb = ((long) id) & 0xFFFFFFFFL; // Use the integer as the least significant bits
-        return new UUID(msb, lsb);
-    }
-
     public Map<String, Object> getItineraryStatistics(String token) {
         String email = userService.getEmailFromToken(token);
         User user = userRepository.findByEmail(email);
@@ -638,7 +634,7 @@ public class ItineraryService {
 
                 String category;
                 if (item.getIsEvent()) {
-                    Event event = eventRepository.findById(convertIntToUUID(item.getItemId())).orElse(null);
+                    Event event = eventRepository.findById((item.getEventId())).orElse(null);
                     category = (event != null) ? event.getCategory() : "Unknown";
                 } else {
                     Attraction attraction = attractionService.getAttractionByIndex(item.getItemId());
