@@ -33,7 +33,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({ isLoggedIn, handleSaveClick }) 
           </IconButton>
         </Tooltip>
       )) || (
-        <Tooltip title="Don't forget to save your Schedule !!">
+        <Tooltip title="save your schedule">
           <IconButton
             onClick={handleSaveClick}
             sx={{

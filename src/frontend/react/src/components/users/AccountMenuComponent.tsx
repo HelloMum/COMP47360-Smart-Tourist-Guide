@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { Divider, IconButton, Menu, MenuItem } from "@mui/material";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { useTheme } from "@mui/material/styles";
 
@@ -30,21 +30,73 @@ const LogoutComponent: React.FC = () => {
     handleMenuClose();
   };
 
-  const handleDashboard = () => {
-    navigate("/dashboard"); // Redirect to the dashboard page
+  const handleDashboard = (section: string) => {
+    navigate(`/dashboard?section=${section}`); // Redirect to the dashboard page with section
     handleMenuClose();
   };
 
   return (
     <>
       <IconButton onClick={handleMenuClick}>
-        <AccountCircleRoundedIcon
-          style={{ color: theme.palette.primary.dark, fontSize: 28 }}
+        <img
+          src="images/avatar-loged.png"
+          alt="Profile"
+          style={{ width: 28, height: 28, borderRadius: '50%' }} 
         />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-        <MenuItem onClick={handleDashboard}>Dashboard</MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        sx={{ 
+          '& .MuiPaper-root': { 
+            boxShadow: '0px 1px 6px rgba(0, 0, 0, 0.4)',
+            width:'100px',
+          } 
+        }}
+      >
+        <MenuItem
+          onClick={() => handleDashboard('account')}
+          sx={{
+            fontSize: '13px',
+            my: 0,
+            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            '&:hover': {
+              backgroundColor: 'transparent', // Remove the grey hover color
+            },
+          }}
+        >
+          My Account
+        </MenuItem>
+        <Divider sx={{ mx: 0.3, borderColor: '#dfdfdf' }} />
+        <MenuItem
+          onClick={() => handleDashboard('savedSchedule')}
+          sx={{
+            fontSize: '13px',
+            my: 0,
+            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            '&:hover': {
+              backgroundColor: 'transparent', // Remove the grey hover color
+            },
+          }}
+        >
+          My Plans
+        </MenuItem>
+        <Divider sx={{ mx: 0.3, borderColor: '#dfdfdf' }} />
+        <MenuItem
+          onClick={handleLogout}
+          sx={{
+            fontSize: '13px',
+            my: 0,
+            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            '&:hover': {
+              backgroundColor: 'transparent', // Remove the grey hover color
+            },
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </>
   );
