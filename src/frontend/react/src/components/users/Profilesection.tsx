@@ -12,13 +12,6 @@ const ProfileSection = () => {
                         <p>zack@tourwise.org</p>
                     </div>
                 </div>
-                <div className="points-section">
-                    <h2>My points <span className="info-icon">ℹ️</span></h2>
-                    <div className="points-display">
-                        <span className="points-value">125</span>
-                        <button className="claim-button">CLAIM</button>
-                    </div>
-                </div>
             </div>
         </div>
     );
