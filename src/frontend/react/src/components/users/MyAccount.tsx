@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, TextField, Button, Avatar, Stack } from '@mui/material';
-import { Email, Favorite } from '@mui/icons-material';
+import { Typography, Box, TextField, Button, Avatar, Stack, IconButton, InputAdornment } from '@mui/material';
+import { Email, Favorite, Visibility, VisibilityOff } from '@mui/icons-material';
 import Tag_Category from '../Tag_Category';
-
 
 const AccountSettings: React.FC = () => {
     const [statistics, setStatistics] = useState<any>(null);
     const [email, setEmail] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPassword, setCurrentPassword] = useState<string>('');
+    const [newPassword, setNewPassword] = useState<string>('');
+    const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
+    const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+    const [changePasswordMessage, setChangePasswordMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -53,7 +57,34 @@ const AccountSettings: React.FC = () => {
         fetchEmail();
     }, []);
 
+    const handleChangePassword = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/users/changePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token, oldPassword: currentPassword, newPassword })
+            });
+            const data = await response.json();
+            setChangePasswordMessage(data.message);
+        } catch (error) {
+            setChangePasswordMessage("Error changing password: " + error.message);
+        }
+    };
+
+    const toggleShowCurrentPassword = () => {
+        setShowCurrentPassword(!showCurrentPassword);
+    };
+
+    const toggleShowNewPassword = () => {
+        setShowNewPassword(!showNewPassword);
+    };
+
     if (error) return <div>Error: {error}</div>;
+
+    const fsFontsize = "0.875rem";
 
     return (
         <Box sx={{ paddingX: '4vw' }}>
@@ -79,29 +110,87 @@ const AccountSettings: React.FC = () => {
                 </Stack>
             </Stack>
 
-            <Typography variant="h6" sx={{ marginTop: '80px', fontFamily: '"Lexend", sans-serif', fontSize: '22px' }}>Change Password</Typography>
+            <Typography variant="h6" sx={{ marginTop: '80px', fontFamily: '"Lexend", sans-serif', fontSize: '22px',marginBottom:'30px' }}>Change Password</Typography>
 
-            <Box sx={{ display: 'flex', gap: 2, marginY: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginY: 2 }}>
                 <TextField
                     label="Current password"
-                    type="password"
+                    type={showCurrentPassword ? "text" : "password"}
                     fullWidth
-                    sx={{ height: '40px', maxWidth: '300px' }}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    sx={{
+                        '& .MuiInputBase-root': { height: '45px', width: '200px' },
+                        '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
+                        '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
+                        '& .MuiInputBase-input': {
+                            padding: '14px',
+                            fontSize: fsFontsize,
+                            ...(showCurrentPassword ? {} : {
+                                '-webkit-text-security': 'disc',
+                                fontSize: '24px', 
+                            })
+                        }
+                    }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={toggleShowCurrentPassword}
+                                    edge="end"
+                                >
+                                    {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                        style: { fontSize: fsFontsize }
+                    }}
+                    InputLabelProps={{ style: { fontSize: fsFontsize } }}
                 />
                 <TextField
                     label="New password"
-                    type="password"
+                    type={showNewPassword ? "text" : "password"}
                     fullWidth
-                    sx={{ height: '40px', maxWidth: '300px' }}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    sx={{
+                        '& .MuiInputBase-root': { height: '45px', width: '200px' },
+                        '& .MuiInputLabel-root': { transform: 'translate(14px, 14px) scale(1)' },
+                        '& .MuiInputLabel-shrink': { transform: 'translate(14px, -6px) scale(0.75)' },
+                        '& .MuiInputBase-input': {
+                            padding: '14px',
+                            fontSize: fsFontsize,
+                            ...(showNewPassword ? {} : {
+                                '-webkit-text-security': 'disc',
+                                fontSize: '24px', 
+                            })
+                        }
+                    }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={toggleShowNewPassword}
+                                    edge="end"
+                                >
+                                    {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                        style: { fontSize: fsFontsize }
+                    }}
+                    InputLabelProps={{ style: { fontSize: fsFontsize } }}
                 />
             </Box>
 
             <Button
                 variant="contained"
+                onClick={handleChangePassword}
                 sx={{
                     boxShadow: 'none',
                     borderRadius: '26px',
                     width: '100px',
+                    mt:'20px',
                     '&:hover': {
                         boxShadow: 'none',
                     }
@@ -109,6 +198,12 @@ const AccountSettings: React.FC = () => {
             >
                 Change
             </Button>
+
+            {changePasswordMessage && (
+                <Typography variant="body2" sx={{ marginTop: '20px', color: changePasswordMessage.includes('successfully') ? 'green' : 'red' }}>
+                    {changePasswordMessage}
+                </Typography>
+            )}
         </Box>
     );
 };
