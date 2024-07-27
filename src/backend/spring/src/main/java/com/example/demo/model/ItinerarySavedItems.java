@@ -3,6 +3,7 @@ package com.example.demo.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Represents an item within a saved itinerary.
@@ -25,8 +26,11 @@ public class ItinerarySavedItems {
     @JoinColumn(name = "itinerary_id", nullable = false)
     private ItinerarySaved itinerary; // The itinerary this item belongs to.
 
-    @Column(nullable = false)
-    private int itemId; // The ID of the event or attraction this item represents.
+    @Column(nullable = true)
+    private Integer itemId; // The ID of the event or attraction this item represents.
+
+    @Column(nullable = true)
+    private UUID eventId; // The UUID of the event or attraction this item represents.
 
     @Column(nullable = false)
     private boolean isEvent; // Flag to indicate if this item is an event.
@@ -44,6 +48,13 @@ public class ItinerarySavedItems {
      */
     public void setIsEvent(boolean isEventPassed) {
         isEvent = isEventPassed;
+        if (isEvent) {
+            this.itemId = Integer.parseInt(null);
+            // Ensure eventId is set to some value
+        } else {
+            this.eventId = null;
+            // Ensure itemId is set to some value
+        }
     }
 
     /**
