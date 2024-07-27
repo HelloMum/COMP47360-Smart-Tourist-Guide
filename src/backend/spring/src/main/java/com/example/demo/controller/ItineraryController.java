@@ -87,7 +87,7 @@ public class ItineraryController {
     @GetMapping("/user")
     public ResponseEntity<?> getUserItineraries(@RequestParam String token) {
         if (userService.verifyToken(token)) {
-            Map<Integer, Map<String, Object>> itineraries = itineraryService.getUserItineraries(token);
+            Map<Long, Map<String, Object>> itineraries = itineraryService.getUserItineraries(token);
             return ResponseEntity.ok(itineraries);
         } else {
             Map<String, String> response = new HashMap<>();
