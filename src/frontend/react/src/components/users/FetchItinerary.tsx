@@ -17,7 +17,7 @@ const FetchItinerary = () => {
                     throw new Error("Network response was not ok");
                 }
                 const data = await response.json();
-                console.log("Fetched data:", data); // Log the fetched data
+                console.log("saved iternary data:", data); // Log the fetched data
 
                 // Convert the object with numerical keys to an array
                 const itineraryArray = Object.keys(data).map(key => data[key]);
