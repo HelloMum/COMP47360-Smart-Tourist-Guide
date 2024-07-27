@@ -49,7 +49,7 @@ public class ItinerarySavedItems {
     public void setIsEvent(boolean isEventPassed) {
         isEvent = isEventPassed;
         if (isEvent) {
-            this.itemId = Integer.parseInt(null);
+            this.itemId = null;
             // Ensure eventId is set to some value
         } else {
             this.eventId = null;
