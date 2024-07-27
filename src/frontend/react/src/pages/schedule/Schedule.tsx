@@ -19,12 +19,16 @@ import {
   IconButton,
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
+import AlertModal from "../../components/AlertModal";
 import moment from "moment";
 import Map_Schedule from "../../components/schedule/Map_Schedule";
 import Tooltip from "@mui/material/Tooltip"; // Import Tooltip
 import { theme } from "antd";
-import { useUpdateLeftWidth, useUpdateNavbarHeight } from "../../utils/useResponsiveSizes";
-import WeatherComponent from "../../components/schedule/WeatherComponent"; 
+import {
+  useUpdateLeftWidth,
+  useUpdateNavbarHeight,
+} from "../../utils/useResponsiveSizes";
+import WeatherComponent from "../../components/schedule/WeatherComponent";
 
 const Schedule: React.FC = () => {
   const {
@@ -51,7 +55,13 @@ const Schedule: React.FC = () => {
   const themeOrange = useTheme();
   const { isLoggedIn } = useAuth(); // Use the context
   const navigate = useNavigate();
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   // ----------------------- Save feature End -----------------------
+
+  // Trigger the update of the left width and navbar height, MUST BE CALLED BEFORE THE USEEFFECT
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
 
   useEffect(() => {
     if (currentDate) {
@@ -67,6 +77,16 @@ const Schedule: React.FC = () => {
       handleStartTimeClick(firstEventStartTime);
     }
   }, [events]);
+
+  // Ensure to show the first day on refresh
+  useEffect(() => {
+    if (planData) {
+      const initialDate = Object.keys(planData)[0];
+      setCurrentDate(initialDate);
+      setEvents(planData[initialDate] || []);
+      fetchWeather(initialDate);
+    }
+  }, [planData]);
 
   const handleDateChange = (date: string) => {
     setCurrentDate(date);
@@ -151,35 +171,52 @@ const Schedule: React.FC = () => {
       return;
     }
 
-    const saveData = {
-      planData,
-      startDate: selectedDates[0].format("YYYY-MM-DD"),
-      endDate: selectedDates[1].format("YYYY-MM-DD"),
-      token: localStorage.getItem("token")
-    };
+    // Check if the plan data is already saved from the current session, it should have been implemented to database to search for the plan,
+    // but for now, we will just check the local storage
+    // TODO: implement a backend API to check if the plan is already saved
+    if (
+      localStorage.getItem("planData") &&
+      localStorage.getItem("planData") === JSON.stringify(planData)
+    ) {
+      console.log("Plan already saved");
+      handleOpenAlert("Plan already saved !");
+      return;
+    } else {
+      const saveData = {
+        planData,
+        startDate: selectedDates[0].format("YYYY-MM-DD"),
+        endDate: selectedDates[1].format("YYYY-MM-DD"),
+        token: localStorage.getItem("token"),
+      };
 
-    // Trigger the download of the JSON file
-    // downloadJSON(saveData, "planData.json");
-    console.log("Data to be sent to backend:", saveData);
+      // Trigger the download of the JSON file
+      // downloadJSON(saveData, "planData.json");
+      console.log("Data to be sent to backend:", saveData);
 
-    try {
-      const response = await fetch("/api/itinerary/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(saveData),
-      });
+      try {
+        const response = await fetch("/api/itinerary/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(saveData),
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
+
+        const result = await response.json();
+        console.log("Plan saved successfully:", result);
+        // Save the plan data to local storage, to avoid saving it again and spamming the backend
+        localStorage.setItem("planData", JSON.stringify(planData));
+        handleOpenAlert(
+          "Plan has been saved. Check it out in your dashboard on the right corner !"
+        );
+      } catch (error) {
+        console.error("Error saving plan to backend:", error);
       }
-
-      const result = await response.json();
-      console.log("Plan saved successfully:", result);
-    } catch (error) {
-      console.error("Error saving plan to backend:", error);
     }
   };
 
@@ -200,11 +237,16 @@ const Schedule: React.FC = () => {
     }
   };
 
+  const handleOpenAlert = (message: string) => {
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
+
+  const handleCloseAlert = () => {
+    setAlertOpen(false);
+  };
 
   // ----------------------- Save feature End -----------------------
-
-  useUpdateLeftWidth();
-  useUpdateNavbarHeight();
 
   return (
     <div
@@ -221,8 +263,8 @@ const Schedule: React.FC = () => {
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
             display: "flex",
             flexDirection: "column",
-            zIndex:5,
-            backgroundColor:'white'
+            zIndex: 5,
+            backgroundColor: "white",
           }}
         >
           <Box mb={0}>
@@ -231,19 +273,18 @@ const Schedule: React.FC = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-
               {/*--------------------- date ---------------------------*/}
               <Typography
                 variant="h6"
                 align="left"
-                sx={{ 
+                sx={{
                   fontFamily: '"Lexend", sans-serif',
                   fontSize: {
-                    xs: '14px', 
-                    sm: '16px',  
-                    md:'20px'
-                  }
-                 }}
+                    xs: "14px",
+                    sm: "16px",
+                    md: "20px",
+                  },
+                }}
               >
                 {moment(currentDate).format("Do MMMM YYYY, dddd")}
               </Typography>
@@ -274,8 +315,10 @@ const Schedule: React.FC = () => {
               )}
               {/* ----------------------- Save feature End ----------------------- */}
 
-              <WeatherComponent weather={weather} loadingWeather={loadingWeather} />
-
+              <WeatherComponent
+                weather={weather}
+                loadingWeather={loadingWeather}
+              />
             </Stack>
           </Box>
 
@@ -293,10 +336,10 @@ const Schedule: React.FC = () => {
                   justifyContent: "center",
                 }}
                 sx={{
-                  minWidth:{xs:'43px',sm: "55px",md: "60px"},
-                  minHeight: {xs:'40px',sm: "60px",md: "65px"},
-                  padding: {xs:'10px 8px',sm:"8px 10px",md:"8px 16px"},
-                  borderRadius: {xs:'12px',sm:"18px",md:'20px'},
+                  minWidth: { xs: "43px", sm: "55px", md: "60px" },
+                  minHeight: { xs: "40px", sm: "60px", md: "65px" },
+                  padding: { xs: "10px 8px", sm: "8px 10px", md: "8px 16px" },
+                  borderRadius: { xs: "12px", sm: "18px", md: "20px" },
                 }}
               >
                 <Typography
@@ -316,7 +359,7 @@ const Schedule: React.FC = () => {
                     fontFamily: "Lexend",
                     lineHeight: 1,
                   }}
-                  sx={{fontSize:{xs:'1.3em',sm: "1.4em",md: "1.5em"}}}
+                  sx={{ fontSize: { xs: "1.3em", sm: "1.4em", md: "1.5em" } }}
                 >
                   {moment(date).format("DD")}
                 </Typography>
@@ -367,6 +410,12 @@ const Schedule: React.FC = () => {
               />
             ))}
           </div>
+          <AlertModal
+            open={alertOpen}
+            onClose={handleCloseAlert}
+            title="Information"
+            message={alertMessage}
+          />
         </div>
       )}
 
@@ -376,9 +425,10 @@ const Schedule: React.FC = () => {
           position: "fixed",
           top: NAVBAR_HEIGHT,
           right: 0,
-          width: 
-          isLeftPanelVisible ? `
-          calc(100% - ${LEFT_WIDTH})` : "100%",
+          width: isLeftPanelVisible
+            ? `
+          calc(100% - ${LEFT_WIDTH})`
+            : "100%",
 
           height: `calc(100vh - ${NAVBAR_HEIGHT})`,
         }}
