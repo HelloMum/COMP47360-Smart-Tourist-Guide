@@ -22,7 +22,7 @@ public class databaseGenerator {
             createUserTable();
         }
 
-        if (tableExists("itinerary_saved") && !columnExists("itinerary_saved_items", "is_event")) {
+        if (!indexExists("itinerary_saved_items", "idx_itinerary_id")) {
             dropTable("itinerary_saved_items");
             dropTable("itinerary_saved");
             createItinerarySavedTable();
@@ -37,6 +37,13 @@ public class databaseGenerator {
             }
         }
     }
+
+    private boolean indexExists(String tableName, String indexName) {
+        String query = "SELECT COUNT(*) FROM pg_indexes WHERE tablename = ? AND indexname = ?";
+        Integer count = jdbcTemplate.queryForObject(query, new Object[]{tableName, indexName}, Integer.class);
+        return count != null && count > 0;
+    }
+
 
     private boolean tableExists(String tableName) {
         String query = "SELECT EXISTS (SELECT 1 FROM information_schema.tables " +
@@ -120,6 +127,14 @@ public class databaseGenerator {
                 "FOREIGN KEY (itinerary_id) REFERENCES itinerary_saved(id), " +
                 "CHECK ((is_event = TRUE AND event_id IS NOT NULL AND item_id IS NULL) OR " +
                 "(is_event = FALSE AND item_id IS NOT NULL AND event_id IS NULL)))";
+
+        String createIndexItineraryIdSQL = "CREATE INDEX idx_itinerary_id ON itinerary_saved_items(itinerary_id)";
+        String createIndexItemIdSQL = "CREATE INDEX idx_item_id ON itinerary_saved_items(item_id)";
+        String createIndexEventIdSQL = "CREATE INDEX idx_event_id ON itinerary_saved_items(event_id)";
+
         jdbcTemplate.execute(createTableSQL);
+        jdbcTemplate.execute(createIndexItineraryIdSQL);
+        jdbcTemplate.execute(createIndexItemIdSQL);
+        jdbcTemplate.execute(createIndexEventIdSQL);
     }
 }
