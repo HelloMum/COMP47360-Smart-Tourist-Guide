@@ -125,4 +125,19 @@ public class UserService {
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
     }
+
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            String saltedPassword = user.getSalt() + oldPassword;
+            if (hashPassword(saltedPassword).equals(user.getPassword())) {
+                String salt = generateSalt();
+                user.setSalt(salt);
+                user.setPassword(hashPassword(salt + newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
 }
