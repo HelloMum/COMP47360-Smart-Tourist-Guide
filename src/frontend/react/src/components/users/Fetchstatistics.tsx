@@ -17,7 +17,7 @@ const Fetchstatistics = () => {
                 }
                 const data = await response.json();
                 setStatistics(data);
-                console.log(data);
+                console.log('satistics',data);
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -36,29 +36,20 @@ const Fetchstatistics = () => {
             <h1 className="title">My Statistics</h1>
             {statistics && (
                 <div className="statistics-grid">
-                    <div className="statistics-card">
-                        <div className="statistics-item">
-                            <strong>Total Days Spent:</strong>
-                        </div>
-                        <div className="value">{statistics.totalDaysSpent}</div>
-                    </div>
-                    <div className="statistics-card">
+              
+                    {/* <div className="statistics-card">
                         <div className="statistics-item">
                         <strong>Total Activities:</strong>
                         </div>
                         <div className="value">{statistics.totalActivities}</div>
-                    </div>
+                    </div> */}
                     <div className="statistics-card">
                         <div className="statistics-item">
                             <strong>Most Popular Category:</strong>
                         </div>
                         <div className="value">{statistics.favouriteCategory}</div>
                     </div>
-                    <div className="statistics-card">
-                        <div className="statistics-item">
-                            <strong>Total Points:</strong>
-                        </div>
-                    </div>
+      
                 </div>
             )}
         </div>

@@ -38,8 +38,10 @@ const LogoutComponent: React.FC = () => {
   return (
     <>
       <IconButton onClick={handleMenuClick}>
-        <AccountCircleRoundedIcon
-          style={{ color: theme.palette.primary.dark, fontSize: 28 }}
+      <img
+            src="images/avatar-loged.png"
+          alt="Profile"
+          style={{ width: 28, height: 28, borderRadius: '50%' }} 
         />
       </IconButton>
 
@@ -50,7 +52,7 @@ const LogoutComponent: React.FC = () => {
         sx={{ 
           '& .MuiPaper-root': { 
             boxShadow: '0px 1px 6px rgba(0, 0, 0, 0.4)',
-            width:'90px',
+            width:'100px',
       
    
           } 
@@ -67,7 +69,7 @@ const LogoutComponent: React.FC = () => {
             },
           }}
         >
-          Dashboard
+          My Account
         </MenuItem>
         <Divider sx={{ mx: 0.3,borderColor: '#dfdfdf'}} />
         <MenuItem
