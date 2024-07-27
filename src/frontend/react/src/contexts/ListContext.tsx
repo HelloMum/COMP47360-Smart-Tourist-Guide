@@ -175,7 +175,7 @@ export const ListProvider: React.FC<ListProviderProps> = ({ children }) => {
 
   const addToList = (item: ListItem) => {
     dispatch({ type: "ADD_TO_LIST", item });
-    clearPlanData();
+    dispatch({ type: "CLEAR_PLAN_DATA" }); // When adding to list, clear plan data
   };
 
   const removeFromList = (title: string) => {
