@@ -13,7 +13,7 @@ public class databaseGenerator {
     private JdbcTemplate jdbcTemplate;
 
     @PostConstruct
-    public void databaseGenerator() {
+    public void initializeDatabase() {
         if (!tableExists("weather_data")) {
             createWeatherDataTable();
         }
@@ -22,20 +22,39 @@ public class databaseGenerator {
             createUserTable();
         }
 
-        if (!tableExists("itinerary_saved")) {
+        if (tableExists("itinerary_saved") && !columnExists("itinerary_saved_items", "is_event")) {
+            dropTable("itinerary_saved_items");
+            dropTable("itinerary_saved");
             createItinerarySavedTable();
-        }
-
-        if (!tableExists("itinerary_saved_items")) {
             createItinerarySavedItemsTable();
+        } else {
+            if (!tableExists("itinerary_saved")) {
+                createItinerarySavedTable();
+            }
+
+            if (!tableExists("itinerary_saved_items")) {
+                createItinerarySavedItemsTable();
+            }
         }
     }
 
     private boolean tableExists(String tableName) {
         String query = "SELECT EXISTS (SELECT 1 FROM information_schema.tables " +
                 "WHERE table_schema = 'public' AND table_name = ?)";
-        Boolean exists = jdbcTemplate.queryForObject(query, new Object[]{tableName}, Boolean.class);
+        Boolean exists = jdbcTemplate.queryForObject(query, Boolean.class, tableName);
         return exists != null && exists;
+    }
+
+    private boolean columnExists(String tableName, String columnName) {
+        String query = "SELECT EXISTS (SELECT 1 FROM information_schema.columns " +
+                "WHERE table_schema = 'public' AND table_name = ? AND column_name = ?)";
+        Boolean exists = jdbcTemplate.queryForObject(query, Boolean.class, tableName, columnName);
+        return exists != null && exists;
+    }
+
+    private void dropTable(String tableName) {
+        String dropTableSQL = "DROP TABLE IF EXISTS " + tableName + " CASCADE";
+        jdbcTemplate.execute(dropTableSQL);
     }
 
     private void createWeatherDataTable() {
@@ -82,7 +101,7 @@ public class databaseGenerator {
     private void createItinerarySavedTable() {
         String createTableSQL = "CREATE TABLE itinerary_saved (" +
                 "id SERIAL PRIMARY KEY, " +
-                "user_id INTEGER NOT NULL, " +
+                "user_id SERIAL NOT NULL, " +
                 "start_date DATE NOT NULL, " +
                 "end_date DATE NOT NULL, " +
                 "FOREIGN KEY (user_id) REFERENCES users(id))";
@@ -93,11 +112,14 @@ public class databaseGenerator {
         String createTableSQL = "CREATE TABLE itinerary_saved_items (" +
                 "id SERIAL PRIMARY KEY, " +
                 "itinerary_id INTEGER NOT NULL, " +
-                "item_id INTEGER NOT NULL, " +
+                "item_id INTEGER, " +
+                "event_id UUID, " +
                 "is_event BOOLEAN NOT NULL, " +
                 "start_time TIMESTAMP NOT NULL, " +
                 "end_time TIMESTAMP NOT NULL, " +
-                "FOREIGN KEY (itinerary_id) REFERENCES itinerary_saved(id))";
+                "FOREIGN KEY (itinerary_id) REFERENCES itinerary_saved(id), " +
+                "CHECK ((is_event = TRUE AND event_id IS NOT NULL AND item_id IS NULL) OR " +
+                "(is_event = FALSE AND item_id IS NOT NULL AND event_id IS NULL)))";
         jdbcTemplate.execute(createTableSQL);
     }
 }
