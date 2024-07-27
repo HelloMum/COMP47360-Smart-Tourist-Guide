@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +86,31 @@ public class UserController {
         String email = userService.getEmailFromToken(token);
         response.put("email", email);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+
+        Map<String, String> response = new HashMap<>();
+        if (userService.verifyToken(token)) {
+            try {
+                String email = userService.getEmailFromToken(token);
+                String oldPassword = request.get("oldPassword");
+                String newPassword = request.get("newPassword");
+
+                boolean isChanged = userService.changePassword(email, oldPassword, newPassword);
+                String message = isChanged ? "Password changed successfully!" : "Invalid email or password.";
+                response.put("message", message);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                response.put("message", "Access to protected resource granted but Password change failed: " + e.getMessage());
+                return ResponseEntity.status(500).body(response);
+            }
+        } else {
+            response.put("message", "Invalid or expired token.");
+            return ResponseEntity.status(401).body(response);
+        }
     }
 
     /**
