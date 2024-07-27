@@ -63,6 +63,27 @@ public class ItineraryController {
         }
     }
 
+    @PostMapping("/deleteSaved")
+    public ResponseEntity<Map<String, String>> deleteSavedItinerary(@RequestBody Map<String, Object> requestData) {
+        Map<String, String> response = new HashMap<>();
+        String token = requestData.get("token").toString();
+
+        if (userService.verifyToken(token)) {
+            Long itineraryId = Long.parseLong(requestData.get("itineraryId").toString());
+            Boolean isDeleted = itineraryService.deleteSavedItinerary(token, itineraryId);
+            if (isDeleted) {
+                response.put("message", "Itinerary deleted successfully.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("message", "Access to 'delete saved schedule' feature is granted. Failed to delete itinerary.");
+                return ResponseEntity.status(500).body(response);
+            }
+        } else {
+            response.put("message", "Invalid or expired token.");
+            return ResponseEntity.status(401).body(response);
+        }
+    }
+
     @GetMapping("/user")
     public ResponseEntity<?> getUserItineraries(@RequestParam String token) {
         if (userService.verifyToken(token)) {
