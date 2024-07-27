@@ -175,14 +175,17 @@ const Header = () => {
 
 
             {/* icon */}
-          <IconButton id="avatarButton" onClick={handleAvatarClick}>
-                <AccountCircleRoundedIcon
-                  sx={{
-                    color: { xs: "white", sm: theme.palette.primary.dark },
-                    fontSize: 28,
-                  }}
-                />
-              </IconButton>
+            {!isLoggedIn && (
+  <IconButton id="avatarButton" onClick={handleAvatarClick}>
+    <AccountCircleRoundedIcon
+      sx={{
+        color: { xs: "white", sm: theme.palette.primary.dark },
+        fontSize: 28,
+      }}
+    />
+  </IconButton>
+)}
+
 
             {/* logout */}
             {isLoggedIn&&

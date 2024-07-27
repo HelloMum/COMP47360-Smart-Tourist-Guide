@@ -131,7 +131,7 @@ const RegisterComponent: React.FC<{
         >
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography variant="h6" sx={{ margin: 0 }}>
-              Register
+            Sign Up
             </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />

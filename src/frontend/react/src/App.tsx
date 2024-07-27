@@ -19,7 +19,7 @@ import "antd/dist/antd.css";
 import { ListProvider } from "./contexts/ListContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import Header_Home from "./components/Header_Home";
-import Dashboard from './pages/dashboard/Dashboard';
+import Dashboard from './pages/user/User';
 
 const App: React.FC = () => {
   const [selectedDates, setSelectedDates] = useState<
