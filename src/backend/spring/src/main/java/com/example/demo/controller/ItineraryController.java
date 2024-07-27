@@ -7,14 +7,17 @@ import com.example.demo.model.UserSelection;
 import com.example.demo.service.ItineraryService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/itinerary")
@@ -41,26 +44,68 @@ public class ItineraryController {
     @PostMapping("/save")
     public ResponseEntity<Map<String, String>> saveItinerary(@RequestBody Map<String, Object> requestData) {
         Map<String, String> response = new HashMap<>();
-        String token = requestData.get("token").toString();
 
-        if (userService.verifyToken(token)) {
-            LocalDate startDate = LocalDate.parse(requestData.get("startDate").toString());
-            LocalDate endDate = LocalDate.parse(requestData.get("endDate").toString());
+        try {
+            // Validate and extract the token
+            String token = (String) requestData.get("token");
+            if (token == null || !userService.verifyToken(token)) {
+                response.put("message", "Invalid or expired token.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
 
-            Map<String, List<Map<String, Object>>> planData = (Map<String, List<Map<String, Object>>>) requestData.get("planData");
+            // Parse dates
+            LocalDate startDate = LocalDate.parse((String) requestData.get("startDate"));
+            LocalDate endDate = LocalDate.parse((String) requestData.get("endDate"));
 
-            Boolean isSaved = itineraryService.saveItinerary(token, planData, startDate, endDate);
+            // Safely handle planData
+            Map<String, List<Map<String, Object>>> planData;
+            try {
+                planData = (Map<String, List<Map<String, Object>>>) requestData.get("planData");
+                // Convert UUID strings to UUID objects if necessary
+                planData = convertUUIDStringsToUUID(planData);
+            } catch (ClassCastException e) {
+                response.put("message", "Invalid format for plan data.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
+            // Save itinerary
+            boolean isSaved = itineraryService.saveItinerary(token, planData, startDate, endDate);
             if (isSaved) {
                 response.put("message", "Itinerary saved successfully.");
                 return ResponseEntity.ok(response);
             } else {
-                response.put("message", "Access to 'save schedule' feature is granted. Failed to save itinerary.");
-                return ResponseEntity.status(500).body(response);
+                response.put("message", "Failed to save itinerary.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
-        } else {
-            response.put("message", "Invalid or expired token.");
-            return ResponseEntity.status(401).body(response);
+
+        } catch (DateTimeParseException e) {
+            response.put("message", "Invalid date format.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            response.put("message", "An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    private Map<String, List<Map<String, Object>>> convertUUIDStringsToUUID(Map<String, List<Map<String, Object>>> planData) {
+        // Traverse and convert UUID strings to UUID objects
+        for (Map.Entry<String, List<Map<String, Object>>> entry : planData.entrySet()) {
+            List<Map<String, Object>> list = entry.getValue();
+            for (Map<String, Object> map : list) {
+                for (Map.Entry<String, Object> subEntry : map.entrySet()) {
+                    Object value = subEntry.getValue();
+                    if (value instanceof String) {
+                        try {
+                            UUID uuid = UUID.fromString((String) value);
+                            subEntry.setValue(uuid);
+                        } catch (IllegalArgumentException e) {
+                            // Handle or log invalid UUID strings if needed
+                        }
+                    }
+                }
+            }
+        }
+        return planData;
     }
 
     @PostMapping("/deleteSaved")
