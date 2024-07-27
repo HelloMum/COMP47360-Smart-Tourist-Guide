@@ -78,7 +78,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/email")
+    @PostMapping("/email")
     public ResponseEntity<Map<String, String>> getEmail(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
 
