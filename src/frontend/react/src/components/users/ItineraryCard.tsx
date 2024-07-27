@@ -46,7 +46,7 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary }) => {
             width:'520px',
             mb:'20px',
             justifyContent:'space-between',
-            backgroundColor:'#f4f4f4'
+            backgroundColor:'#f6f6f6'
             
         }}
     >

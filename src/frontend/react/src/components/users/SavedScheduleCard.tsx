@@ -90,8 +90,8 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
         <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
           <Box
             sx={{
-              width: { xs: 30, sm: 30, md: 32, lg: 35 },
-              height: { xs: 30, sm: 30, md: 32, lg: 35 },
+              width:'26px',
+              height: '26px',
               borderRadius: '50%',
               backgroundColor: '#fdddb5',
               display: 'flex',
@@ -101,7 +101,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
               position: 'relative',
             }}
           >
-            <Typography variant="h6" style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#d4831f' }}>
+            <Typography variant="h6" style={{ fontWeight: '400', fontFamily: 'Lexend', color: '#d4831f',fontSize:'18px' }}>
               {index}
             </Typography>
           </Box>
@@ -114,10 +114,9 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
               height: '30px',
               fontWeight: item.startTime === highlightedStartTime ? '600' : 'normal',
               fontFamily: 'Lexend',
-              color: item.startTime === highlightedStartTime || isHovered ? 'darkorange' : '#707070',
-              fontSize: item.startTime === highlightedStartTime ? '1rem' : '1rem',
-              textDecoration: item.startTime === highlightedStartTime || isHovered ? 'underline' : 'none',
-              cursor: 'pointer',
+              color: '#707070',
+              fontSize:'18px'      
+      
             }}
             onClick={() => onStartTimeClick(item.startTime)}
             onMouseEnter={handleMouseEnterTime}
@@ -136,7 +135,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
 
           <Typography
             variant="h6"
-            style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '1rem' }}
+            style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize:'18px' }}
             sx={{ marginLeft: { xs: '10px', sm: '10px', md: '10px', lg: '0' }, marginTop: { xs: '2px', sm: '0vw' }, marginRight: { xs: '0px', md: '0px', lg: '0.4vw' } }}
           >
             {formattedEndTime}
@@ -153,8 +152,8 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
           position: 'relative',
           display: 'flex',
           width: '500px',
-          marginTop: { xs: '10px', sm: '10px', md: '10px', lg: '0vw' },
-          marginLeft: { xs: '0px', sm: '0px', md: '0px', lg: '1vw' },
+          marginTop: { xs: '10px', sm: '10px', md: '10px', lg: '10px' },
+          marginLeft: { xs: '0px', sm: '0px', md: '0px', lg: '0' },
         }}
       >
         <Box
@@ -210,19 +209,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
             <Tag_Category category={item.category} />
             {item.website && <Btn_Earth url={item.website} />}
           </Box>
-
-          <Box display="flex" alignItems="center" sx={{ gap: { xs: 0, sm: 1, md: 1, lg: 1 } }}>
-            <Typography variant="body2" color="text.secondary">
-              busyness:
-            </Typography>
-            <Box flexGrow={1}>
-              {/* <BusynessProgressBar busyness={item.busyness} /> */}
-            </Box>
-          </Box>
-
-          {isExpanded && (
-            <Box marginTop={0}>
-              {item.address && (
+    {item.address && (
                 <Box display="flex" alignItems="center" marginTop="8px">
                   <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
                   <Typography variant="body2" color="text.secondary">
@@ -230,6 +217,18 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
                   </Typography>
                 </Box>
               )}
+          {/* <Box display="flex" alignItems="center" sx={{ gap: { xs: 0, sm: 1, md: 1, lg: 1 } }}>
+            <Typography variant="body2" color="text.secondary">
+              busyness:
+            </Typography>
+            <Box flexGrow={1}>
+              <BusynessProgressBar busyness={item.busyness} />
+            </Box>
+          </Box> */}
+
+          {isExpanded && (
+            <Box marginTop={0}>
+          
               {(item.attraction_phone_number || item.international_phone_number) && (
                 <Box display="flex" alignItems="center" marginTop="8px">
                   <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />

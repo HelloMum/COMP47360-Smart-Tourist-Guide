@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, TextField, Button, Avatar } from '@mui/material';
+import { Typography, Box, TextField, Button, Avatar, Stack } from '@mui/material';
+import { Email, Favorite } from '@mui/icons-material';
+import Tag_Category from '../Tag_Category';
+
 
 const AccountSettings: React.FC = () => {
     const [statistics, setStatistics] = useState<any>(null);
+    const [email, setEmail] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,36 +29,70 @@ const AccountSettings: React.FC = () => {
             }
         };
 
+        const fetchEmail = async () => {
+            try {
+                const response = await fetch('api/users/email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token })
+                });
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                const data = await response.json();
+                setEmail(data.email);
+                console.log('email', data.email);
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
         fetchStatistics();
+        fetchEmail();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <Box sx={{ paddingX: '4vw' }}>
-            <h2 style={{ marginLeft: 10, marginTop: 10, fontFamily: '"Lexend", sans-serif', fontSize: '22px' }}>My Profile</h2>
-            <Avatar
-                alt="User Avatar"
-                src="images/avatar-loged.png"
-                sx={{ width: 100, height: 100 }}
-            />
-            <Typography>Your email address</Typography> {/* Replace this line if you want to display a static email */}
-            {statistics && <div className="value">{statistics.favouriteCategory}</div>}
-            
-            <Typography variant="h6" sx={{ marginTop: 4, fontFamily: '"Lexend", sans-serif', fontSize: '22px' }}>Change Password</Typography>
+            <h2 style={{ marginBottom: '30px', fontFamily: '"Lexend", sans-serif', fontSize: '22px' }}>My Profile</h2>
+
+            <Stack direction='row'>
+                <Avatar
+                    alt="User Avatar"
+                    src="images/avatar-loged.png"
+                    sx={{ width: 90, height: 90 }}
+                />
+
+                <Stack direction='column' gap='10px' sx={{ marginLeft: '40px', marginTop: '15px' }}>
+                    <Stack direction='row' gap='20px'>
+                        <Email sx={{ fontSize: '22px', color: '#666' }} />
+                        {email && <div className="value">{email}</div>}
+                    </Stack>
+
+                    <Stack direction='row' gap='20px'>
+                        <Favorite sx={{ fontSize: '22px', color: '#666' }} />
+                        {statistics && <Tag_Category category={statistics.favouriteCategory} />}
+                    </Stack>
+                </Stack>
+            </Stack>
+
+            <Typography variant="h6" sx={{ marginTop: '80px', fontFamily: '"Lexend", sans-serif', fontSize: '22px' }}>Change Password</Typography>
 
             <Box sx={{ display: 'flex', gap: 2, marginY: 2 }}>
                 <TextField
                     label="Current password"
                     type="password"
                     fullWidth
-                    sx={{ height: '50px' }}
+                    sx={{ height: '40px', maxWidth: '300px' }}
                 />
                 <TextField
                     label="New password"
                     type="password"
                     fullWidth
+                    sx={{ height: '40px', maxWidth: '300px' }}
                 />
             </Box>
 

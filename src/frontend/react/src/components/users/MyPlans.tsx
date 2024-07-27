@@ -32,7 +32,7 @@ const FetchItinerary: React.FC = () => {
         fetchItinerary();
     }, []);
 
-    if (loading) return <Box>Loading...</Box>;
+    if (loading) return <Box marginLeft={10}>Loading...</Box>;
     if (error) return <Box>Error: {error}</Box>;
 
     return (
@@ -53,7 +53,7 @@ const FetchItinerary: React.FC = () => {
 
             
             {itinerary.length === 0 ? (
-                <Box>No journeys found</Box>
+                <Box>No Plan found</Box>
             ) : (
                 itinerary.map((journey, index) => (
                     <ItineraryCard
