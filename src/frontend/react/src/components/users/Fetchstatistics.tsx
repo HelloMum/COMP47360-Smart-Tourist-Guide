@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../pages/dashboard/Dashboard.css';
+import '../../pages/user/Dashboard.css';
 
 const Fetchstatistics = () => {
     const [statistics, setStatistics] = useState(null);
@@ -35,22 +35,16 @@ const Fetchstatistics = () => {
         <div className="statistics-container">
             <h1 className="title">My Statistics</h1>
             {statistics && (
-                <div className="statistics-grid">
+               
               
-                    {/* <div className="statistics-card">
-                        <div className="statistics-item">
-                        <strong>Total Activities:</strong>
-                        </div>
-                        <div className="value">{statistics.totalActivities}</div>
-                    </div> */}
-                    <div className="statistics-card">
+                      <div className="statistics-card">
                         <div className="statistics-item">
                             <strong>Most Popular Category:</strong>
                         </div>
                         <div className="value">{statistics.favouriteCategory}</div>
                     </div>
       
-                </div>
+               
             )}
         </div>
     );

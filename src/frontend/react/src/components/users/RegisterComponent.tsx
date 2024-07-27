@@ -220,7 +220,7 @@ const RegisterComponent: React.FC<{
     },
   }}
 >
-  Sign Up
+  Register
 </Button>
 
             

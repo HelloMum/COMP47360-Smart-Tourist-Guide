@@ -78,7 +78,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/email")
+    @PostMapping("/email")
     public ResponseEntity<Map<String, String>> getEmail(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
 
@@ -87,6 +87,7 @@ public class UserController {
         response.put("email", email);
         return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/changePassword")
     public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> request) {
