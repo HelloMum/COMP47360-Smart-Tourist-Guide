@@ -76,6 +76,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/email")
+    public ResponseEntity<Map<String, String>> getEmail(@RequestBody Map<String, String> request) {
+        Map<String, String> response = new HashMap<>();
+
+        String token = request.get("token");
+        String email = userService.getEmailFromToken(token);
+        response.put("email", email);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * Handles GET requests to the "/protected" endpoint.
      * This endpoint is designed to demonstrate access control to a protected resource using JWT tokens.
