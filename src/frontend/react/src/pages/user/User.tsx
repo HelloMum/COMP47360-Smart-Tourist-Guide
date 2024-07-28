@@ -9,7 +9,8 @@ import FetchItinerary from '../../components/users/MyPlans';
 const buttonStyle: SxProps<Theme> = {
     justifyContent: 'flex-start',
     color: 'orange',
-    width: '130px',
+    width: {xs:'50px',sm:'100px',md:'110px',lg:'130px'},
+    fontSize:{xs:'11px',sm:'12px',md:'12px',lg:'13px'},
 
     '&:hover': {
         backgroundColor: '#fff9eb', // Maintain the hover effect
@@ -36,14 +37,16 @@ const Dashboard: React.FC = () => {
     return (
         <Stack 
             direction='row'
-            sx={{ height: '80vh', marginTop: '100px', marginX: '20vw' }}
+            sx={{ height: '80vh', marginTop: '100px', 
+                marginX:{ sm:'1vw',md:'15vw',lg:'20vw' }
+            }}
         >
             <Box
                 sx={{
-                    width: '15vw',
+                    width: {sm:'17vw',lg:'15vw'},
                     display: 'flex',
                     flexDirection: 'column',
-                    paddingX: '3vw',
+                    paddingX: {xs:'2vw',sm:'3vw'},
                     borderRight: '1px solid #ddd',
                     height: '100%',
                     position: 'relative',
@@ -72,7 +75,9 @@ const Dashboard: React.FC = () => {
                     </Button>
                 </Stack>
             </Box>
-            <Box sx={{ width: '60vw', overflowY: 'auto' }}>
+            <Box sx={{ width: {xs:'78vw',sm:'70vw'}, 
+                
+                overflowY: 'auto' }}>
                 {selectedSection === 'account' && <AccountSettings />}
                 {selectedSection === 'savedSchedule' && <FetchItinerary />}
             </Box>

@@ -105,7 +105,12 @@ const AccountSettings: React.FC = () => {
                     sx={{ width: 90, height: 90 }}
                 />
 
-                <Stack direction='column' gap='10px' sx={{ marginLeft: '40px', marginTop: '15px' }}>
+                <Stack direction='column' gap='10px' sx={{ 
+                    
+                    marginLeft:{ xs:'20px',sm:'40px'},
+                    
+                    
+                    marginTop: '15px' }}>
                     <Stack direction='row' gap='20px'>
                         <Email sx={{ fontSize: '22px', color: '#666' }} />
                         {email && <div className="value">{email}</div>}
