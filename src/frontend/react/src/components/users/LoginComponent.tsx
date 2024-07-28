@@ -60,7 +60,7 @@ const LoginComponent: React.FC<{
       }
     } catch (error) {
       setLoading(false);
-      setMessage("Login failed: " + error.message);
+      setMessage("Your email or password is incorrect.");
     }
   };
 
@@ -96,10 +96,6 @@ const LoginComponent: React.FC<{
     height: "2rem",
     borderWidth: "0.1rem",
     borderStyle: "solid",
-    // transition: "border-color 0.2s ease-in-out",
-    // "&:hover": {
-    //   borderColor: theme.palette.primary.main,
-    // },
   };
 
   return (
@@ -218,7 +214,7 @@ const LoginComponent: React.FC<{
             </Button>
 
             {message && (
-              <Typography color="error" align="center" mt={2}>
+              <Typography color="error" align="center" mt={2} sx={{ fontSize: '14px' }}>
                 {message}
               </Typography>
             )}
