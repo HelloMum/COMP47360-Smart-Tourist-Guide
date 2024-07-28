@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { getColor } from './colorMappings';  // 引入颜色映射模块
+import { getColor } from './colorMappings';  
 
 const BusynessProgressBar: React.FC<{ busyness: number }> = ({ busyness }) => {
   const color = getColor(busyness);
@@ -8,7 +8,7 @@ const BusynessProgressBar: React.FC<{ busyness: number }> = ({ busyness }) => {
   return (
     <Box display="flex" alignItems="center" width="100%">
       <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{busyness.toFixed(0)}</Typography>
+        <Typography variant="body2" color="textSecondary" sx={{fontWeight:'500'}}>{busyness.toFixed(0)}</Typography>
       </Box>
       <Box flexGrow={1} mr={1} position="relative">
         <Box

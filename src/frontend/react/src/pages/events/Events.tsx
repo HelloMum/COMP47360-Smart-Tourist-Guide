@@ -14,6 +14,7 @@ import { ListContext } from '../../contexts/ListContext';
 import Btn_Close_Left from '../../components/Btn_Close_Left';
 import AlertModal from '../../components/AlertModal';
 import SkeletonEventCard from '../../components/events/SkeletonEventCard';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 const Events = ({ selectedDates }) => {
   const [events, setEvents] = useState([]);
@@ -95,18 +96,28 @@ const Events = ({ selectedDates }) => {
     addItemWithDateCheck(eventData, () => setAlertOpen(true));
   };
 
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
+
+
   return (
     <div className="list" style={{ display: 'flex' }}>
       {isLeftPanelVisible && (
-        <div
+        <Box
           className="left"
           style={{
             width: LEFT_WIDTH,
-            padding: '18px 20px 0px 20px',
+            
             marginTop: NAVBAR_HEIGHT,
             height: `calc(100vh - ${NAVBAR_HEIGHT})`,
             display: 'flex',
             flexDirection: 'column',
+          }}
+
+          sx={{
+            padding:{ xs:'18px 10px 0px 10px' ,sm:'18px 20px 0px 20px'},
+          
           }}
         >
           <Stack direction="row" justifyContent="center">
@@ -120,7 +131,7 @@ const Events = ({ selectedDates }) => {
 
        {loading? (
                 
-                <Skeleton variant="text" width="80px" height="100px" animation="wave" style={{ 
+                <Skeleton variant="text" width="80px" height="80px" animation="wave" style={{ 
                   marginLeft: 5, 
                   marginTop: 10 ,
                   // marginBottom: 10
@@ -183,7 +194,7 @@ const Events = ({ selectedDates }) => {
               )}
             </Stack>
           </div>
-        </div>
+        </Box>
       )}
 
       <div className="map" style={{ position: 'fixed', top: NAVBAR_HEIGHT, right: 0, width: isLeftPanelVisible ? `calc(100% - ${LEFT_WIDTH})` : '100%', height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
