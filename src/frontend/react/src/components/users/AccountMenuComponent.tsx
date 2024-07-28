@@ -61,7 +61,7 @@ const LogoutComponent: React.FC = () => {
           sx={{
             fontSize: '13px',
             my: 0,
-            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            height: { xs: '15px', sm: 20, md: 20, lg: 20 },
             '&:hover': {
               backgroundColor: 'transparent', // Remove the grey hover color
             },
@@ -75,7 +75,7 @@ const LogoutComponent: React.FC = () => {
           sx={{
             fontSize: '13px',
             my: 0,
-            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            height: {  xs: '15px', sm: 20, md: 20, lg: 20 },
             '&:hover': {
               backgroundColor: 'transparent', // Remove the grey hover color
             },
@@ -89,7 +89,7 @@ const LogoutComponent: React.FC = () => {
           sx={{
             fontSize: '13px',
             my: 0,
-            height: { xs: 5, sm: 20, md: 20, lg: 20 },
+            height: { xs: '15px', sm: 20, md: 20, lg: 20 },
             '&:hover': {
               backgroundColor: 'transparent', // Remove the grey hover color
             },
