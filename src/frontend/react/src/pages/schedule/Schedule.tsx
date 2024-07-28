@@ -217,7 +217,7 @@ const Schedule: React.FC = () => {
         setLastUpdated(new Date());
 
         handleOpenAlert(
-          "Plan has been saved. Check it out in your dashboard on the right corner !"
+          "Plan has been saved in your account."
         );
       } catch (error) {
         console.error("Error saving plan to backend:", error);
@@ -349,6 +349,9 @@ const Schedule: React.FC = () => {
           {/* ----------------------- Save btn ----------------------- */}
                    <SaveButton isLoggedIn={isLoggedIn} handleSaveClick={handleSaveClick} />
           </Stack>
+
+
+          
           <div
             className="card-container"
             style={{
