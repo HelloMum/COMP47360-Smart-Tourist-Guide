@@ -72,12 +72,14 @@ const Header = () => {
   <IconButton id="avatarButton" onClick={handleAvatarClick}>
     <AccountCircleRoundedIcon
       sx={{
-        color: { xs: "white", sm: theme.palette.primary.dark },
+        color: { xs: theme.palette.primary.dark, sm: theme.palette.primary.dark },
         fontSize: 28,
       }}
     />
   </IconButton>
 )}
+
+
 
 
         {isLoggedIn && <LogoutComponent />} {/* Show LogoutComponent if the user is logged in */}
@@ -96,6 +98,9 @@ const Header = () => {
               onSwitch={handleSwitch}
             />
           ))}
+
+
+
       </Stack>
     </Box>
   );

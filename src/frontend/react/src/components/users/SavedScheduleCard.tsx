@@ -140,7 +140,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
           padding: { xs: 1, sm: 1, md: 2 },
           position: 'relative',
           display: 'flex',
-          width: '500px',
+          width: {xs:'75vw',sm:'500px'},
           marginTop: { xs: '10px', sm: '10px', md: '10px', lg: '10px' },
           marginLeft: { xs: '0px', sm: '0px', md: '0px', lg: '0' },
         }}

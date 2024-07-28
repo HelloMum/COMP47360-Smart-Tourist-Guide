@@ -51,7 +51,7 @@ const FetchItinerary: React.FC = () => {
       sx={{
         overflowY: "scroll",
         height: "100%",
-        marginLeft: "70px",
+        marginLeft:{ xs:'10px',sm:'30px',md:"40px",lg:'70px'},
         msOverflowStyle: "none" /* IE and Edge */,
         scrollbarWidth: "none" /* Firefox */,
         "&::-webkit-scrollbar": {
@@ -71,7 +71,7 @@ const FetchItinerary: React.FC = () => {
       </h2>
 
       {itinerary.length === 0 ? (
-        <Box>No Plan found</Box>
+        <Box>No plan found, please generate and save a plan. </Box>
       ) : (
         itinerary.map((journey, index) => (
           <ItineraryCard

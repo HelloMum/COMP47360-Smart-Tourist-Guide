@@ -48,14 +48,21 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary }) => {
             backgroundColor: '#f6f6f6'
           }}
         >
-          <Typography variant="h6" sx={{ fontFamily: '"Lexend", sans-serif', fontWeight: '300', fontSize: '18px' }}>
+          <Typography variant="h6" sx={{ fontFamily: '"Lexend", sans-serif', fontWeight: '300', 
+          fontSize: {xs:'14px',sm:'18px'} 
+
+
+          }}>
             {`${itinerary.startDate} - ${itinerary.endDate}`}
           </Typography>
           <IconButton onClick={toggleExpand}>
             {isExpanded ? <ExpandLessRounded /> : <ExpandMoreRounded />}
           </IconButton>
         </Box>
-        <RemoveCircleOutlineRounded sx={{ color: 'orange', cursor: 'pointer', mb: '20px', ml: '10px', fontSize: { xs: 20, sm: 30 } }} />
+
+        {/* <RemoveCircleOutlineRounded sx={{ color: 'orange', cursor: 'pointer', mb: '20px', ml: '10px', fontSize: { xs: 20, sm: 30 } }} /> */}
+
+
       </Stack>
 
       {isExpanded && (
