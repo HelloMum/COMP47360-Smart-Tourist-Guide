@@ -19,8 +19,12 @@ import "antd/dist/antd.css";
 import { ListProvider } from "./contexts/ListContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LastUpdatedProvider } from "./contexts/LastUpdatedContext";
-import Header_Home from "./components/Header_Home";
 import Dashboard from "./pages/user/User";
+
+// Temporarily disable console log, warn and error
+console.log = () => {};
+console.warn = () => {};
+console.error = () => {};
 
 const App: React.FC = () => {
   const [selectedDates, setSelectedDates] = useState<
@@ -37,7 +41,7 @@ const App: React.FC = () => {
 
   const renderHeader = () => {
     if (location.pathname === "/" || location.pathname === "/about") {
-      return <Header_Home onDateChange={handleDateChange} />;
+      return <HeaderHome onDateChange={handleDateChange} />;
     } else {
       return <Header onDateChange={handleDateChange} />;
     }
