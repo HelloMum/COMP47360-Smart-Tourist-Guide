@@ -13,22 +13,22 @@ const FetchItinerary: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-        const fetchItinerary = async () => {
-            try {
-                const url = `/api/itinerary/user?token=${token}&timestamp=${new Date().getTime()}`;
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache',
-                        'Expires': '0'
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                const data = await response.json();
-                console.log("saved itinerary data:", data); // Log the fetched data
+    const fetchItinerary = async () => {
+      try {
+        const url = `/api/itinerary/user?token=${token}&timestamp=${new Date().getTime()}`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log("saved itinerary data:", data); // Log the fetched data
 
         // Convert the object with numerical keys to an array
         const itineraryArray = Object.keys(data).map((key) => data[key]);
@@ -75,11 +75,9 @@ const FetchItinerary: React.FC = () => {
       ) : (
         itinerary.map((journey, index) => (
           <ItineraryCard
-            key={index}
+            key={journey.id} 
             itinerary={journey}
-            index={index}
-            onStartTimeClick={(startTime) => console.log(startTime)}
-            highlightedStartTime={null}
+          
           />
         ))
       )}

@@ -25,7 +25,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
 
   const defaultImage = `/images/spots_small/${item.id}_1.webp`;
   const secondImage = `/images/spots_small/${item.id}_2.webp`;
-  const imageSrc = item.event ? item.event_image : defaultImage;
+  const imageSrc = item.image_url || defaultImage;
 
   const [currentImage, setCurrentImage] = useState(imageSrc);
   const [imageStyle, setImageStyle] = useState({});
@@ -33,33 +33,23 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseEnterImage = () => {
-    if (item.event) {
-      setImageStyle({
-        transition: 'transform 7s ease',
-        transform: 'scale(1.4)',
-      });
-    } else {
+    if (!item.image_url) {
       setCurrentImage(secondImage);
-      setImageStyle({
-        transition: 'transform 7s ease',
-        transform: 'scale(1.4)',
-      });
     }
+    setImageStyle({
+      transition: 'transform 7s ease',
+      transform: 'scale(1.4)',
+    });
   };
 
   const handleMouseLeaveImage = () => {
-    if (item.event) {
-      setImageStyle({
-        transition: 'none',
-        transform: 'scale(1)',
-      });
-    } else {
+    if (!item.image_url) {
       setCurrentImage(defaultImage);
-      setImageStyle({
-        transition: 'none',
-        transform: 'scale(1)',
-      });
     }
+    setImageStyle({
+      transition: 'none',
+      transform: 'scale(1)',
+    });
   };
 
   const handleMouseEnterTime = () => {
@@ -90,7 +80,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
         <Box sx={{ minWidth: '40px', textAlign: 'center', marginRight: '0vw', position: 'relative' }}>
           <Box
             sx={{
-              width:'26px',
+              width: '26px',
               height: '26px',
               borderRadius: '50%',
               backgroundColor: '#fdddb5',
@@ -101,7 +91,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
               position: 'relative',
             }}
           >
-            <Typography variant="h6" style={{ fontWeight: '400', fontFamily: 'Lexend', color: '#d4831f',fontSize:'18px' }}>
+            <Typography variant="h6" style={{ fontWeight: '400', fontFamily: 'Lexend', color: '#d4831f', fontSize: '18px' }}>
               {index}
             </Typography>
           </Box>
@@ -115,8 +105,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
               fontWeight: item.startTime === highlightedStartTime ? '600' : 'normal',
               fontFamily: 'Lexend',
               color: '#707070',
-              fontSize:'18px'      
-      
+              fontSize: '18px'
             }}
             onClick={() => onStartTimeClick(item.startTime)}
             onMouseEnter={handleMouseEnterTime}
@@ -135,7 +124,7 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
 
           <Typography
             variant="h6"
-            style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize:'18px' }}
+            style={{ fontWeight: 'normal', fontFamily: 'Lexend', color: '#707070', fontSize: '18px' }}
             sx={{ marginLeft: { xs: '10px', sm: '10px', md: '10px', lg: '0' }, marginTop: { xs: '2px', sm: '0vw' }, marginRight: { xs: '0px', md: '0px', lg: '0.4vw' } }}
           >
             {formattedEndTime}
@@ -209,26 +198,17 @@ const SavedScheduleCard: React.FC<ScheduleCardProps> = ({
             <Tag_Category category={item.category} />
             {item.website && <Btn_Earth url={item.website} />}
           </Box>
-    {item.address && (
-                <Box display="flex" alignItems="center" marginTop="8px">
-                  <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {item.address}
-                  </Typography>
-                </Box>
-              )}
-          {/* <Box display="flex" alignItems="center" sx={{ gap: { xs: 0, sm: 1, md: 1, lg: 1 } }}>
-            <Typography variant="body2" color="text.secondary">
-              busyness:
-            </Typography>
-            <Box flexGrow={1}>
-              <BusynessProgressBar busyness={item.busyness} />
+          {item.address && (
+            <Box display="flex" alignItems="center" marginTop="8px">
+              <LocationOnRounded sx={{ fontSize: 'large', marginRight: '8px' }} />
+              <Typography variant="body2" color="text.secondary">
+                {item.address}
+              </Typography>
             </Box>
-          </Box> */}
+          )}
 
           {isExpanded && (
             <Box marginTop={0}>
-          
               {(item.attraction_phone_number || item.international_phone_number) && (
                 <Box display="flex" alignItems="center" marginTop="8px">
                   <PhoneEnabledRounded sx={{ fontSize: 'large', marginRight: '8px' }} />

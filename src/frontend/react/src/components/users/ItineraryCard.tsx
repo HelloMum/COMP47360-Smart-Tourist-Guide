@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Typography, Box, IconButton, Button, Stack } from '@mui/material';
-import { ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
+import { ExpandLessRounded, ExpandMoreRounded, RemoveCircleOutlineRounded } from '@mui/icons-material';
 import moment from 'moment';
 import SavedScheduleCard from './SavedScheduleCard'; 
 
@@ -30,39 +30,38 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary }) => {
     return moment(date).format('ddd');
   };
 
+  // Get sorted dates
+  const sortedDates = Object.keys(itinerary.planData).sort((a, b) => moment(a).diff(moment(b)));
+
   return (
-    <div >
-
-
-
-<Stack direction='row'>
-    <Box
-        sx={{
-            // border: '1px solid orange',
+    <div>
+      <Stack direction='row' alignItems='center'>
+        <Box
+          sx={{
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
             padding: '4px 12px',
-            width:'520px',
-            mb:'20px',
-            justifyContent:'space-between',
-            backgroundColor:'#f6f6f6'
-            
-        }}
-    >
-        <Typography variant="h6"  sx={{fontFamily: '"Lexend", sans-serif',fontWeight:'300',fontSize:'18px'}}>{`${itinerary.startDate} - ${itinerary.endDate}`}</Typography>
-        <IconButton onClick={toggleExpand}>
+            width: '520px',
+            mb: '20px',
+            justifyContent: 'space-between',
+            backgroundColor: '#f6f6f6'
+          }}
+        >
+          <Typography variant="h6" sx={{ fontFamily: '"Lexend", sans-serif', fontWeight: '300', fontSize: '18px' }}>
+            {`${itinerary.startDate} - ${itinerary.endDate}`}
+          </Typography>
+          <IconButton onClick={toggleExpand}>
             {isExpanded ? <ExpandLessRounded /> : <ExpandMoreRounded />}
-        </IconButton>
-    </Box>
-</Stack>
-
-
+          </IconButton>
+        </Box>
+        <RemoveCircleOutlineRounded sx={{ color: 'orange', cursor: 'pointer', mb: '20px', ml: '10px', fontSize: { xs: 20, sm: 30 } }} />
+      </Stack>
 
       {isExpanded && (
         <div className="journey-details">
-          <Box display="flex"  marginBottom={2} gap='10px'>
-            {Object.keys(itinerary.planData).map((date) => (
+          <Box display="flex" marginBottom={2} gap='10px'>
+            {sortedDates.map((date) => (
               <Button
                 key={date}
                 onClick={() => handleDateChange(date)}
@@ -106,13 +105,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary }) => {
             ))}
           </Box>
 
-
-
-
-          {Object.keys(itinerary.planData).map((date) => (
+          {sortedDates.map((date) => (
             <div key={date} style={{ display: date === currentDate ? 'block' : 'none' }}>
-
-
               {itinerary.planData[date].map((item, itemIndex) => (
                 <SavedScheduleCard
                   key={item.id}
