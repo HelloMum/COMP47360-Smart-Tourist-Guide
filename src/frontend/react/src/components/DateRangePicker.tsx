@@ -22,7 +22,7 @@ const disabled7DaysDate = (fromDate) => (current) => {
 
 const DateRangePicker = ({ onDateChange, className, value }) => {
   const [fromDate, setFromDate] = useState(value ? value[0] : null);
-  const { setSelectedDates, clearList } = useContext(ListContext);
+  const { setSelectedDates, clearList, clearPlanData } = useContext(ListContext);
 
   const handleCalendarChange = (dates) => {
     setFromDate(dates ? dates[0] : null);
@@ -32,6 +32,7 @@ const DateRangePicker = ({ onDateChange, className, value }) => {
     setSelectedDates(dates); // Update context with selected dates
     onDateChange(dates);
     clearList(); // Clear the list when dates are changed
+    clearPlanData(); // Clear plan data in context
   };
 
   return (

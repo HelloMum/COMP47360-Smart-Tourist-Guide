@@ -1,16 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.model.Attraction;
-import com.example.demo.model.Event;
-import com.example.demo.model.ItineraryItem;
-import com.example.demo.model.TimeSlot;
+import com.example.demo.model.*;
+import com.example.demo.repository.EventRepository;
+import com.example.demo.repository.ItinerarySavedItemsRepository;
+import com.example.demo.repository.ItinerarySavedRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,7 +105,7 @@ public class ItineraryService {
                     double busyness = 0;
                     if (taxiZone != -1) {
                         try {
-                            float prediction = predictionService.getBusynessByZoneFromJson(taxiZone, eventStart);
+                            float prediction = predictionService.getBusynessByZoneFromMemory(taxiZone, eventStart);
                             //float prediction = predictionService.predictByTaxiZone(taxiZone, eventStart);
                             busyness = prediction;
                         } catch (Exception e) {
@@ -176,7 +174,7 @@ public class ItineraryService {
                         try {
                             int attractionZone = attraction.getTaxi_zone();
                             //float prediction = predictionService.predictByAttractionId(attraction.getIndex(), slotStart);
-                            float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
+                            float prediction = predictionService.getBusynessByZoneFromMemory(attractionZone, slotStart);
                             double busyness = prediction;
                             if (busyness < minBusyness) {
                                 minBusyness = busyness;
@@ -243,7 +241,7 @@ public class ItineraryService {
                 for (Attraction attraction : filteredAttractions) {
                     try {
                         int attractionZone = attraction.getTaxi_zone();
-                        float prediction = predictionService.getBusynessByZoneFromJson(attractionZone, slotStart);
+                        float prediction = predictionService.getBusynessByZoneFromMemory(attractionZone, slotStart);
                         double busyness = prediction;
 
                         attractionBusynessMap.computeIfAbsent(slotStart, k -> new HashMap<>()).put(attraction, busyness);
@@ -488,5 +486,199 @@ public class ItineraryService {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+//    Saving the itinerary to the database is implemented below in the saveItinerary method. --------------------------
+
+    @Autowired
+    private ItinerarySavedRepository itinerarySavedRepository;
+
+    @Autowired
+    private ItinerarySavedItemsRepository itinerarySavedItemsRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    public boolean saveItinerary(String token, Map<String, List<Map<String, Object>>> planData, LocalDate startDate, LocalDate endDate) {
+        try {
+            String email = userService.getEmailFromToken(token);
+            User user = userRepository.findByEmail(email);
+
+            ItinerarySaved itinerarySaved = new ItinerarySaved();
+            itinerarySaved.setUser(user);
+            itinerarySaved.setStartDate(startDate);
+            itinerarySaved.setEndDate(endDate);
+
+            List<ItinerarySavedItems> items = planData.entrySet().stream()
+                    .flatMap(entry -> {
+                        LocalDate date = LocalDate.parse(entry.getKey());
+                        return entry.getValue().stream().map(itemData -> {
+                            ItinerarySavedItems item = new ItinerarySavedItems();
+                            item.setItinerary(itinerarySaved);
+                            item.setIsEvent((Boolean) itemData.get("event"));
+                            item.setStartTime(LocalDateTime.parse(itemData.get("startTime").toString()));
+                            item.setEndTime(LocalDateTime.parse(itemData.get("endTime").toString()));
+                            if (item.getIsEvent()) {
+                                // check event exists, it converts to null the other id automatically in db
+                                eventRepository.findById((UUID) itemData.get("id")).ifPresent(event -> item.setEventId((event.getId())));
+                            } else {
+                                // check attraction exists, it converts to null the other id automatically in db
+                                Attraction attraction = attractionService.getAttractionByIndex((Integer) itemData.get("id"));
+                                if (attraction != null) {
+                                    item.setItemId(attraction.getIndex());
+                                }
+                            }
+                            return item;
+                        });
+                    })
+                    .collect(Collectors.toList());
+
+            itinerarySaved.setItems(items);
+            itinerarySavedRepository.save(itinerarySaved);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteSavedItinerary(String token, Long itineraryId) {
+        try {
+            String email = userService.getEmailFromToken(token);
+            User user = userRepository.findByEmail(email);
+            ItinerarySaved itinerary = itinerarySavedRepository.findById(itineraryId).orElse(null);
+
+            if (itinerary != null && itinerary.getUser().getId().equals(user.getId())) {
+                // Delete associated items
+                itinerarySavedItemsRepository.deleteAll(itinerary.getItems());
+                // Delete the itinerary
+                itinerarySavedRepository.delete(itinerary);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    public Map<Long, Map<String, Object>> getUserItineraries(String token) {
+        String email = userService.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email);
+        List<ItinerarySaved> itineraries = itinerarySavedRepository.findByUserId(user.getId());
+
+        Map<Long, Map<String, Object>> itinerariesData = new HashMap<>();
+
+        for (ItinerarySaved itinerary : itineraries) {
+            Map<String, List<Map<String, Object>>> planData = new HashMap<>();
+
+            Long itineraryId = itinerary.getId();
+
+            for (ItinerarySavedItems item : itinerary.getItems()) {
+                String date = item.getStartTime().toLocalDate().toString();
+                planData.putIfAbsent(date, new ArrayList<>());
+
+                Map<String, Object> itemData = new HashMap<>();
+                itemData.put("id", item.getItemId());
+                itemData.put("startTime", item.getStartTime().toString());
+                itemData.put("endTime", item.getEndTime().toString());
+                itemData.put("event", item.getIsEvent());
+
+                if (item.getIsEvent()) {
+                    Event event = eventRepository.findById((item.getEventId())).orElse(null);
+                    if (event != null) {
+                        itemData.put("name", event.getName());
+                        itemData.put("latitude", event.getLatitude());
+                        itemData.put("longitude", event.getLongitude());
+                        itemData.put("category", event.getCategory());
+                        itemData.put("description", event.getDescription());
+                        itemData.put("event_site_url", event.getEvent_site_url());
+                        itemData.put("image_url", event.getImage_url());
+                        itemData.put("is_free", event.getIs_free());
+                        itemData.put("address", event.getAddress());
+                        itemData.put("rating", null);  // Events don't have rating
+                        itemData.put("attraction_phone_number", null);  // Events don't have phone number
+                        itemData.put("international_phone_number", null);  // Events don't have international phone number
+                        itemData.put("userRatings_total", null);  // Events don't have user ratings
+                    }
+                } else {
+                    Attraction attraction = attractionService.getAttractionByIndex(item.getItemId());
+                    if (attraction != null) {
+                        itemData.put("name", attraction.getAttraction_name());
+                        itemData.put("latitude", attraction.getAttraction_latitude());
+                        itemData.put("longitude", attraction.getAttraction_longitude());
+                        itemData.put("category", attraction.getCategory());
+                        itemData.put("description", attraction.getDescription());
+                        itemData.put("event_site_url", attraction.getAttractionWebsite());
+                        itemData.put("image_url", null);  // Attractions don't have image URL
+                        itemData.put("is_free", attraction.isFree());
+                        itemData.put("address", attraction.getAttraction_vicinity());
+                        itemData.put("rating", attraction.getAttraction_rating());
+                        itemData.put("attraction_phone_number", attraction.getAttraction_phone_number());
+                        itemData.put("international_phone_number", attraction.getInternational_phone_number());
+                        itemData.put("userRatings_total", attraction.getUser_ratings_total());
+                    }
+                }
+
+                planData.get(date).add(itemData);
+            }
+
+            Map<String, Object> itineraryData = new HashMap<>();
+            itineraryData.put("planData", planData);
+            itineraryData.put("startDate", itinerary.getStartDate().toString());
+            itineraryData.put("endDate", itinerary.getEndDate().toString());
+
+            itinerariesData.put(itineraryId, itineraryData);
+        }
+
+        return itinerariesData;
+    }
+
+    public Map<String, Object> getItineraryStatistics(String token) {
+        String email = userService.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email);
+        List<ItinerarySaved> itineraries = itinerarySavedRepository.findByUserId(user.getId());
+
+        int totalActivities = 0;
+        Map<String, Integer> categoryCount = new HashMap<>();
+        Set<LocalDate> uniqueDays = new HashSet<>();
+
+        for (ItinerarySaved itinerary : itineraries) {
+            for (ItinerarySavedItems item : itinerary.getItems()) {
+                totalActivities++;
+
+                String category;
+                if (item.getIsEvent()) {
+                    Event event = eventRepository.findById((item.getEventId())).orElse(null);
+                    category = (event != null) ? event.getCategory() : "Unknown";
+                } else {
+                    Attraction attraction = attractionService.getAttractionByIndex(item.getItemId());
+                    category = (attraction != null) ? attraction.getCategory() : "Unknown";
+                }
+
+                categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
+                uniqueDays.add(item.getStartTime().toLocalDate());
+            }
+        }
+
+        String favouriteCategory = categoryCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("None");
+
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("totalActivities", totalActivities);
+        statistics.put("favouriteCategory", favouriteCategory);
+        statistics.put("totalDaysSpent", uniqueDays.size());
+
+        return statistics;
     }
 }

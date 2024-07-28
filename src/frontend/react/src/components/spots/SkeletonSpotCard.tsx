@@ -1,13 +1,16 @@
 import React from 'react';
 import { Card, Box, Skeleton, Stack } from '@mui/material';
+import { useResponsiveCardWidth } from '../../utils/useResponsiveSizes';
 
 const SkeletonSpotCard: React.FC = () => {
+  const cardWidth = useResponsiveCardWidth();
+
   return (
     <Card sx={{ 
       borderRadius: '8px', 
       overflow: 'hidden', 
       boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.1)', 
-      width: "17.5vw", 
+      width: cardWidth, 
       marginBottom: 2, 
       gap: 1 ,
       height:"300px"

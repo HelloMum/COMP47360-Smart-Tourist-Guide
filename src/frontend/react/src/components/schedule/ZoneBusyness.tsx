@@ -117,8 +117,8 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
 
   return (
     <Box sx={{
-      width: 350,
-      height: 230,
+      width: 330,
+      height: 200,
       backgroundColor: '#fff',
       display: 'flex',
       alignItems: 'center',
@@ -126,7 +126,8 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
       textAlign: 'center',
       flexDirection: 'column',
       position: 'relative',
-      p: 1,
+      p: 0.5,
+    
     }}>
 
       <Close 
@@ -198,7 +199,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
       </Box>
 
       {selectedDate && busynessData[selectedDate] && (
-        <Box sx={{ mt: 1, height: '180px', width: '350px' }}>
+        <Box sx={{ mt: 1, height: '190px', width: '350px' }}>
           <Chart
             chartType="ColumnChart"
             width="100%"
@@ -209,7 +210,7 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
               chartArea: {
                 left: 30,    
                 right: 20,  
-                top: 20,     
+                top: 5,     
                 bottom: 30,
               },
               bar: { groupWidth: '50%' },
@@ -230,19 +231,19 @@ const ZoneBusyness: React.FC<ZoneBusynessProps> = ({ zoneId, zoneName, onClose, 
               tooltip: {
                 isHtml: true,
                 textStyle: {
-                  fontSize: 12, // Tooltip text size
-                  color: '#333', // Tooltip text color
+                  fontSize: 12, 
+                  color: '#333', 
                 },
-                showColorCode: true, // Show the color box
-                trigger: 'focus', // Trigger on focus
-                ignoreBounds: true, // Ignore bounds for the tooltip
+                showColorCode: true, 
+                trigger: 'focus', 
+                ignoreBounds: true, 
                 boxStyle: {
-                  stroke: '#ccc', // Border color
-                  strokeWidth: 1, // Border width
-                  shadow: true, // Enable shadow
-                  padding: '10px', // Add padding here
+                  stroke: '#ccc', 
+                  strokeWidth: 1, 
+                  shadow: true, 
+                  padding: '10px',
                 },
-                cssClass: 'custom-tooltip', // Custom CSS class for further styling
+                cssClass: 'custom-tooltip', 
               },
             }}
           />

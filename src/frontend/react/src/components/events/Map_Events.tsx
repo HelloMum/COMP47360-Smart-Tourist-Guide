@@ -111,7 +111,7 @@ const getHoverIconUrl = (category) => {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={14}
+      zoom={13.5}
       options={mapOptions}
       onLoad={map => {
         console.log('Map onLoad triggered');

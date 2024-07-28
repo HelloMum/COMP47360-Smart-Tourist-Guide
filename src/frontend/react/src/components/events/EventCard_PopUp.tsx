@@ -41,7 +41,13 @@ const EventCard_PopUp = ({ event, onClose }) => {
   const isAdded = isItemInList(event.name);
 
   return (
-    <Stack direction="row" width='450px'>
+    <Stack direction="row" 
+    sx={{
+    width:{xs:'310px',sm:'450px'}
+
+    }}>
+
+
       {/*--------------------- Close Button ---------------*/}
       <Box position="absolute" top={0} right={0} zIndex="tooltip">
         <IconButton onClick={onClose} sx={{ fontSize: 'small' }}>
@@ -50,27 +56,40 @@ const EventCard_PopUp = ({ event, onClose }) => {
       </Box>
 
       {/*------------------   picture  -------------------- */}
-      <Box sx={{ position: 'relative', width: '140px', height: isExpanded ? '190px' : '128px', boxShadow: 1, borderRadius: '2px', marginTop: '5px' }}>
+      <Box sx={{ position: 'relative', 
+        width: {xs:'80px',sm:'140px'}, 
+        height: isExpanded ? {xs:'140px',sm:'190px'} : {xs:'120px',sm:'128px'}, 
+        boxShadow: 1, 
+        borderRadius: '2px', 
+        marginTop: '5px' }}>
         <CardMedia
           component="img"
           height="100"
           image={imageUrl}
           alt={event.name}
-          sx={{ objectFit: 'cover', borderRadius: '2px', width: '140px', height: isExpanded ? '190px' : '135px' }}
+          sx={{ objectFit: 'cover', borderRadius: '2px', 
+            width: {xs:'80px',sm:'140px'}, 
+            height: isExpanded ? {xs:'140px',sm:'190px'} : {xs:'120px',sm:'128px'}, 
+          
+          }}
         />
         {/* <Btn_Like /> */}
       </Box>
 
       {/*------------------   title  -------------------- */}
-      <Box sx={{ marginLeft: '20px', flexGrow: 1 }}>
+      <Box sx={{ 
+        marginLeft: {xs:'10px',sm:'20px'}, 
+        flexGrow: 1 }}>
         <Typography
           sx={{
             ...theme.typography.cardTitle,
             whiteSpace: isExpanded ? 'normal' : 'nowrap',
             overflow: 'hidden',
             textOverflow: isExpanded ? 'clip' : 'ellipsis',
-            maxWidth: '250px',
+            maxWidth: {xs:'180px',sm:'250px'},
             display: 'inline-block',
+            fontWeight: 400,
+            fontSize: {xs:'16px',sm:'16px'},
           }}
           component="div"
           title={event.name}
@@ -94,11 +113,17 @@ const EventCard_PopUp = ({ event, onClose }) => {
           {/* date & time */}
           <Box display="flex" alignItems="center" marginTop={1}>
             <DateRangeRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-            <Typography variant="body2" color="text.secondary" style={{ marginRight: '50px' }}>
+            <Typography variant="body2" color="text.secondary"  
+            sx={{ 
+              fontSize:{xs:'12px',sm:'14px'},
+              marginRight: {xs:'35px',sm:'50px'} }}
+              
+              >
+      
               {date}
             </Typography>
             <AccessTimeRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize:{xs:'12px',sm:'14px'} }}>
               {time}
             </Typography>
           </Box>
@@ -106,13 +131,15 @@ const EventCard_PopUp = ({ event, onClose }) => {
           {/* address */}
           <Box display="flex" alignItems="center">
             <LocationOnRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize:{xs:'12px',sm:'14px'} }}>
               {event.address}
             </Typography>
           </Box>
 
           {isExpanded && (
-            <Typography variant="body2" color="text.secondary" sx={{ marginLeft: '3px', width: '300px' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ marginLeft: '3px', 
+              width: {xs:'200px',sm:'300px'},
+            fontSize:{xs:'12px',sm:'14px'} }} >
               {event.description}
             </Typography>
           )}

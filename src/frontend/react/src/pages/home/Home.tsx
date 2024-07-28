@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Stack, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DateRangePicker from '../../components/DateRangePicker';
 import { NAVBAR_HEIGHT } from '../../utils/constants';
 import HomeCard from '../../components/HomeCard';
 import { ListContext } from '../../contexts/ListContext';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../../utils/useResponsiveSizes';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -18,118 +17,115 @@ const Home: React.FC = () => {
     setSelectedDates(dates);
   };
 
+  useUpdateLeftWidth();
+
+
   return (
     <Stack direction='row' paddingX='8vw' gap='1vw'
       style={{
-        marginTop: NAVBAR_HEIGHT,
-        height: `calc(100vh - ${NAVBAR_HEIGHT})`,
+        marginTop: '50px',
+        height: `calc(100vh - 50px)`,
         paddingTop: '10vh',
       }}
+
+      sx={{
+        backgroundImage: { xs: 'url(images/spots/22_3.webp)', sm: 'none' },
+        backgroundSize: 'cover',
+        backgroundPosition: 'left',
+        backgroundRepeat: 'no-repeat',
+      }}
+
     >
-      {/* ----------------------- left ----------------------------------- */}
+      {/* Left Section */}
       <Stack 
-        direction='column' 
-        gap='2vh' 
-        width='23vw' 
-        paddingTop='8vh'      
-        height='65vh'  
-      >
-        <p
-          style={{
+  direction='column' 
+  gap='2vh' 
+  sx={{ 
+    width: { xs: '100vw', sm: '35vw', md: '26vw', lg: '20vw' },
+    background: { xs: 'rgba(250, 166, 63, 1)', sm: 'none' }, 
+    height: { xs: '370px', sm: '65vh' },
+    borderRadius: { xs: '10px', sm: '0' }, 
+    paddingLeft: { xs: '3vw', sm: '0' }, 
+  }}
+  paddingTop='8vh'      
+>
+        <Typography
+          sx={{
             fontFamily: '"Lexend", sans-serif',
-            fontSize: '2.5vw', 
             fontWeight: '600',
             letterSpacing: '-1px',
-            color: theme.palette.primary.dark,
-            lineHeight: '3.5vw',
-            marginBottom: '8vh'
+            color:{xs:'white' ,sm:theme.palette.primary.dark},
+            marginBottom: '8vh',
+            fontSize: { xs: '8vw', sm: '4.5vw', md: '3.3vw', lg: '2.5vw', xl: '2vw' },
+            lineHeight: { xs: '10vw', sm: '5.5vw', md: '4.3vw', lg: '3.5vw', xl: '3vw' }
           }}
         >
           Smart<br />
           Tourist Guide
           <br />
           in New York
-        </p>
+        </Typography>
 
+        <Stack direction='row' alignItems='center' gap='8px'> {/* Added gap here */}
+          <DateRangePicker
+            onDateChange={handleDateChange}
+            className="home-date-picker"
+            value={selectedDates}
+          />
 
-<Stack direction='row' gap={1} >
-        {/* <p
-          style={{
-            fontFamily: '"Lexend", sans-serif',
-            fontSize: '16px', 
-            color:'#868686',
-            marginBottom:'0', 
-            marginLeft:'4px',
-            padding:'0'                    
- }}
-        >
-          set your travel dates 
-        </p> */}
-
-        <DateRangePicker
-          onDateChange={handleDateChange}
-          className="home-date-picker" 
-          value={selectedDates}     
-                       
-
-        />
-<div
-            onClick={() => navigate('/spots')}
-            style={{
-              backgroundColor: theme.palette.primary.dark,
-              color: 'white',
-              borderRadius: '50%',
-              boxShadow: 'none',
-              marginBottom: 20,
-              height: '40px',
-              width: '40px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-              fontWeight: '600',
-            }}
-          >
-            GO
-          </div>
-
-</Stack>
-
-
- 
-     
-
+<Box
+  onClick={() => navigate('/spots')}
+  sx={{
+    backgroundColor: { xs: 'white', sm: theme.palette.primary.dark }, 
+    color: { xs: '#ee9527', sm: 'white' }, 
+    borderRadius: '50%',
+    boxShadow: 'none',
+    height: '40px',
+    width: '40px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+    fontWeight: '600',
+  }}
+>
+  GO
+</Box>
         </Stack>
-   
-      {/*------------------------------ right part----------------------------- */}
-      <Stack direction='row' gap={4}
-        sx={{
-          width: '63vw',
-          height:'85vh'
-        }}
-      >
-        <HomeCard
-          title='Central Park'
-          rating={4.8}
-          image1={'images/spots/22_3.webp'}
-          image3={'images/homepage/1.png'}
-          user_ratings_total={273613}
-        />
-        <HomeCard
-          title='Statue of Liberty'
-          rating={4.7}
-          image1={'images/spots/54_1.webp'}
-          image3={'images/homepage/3.jpg'}
-          user_ratings_total={101828}
-        />
-        <HomeCard
-          title='Times Square'
-          rating={4.7}
-          image1={'images/spots/141_1.webp'}
-          image3={'images/spots/141_2.webp'}
-          user_ratings_total={213463}
-        />
       </Stack>
+
+      {/* Right Section */}
+      <Grid container spacing={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }} 
+        sx={{ width: { xs: '30vw', sm: '50vw', md: '60vw', lg: '65vw' }, height: '85vh' }}
+      >
+        <Grid item xs={12} sm={12} md={6} lg={4} sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <HomeCard
+            title='Central Park'
+            rating={4.8}
+            image1={'images/spots/22_3.webp'}
+            image3={'images/homepage/1.png'}
+            user_ratings_total={273613}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} lg={4} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
+          <HomeCard
+            title='Statue of Liberty'
+            rating={4.7}
+            image1={'images/spots/54_1.webp'}
+            image3={'images/homepage/3.jpg'}
+            user_ratings_total={101828}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} lg={4} sx={{ display: { xs: 'none', sm: 'none', lg: 'block' } }}>
+          <HomeCard
+            title='Times Square'
+            rating={4.7}
+            image1={'images/spots/141_1.webp'}
+            image3={'images/spots/141_2.webp'}
+            user_ratings_total={213463} 
+          />
+        </Grid>
+      </Grid>
     </Stack>
   );
 };

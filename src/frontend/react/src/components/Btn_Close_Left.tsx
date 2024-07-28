@@ -1,25 +1,30 @@
 import React, { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
-import { ChevronRightRounded, KeyboardArrowLeftRounded } from '@mui/icons-material';
+import { ChevronRightRounded, CloseRounded, KeyboardArrowLeftRounded } from '@mui/icons-material';
 import { ListContext } from '../contexts/ListContext';
+import { LEFT_WIDTH } from '../utils/constants';
+import { useUpdateLeftWidth, useUpdateNavbarHeight } from '../utils/useResponsiveSizes';
 
 const Btn_List: React.FC = () => {
   const { isLeftPanelVisible, toggleLeftPanel } = useContext(ListContext);
+
+  useUpdateLeftWidth();
+  useUpdateNavbarHeight();
+
 
   return (
     <Box
       sx={{
         position: 'absolute',
-        top: '70px',
-        left: isLeftPanelVisible ? '42vw' : '20px',
-        zIndex: 10,
-        boxShadow: 2,
+        top: {xs:isLeftPanelVisible ?'83px':'105px',sm:'70px'},
+        left:{xs: isLeftPanelVisible ?`calc(${LEFT_WIDTH} - 30px)`: '20px',sm: isLeftPanelVisible ?`calc(${LEFT_WIDTH} + 1vw)`: '20px'},
+        boxShadow: {xs:isLeftPanelVisible ? 0:2,sm:2},
         borderRadius: '6px',
         cursor: 'pointer',
-        backgroundColor: '#fff',
+        backgroundColor: {xs: isLeftPanelVisible ?null:"#fff",sm:'#fff'},
         paddingTop: '5px',
-        paddingBottom: '5px',
-        paddingX: '6px',
+        paddingBottom: isLeftPanelVisible ?'0px':'5px',
+        paddingX: {xs:'2px',sm:'6px'},
         display: 'flex',
         alignItems: 'center'
       }}
@@ -34,7 +39,16 @@ const Btn_List: React.FC = () => {
       }
 
 
-      {isLeftPanelVisible && <KeyboardArrowLeftRounded />}
+      {isLeftPanelVisible && (
+        <>
+        <Box sx={{ display: { xs: 'block', sm: 'none' } ,zIndex:8}}>
+        <CloseRounded style={{ color: '#333', fontSize: '22px'}} />
+      </Box>
+      
+      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <KeyboardArrowLeftRounded />
+        </Box>
+        </>)}
     </Box>
   );
 };

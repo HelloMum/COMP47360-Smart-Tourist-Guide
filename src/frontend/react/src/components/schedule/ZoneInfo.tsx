@@ -24,8 +24,8 @@ const ZoneInfo: React.FC<ZoneInfoProps> = ({ position, name, busyness }) => {
         whiteSpace: 'nowrap',  
          
       }}>
-        <h4 style={{ margin: 0 }}>{name}</h4>
-        <p style={{ margin: 0 }}>Busyness: {busyness}</p>
+        <h3 style={{ margin: 0 }}>{name}</h3>
+        <p style={{ margin: 0,fontSize:'12px' }}>Busyness: {busyness}</p>
       </div>
     </OverlayView>
   );

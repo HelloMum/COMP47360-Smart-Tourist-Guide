@@ -14,12 +14,17 @@ const SkeletonEventCard: React.FC = () => {
         marginBottom: 3,
         marginLeft: '3px',
         marginTop: '3px',
-        height: '170px',
+        height: { xs:'130px',sm:'140px',md:'170px'},
 
       }}
     >
       <Stack direction="row">
-        <Box sx={{ position: 'relative', width: '180px', height: '128px', boxShadow: 0, borderRadius: '4px', marginTop: '10px' }}>
+        <Box sx={{ position: 'relative', 
+        width: {xs:'80px',sm:'90px',md:'180px'}, 
+          height: {xs:'100px',sm:'100px',md:'128px'},
+          boxShadow: 0, borderRadius: '4px', marginTop: '10px' }}>
+
+
           <Skeleton variant="rectangular" width="100%" height="100%" animation="wave" sx={{ borderRadius: '4px' }} />
         </Box>
 

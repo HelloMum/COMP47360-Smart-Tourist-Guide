@@ -56,14 +56,14 @@ const theme = createTheme({
 
   },
   
- // -----------------------------------  breakpoints for screens withe different sizes  --------------------------------
+ // ------------------  breakpoints for screens withe different sizes  ----------------------------
 
   breakpoints: {
     values: {
-      xs: 0,
-      sm: 600,
-      md: 960,
-      lg: 1280,
+      xs: 320,
+      sm: 768,
+      md: 1024,
+      lg: 1440,
       xl: 1920,
     },
   },

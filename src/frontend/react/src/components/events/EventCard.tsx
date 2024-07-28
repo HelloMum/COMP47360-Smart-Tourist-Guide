@@ -57,12 +57,12 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
           overflow: 'hidden',
           boxShadow: '0 1px 5px rgba(0, 0, 0, 0.15)',
           width: "98%",
-          paddingX: '20px',
-          paddingY: '12px',
-          marginBottom: 3,
+          paddingX: {xs:'10px',sm:'10px',md:'20px'},
+          paddingY: {xs:'5px',sm:'10px',md:'10px'},
+          marginBottom: { xs:2,sm:2,md:3},
           marginLeft: '3px',
           marginTop: '3px',
-          height: isExpanded ? 'auto' : '170px',
+          height: isExpanded ? 'auto' :{ xs:'130px',sm:'140px',md:'170px'},
           transition: 'box-shadow 0.3s',
           '&:hover': {
             boxShadow: '0 3px 10px rgba(0, 0, 0, 0.3)'
@@ -72,25 +72,36 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
         onMouseLeave={onMouseLeave}
       >
         <Stack direction="row">
-          <Box sx={{ position: 'relative', width: '180px', height: isExpanded ? '190px' : '128px', boxShadow: 1, borderRadius: '4px', marginTop: '10px' }}>
+          <Box sx={{ position: 'relative', 
+           width: {xs:'80px',sm:'90px',md:'180px'}, 
+           height: isExpanded ? {xs:'120px',sm:'100px',md:'190px'} :  {xs:'100px',sm:'100px',md:'128px'},
+             
+             boxShadow: 1, borderRadius: '4px', marginTop: '10px' }}>
             <CardMedia
               component="img"
               height="100"
               image={imageUrl}
               alt={event.name}
-              sx={{ objectFit: 'cover', borderRadius: '4px', width: '180px', height: isExpanded ? '190px' : '128px' }}
+              sx={{ objectFit: 'cover', borderRadius: '4px', width: {xs:'80px',sm:'90px',md:'180px'},
+                
+                
+                height: isExpanded ? {xs:'120px',sm:'100px',md:'190px'} :  {xs:'100px',sm:'100px',md:'128px'}
+              
+              }
+              
+              }
             />
           </Box>
 
-          <Box sx={{ marginLeft: '20px', flexGrow: 1 }}>
+          <Box sx={{ marginLeft: {xs:'10px',sm:'10px',md:'20px'}, flexGrow: 1 }}>
             <Typography
               sx={{
                 whiteSpace: isExpanded ? 'normal' : 'nowrap',
-                fontSize: '1.05rem',
+                fontSize: {xs:'1rem',sm:'1.05rem'},
                 fontWeight: 400,
                 overflow: 'hidden',
                 textOverflow: isExpanded ? 'clip' : 'ellipsis',
-                maxWidth: '22vw',
+                maxWidth: {xs:'45vw',sm:'23vw',md:'22vw'},
                 display: 'inline-block',
               }}
               component="div"
@@ -99,44 +110,52 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
               {event.name}
             </Typography>
 
-            <Stack direction='row' spacing={1}>
-              <Tag_Category category={event.combined_category} />
-              {event.is_free && <Tag_IsFree />}
-
-              <Btn_Earth url={event.event_site_url} />
-
-
-            </Stack>
+            <Stack 
+      direction='row' 
+      sx={{
+        spacing: {
+          xs: 0.5, 
+          sm: 1    
+        }
+      }}
+    >
+      <Tag_Category category={event.combined_category} />
+      {event.is_free && <Tag_IsFree />}
+      <Btn_Earth url={event.event_site_url} />
+    </Stack>
 
             <Stack gap={'4px'} marginTop={'2px'}>
               <Box display="flex" alignItems="center" marginTop={1}>
-                <DateRangeRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-                <Typography variant="body2" color="text.secondary" style={{ marginRight: '50px' }}>
+                <DateRangeRounded sx={{fontSize: {xs:'medium',sm:'large'}, marginRight: {xs:1,sm:1,md:1} }} />
+                <Typography variant="body2" color="text.secondary" 
+                sx={{ 
+                  marginRight: {xs:'15px',sm:'45px'},
+                fontSize:{xs:'12px',sm:'14px'} }}>
                   {date}
                 </Typography>
-                <AccessTimeRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-                <Typography variant="body2" color="text.secondary">
+                <AccessTimeRounded sx={{ fontSize: {xs:'medium',sm:'large'}, marginRight:{xs:1,sm:1,md:1}  }} />
+                <Typography variant="body2" color="text.secondary" sx={{fontSize:{xs:'12px',sm:'14px'}}}>
                   {time}
                 </Typography>
               </Box>
 
               {event.address && (
-        <Box display="flex" alignItems="center">
-          <LocationOnRounded sx={{ fontSize: 'large', marginRight: 1 }} />
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              maxWidth: '19vw', 
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {event.address}
-          </Typography>
-        </Box>
-      )}
+  <Box display={{ xs: 'none', sm: 'none', md: 'flex' }} alignItems="center">
+    <LocationOnRounded sx={{ fontSize: 'large', marginRight: { xs: 0, sm: 0, md: 1 } }} />
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      sx={{
+        maxWidth: '19vw',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
+    >
+      {event.address}
+    </Typography>
+  </Box>
+)}
 
               {isExpanded && (
                 <Typography variant="body2" color="text.secondary" sx={{ marginLeft: '3px' }}>
@@ -145,7 +164,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onMouseEnter, onMouseLeave
               )}
             </Stack>
 
-            <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingY: 1 }}>
+            <Stack direction='row' justifyContent="space-between" sx={{ width: '95%', paddingTop: 1 }}>
               <Btn_Add onClick={handleAdd} isAdded={isAdded} />
               {!isExpanded && <IconButton onClick={toggleExpand}><ExpandMoreRounded /></IconButton>}
               {isExpanded && <IconButton onClick={toggleExpand}><ExpandLessRounded /></IconButton>}
