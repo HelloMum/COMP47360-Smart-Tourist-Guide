@@ -28,7 +28,6 @@ public class PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
     private Booster booster;
-    private static final String BUSYNESS_JSON_FILE = "busyness_predictions.json";
 
     @Autowired
     private DailyWeatherDataService dailyWeatherDataService;
@@ -51,10 +50,12 @@ public class PredictionService {
             reader.readLine(); // skip header
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length >= 5) {
-                    String key = parts[0] + "_" + parts[1] + "_" + parts[2];
-                    meanMap.put(key, Double.parseDouble(parts[3]));
-                    stdMap.put(key, Double.parseDouble(parts[4]));
+                if (parts.length >= 4) {
+                    String key = parts[0] + "_" + parts[1];
+                    double mean = Double.parseDouble(parts[2]);
+                    double std = Double.parseDouble(parts[3]);
+                    meanMap.put(key, mean);
+                    stdMap.put(key, std);
                 }
             }
             reader.close();
@@ -254,7 +255,7 @@ public class PredictionService {
             float passengerCount = (float) Math.expm1(predictions[0][0]);
 
             // Calculate busyness index
-            String key = taxiZone + "_" + dateTime.getDayOfMonth() + "_" + dateTime.getHour();
+            String key = taxiZone + "_" + dateTime.getHour();
             Double mean = meanMap.get(key);
             Double std = stdMap.get(key);
 
@@ -272,36 +273,41 @@ public class PredictionService {
         }
     }
 
-    public float getBusynessByZoneFromJson(int taxiZone, LocalDateTime dateTime) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        ClassPathResource resource = new ClassPathResource(BUSYNESS_JSON_FILE);
-        InputStream inputStream = resource.getInputStream();
-        JsonNode rootNode = mapper.readTree(inputStream);
+    public float getBusynessByZoneFromMemory(int taxiZone, LocalDateTime dateTime) {
+        try {
+            // Get predictions from savedResult in PredictionScheduler
+            Map<Integer, Map<String, Map<String, Float>>> savedResult = PredictionScheduler.getSavedResult();
 
-        LocalDateTime roundedDateTime = dateTime.withMinute(0).withSecond(0).withNano(0);
+            // Round dateTime to the nearest hour
+            LocalDateTime roundedDateTime = dateTime.withMinute(0).withSecond(0).withNano(0);
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            // Format date and time keys
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            String dateKey = dateFormatter.format(roundedDateTime.toLocalDate());
+            String timeKey = timeFormatter.format(roundedDateTime);
 
-        String dateKey = dateFormatter.format(roundedDateTime.toLocalDate());
-        String timeKey = timeFormatter.format(roundedDateTime);
+            // Retrieve busyness prediction
+            Map<String, Map<String, Float>> dateMap = savedResult.get(taxiZone);
+            if (dateMap == null) {
+                throw new IllegalArgumentException("Taxi zone not found: " + taxiZone);
+            }
 
-        JsonNode zoneNode = rootNode.path(String.valueOf(taxiZone));
-        if (zoneNode.isMissingNode()) {
-            throw new IllegalArgumentException("Taxi zone not found in JSON: " + taxiZone);
+            Map<String, Float> timeMap = dateMap.get(dateKey);
+            if (timeMap == null) {
+                throw new IllegalArgumentException("Date not found for taxi zone " + taxiZone + ": " + dateKey);
+            }
+
+            Float prediction = timeMap.get(timeKey);
+            if (prediction == null) {
+                throw new IllegalArgumentException("Prediction not found for taxi zone " + taxiZone + " at time " + timeKey);
+            }
+
+            return prediction;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1.0f; // Handle error case
         }
-
-        JsonNode dateNode = zoneNode.path(dateKey);
-        if (dateNode.isMissingNode()) {
-            throw new IllegalArgumentException("Date not found in JSON: " + dateKey);
-        }
-
-        JsonNode timeNode = dateNode.path(timeKey);
-        if (timeNode.isMissingNode()) {
-            throw new IllegalArgumentException("Time not found in JSON: " + timeKey);
-        }
-
-        return timeNode.floatValue();
     }
-
 }
