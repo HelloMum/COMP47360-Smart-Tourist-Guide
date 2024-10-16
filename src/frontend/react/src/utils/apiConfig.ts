@@ -1,5 +1,5 @@
 const googleMapsConfig = {
-  googleMapsApiKey: 'AIzaSyCY1DTFE2IGNPcc54cRmnnSkLvq8VfpMMo',
+  googleMapsApiKey: 'AIzaSyA4p_1bYWiFvj2-olYtK-YealiA8fKT0mE',
   libraries: ['places'],
 };
 
